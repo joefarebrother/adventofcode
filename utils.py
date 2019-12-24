@@ -1,5 +1,6 @@
 from collections import deque
 from heapq import heappush, heappop
+import math
 
 def block_char():
   return '█'
@@ -28,7 +29,6 @@ def draw_grid(grid, symbols=None, flipx=False, flipy=False):
     if type(list(coords)[0]) == complex:
       xcoords = [int(z.real) for z in coords]
       ycoords = [int(z.imag) for z in coords]
-      flipy = not flipy
     else:
       xcoords = [x for (x, y) in coords]
       ycoords = [y for (x, y) in coords]
@@ -50,8 +50,6 @@ def grid_to_cplx(grid):
   for y, line in enumerate(grid):
     for x, c in enumerate(line):
       cgrid[x+y*1j] = c
-      if c == '@':
-        start_pos = x+y*1j
 
   return cgrid
 
@@ -62,17 +60,11 @@ def sign(x):
     return 1
   return 0
 
-def gcd(a,b):
-    """Compute the greatest common divisor of a and b"""
-    while b > 0:
-        a, b = b, a % b
-    return a
+gcd = math.gcd
     
 def lcm(a, b):
-    """Compute the lowest common multiple of a and b"""
     return a * b / gcd(a, b)
 
-# copied from stackoverflow
 def egcd(a, b):
     if a == 0:
         return (b, 0, 1)
@@ -86,7 +78,6 @@ def mod_inv(a, m):
         raise Exception('modular inverse does not exist')
     else:
         return x % m
-# end stackoverflow part
 
 def clear_screen():
   print(chr(27) + "[2J")

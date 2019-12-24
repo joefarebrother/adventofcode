@@ -6,9 +6,10 @@ def load_program(file):
 op_lens = {1:4, 2:4, 3:2, 4:2, 5:3, 6:3, 7:4, 8:4, 9:2}
 
 def default_inpfun(self):
-  if self.inp_ptr >= len(self.inp):
+  if len(self.inp) <= self.inp_ptr:
     return "wait"
   else:
+    # don't input.pop(0) because day 7 requires knowing the last output 
     val = self.inp[self.inp_ptr]
     self.inp_ptr += 1
     return val
@@ -17,14 +18,10 @@ def default_outfun(self, val):
   self.out.append(val)
 
 def ascii_input(self):
-  if type(self.inp) != str:
-    self.inp = ""
-  if len(self.inp) <= self.inp_ptr:
-    self.inp = input()+'\n'
-    self.inp_ptr = 0
-  val = self.inp[self.inp_ptr]
-  self.inp_ptr += 1
-  return ord(val)
+  if len(self.inp) == 0:
+    self.inp = [ord(c) for c in input()+'\n']
+  val = self.inp.pop(0)
+  return val
 
 def ascii_output(self, val):
   if type(self.out) != list:
@@ -42,15 +39,11 @@ class Machine:
     self.prog = defaultdict(int)
     for i in range(0, len(prog)):
       self.prog[i] = prog[i]
-    if inp == None:
-      inp = []
-    self.inp = inp
-    self.inpfun = default_inpfun if type(inp) == list or type(inp) == str else inp
-    if out == None:
-      out = []
-    self.out = out 
-    self.outfun = default_outfun if type(out) == list else out
-    self.name = name if name else ""
+    self.inp = inp if type(inp) == list else [ord(c) for c in inp] if type(inp) == str else [] 
+    self.inpfun = default_inpfun if type(inp) == list or type(inp) == str or inp == None else inp
+    self.out = out if type(out) == list else []
+    self.outfun = default_outfun if out == None or type(out) == list else out
+    self.name = name if name != None else ""
     self.pc = 0
     self.inp_ptr = 0
     self.waiting = False
@@ -135,10 +128,7 @@ class Machine:
     if type(inp) == list:
       self.inp += inp
     elif type(inp) == str:
-      if type(self.inp) == str:
-        self.inp += inp
-      else:
-        self.inp += [ord(c) for c in inp]
+      self.inp += [ord(c) for c in inp]
     elif type(inp) == int:
       self.inp.append(inp)
     else:

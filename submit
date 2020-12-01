@@ -1,0 +1,19 @@
+if [ -z $AOC_KEY ] ; then 
+  echo "Error: Key not set"
+  exit 1
+fi
+
+Y=$3
+if [ -z $Y ] ; then Y=2020 ; fi
+
+D=$2
+if [ -z $D ]
+  then
+  # use bc to deal with 01-09 (we want 1-9)
+  D=`date -u +%d | bc`
+fi
+
+ANS=$1
+
+curl -b "session=$AOC_KEY" https://adventofcode.com/$Y/day/$D/answer -d "level=$D&answer=$ANS" > curl_output
+grep article curl_output

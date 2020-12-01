@@ -1,6 +1,7 @@
 from collections import deque
 from heapq import heappush, heappop
 import math
+import os
 
 def block_char():
   return '█'
@@ -156,4 +157,8 @@ def readLines(file):
   return list(open(file).readlines())
 
 
-
+def submit(answer, day=None, year=2020):
+  cmd = "./submit " + str(answer)
+  if(day):
+    cmd += f" {str(day)} {str(year)}"
+  os.system(cmd)

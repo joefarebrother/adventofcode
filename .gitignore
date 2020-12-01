@@ -1,3 +1,4 @@
 input*
 __pycache__/*
 example*
+curl_output

@@ -1,57 +1,73 @@
-from collections import deque
+from collections import deque, defaultdict
 from heapq import heappush, heappop
 import math
 import os
 
 
-def block_char():
-    return '█'
+block_char = '█'
 
 
 def draw_grid(grid, symbols=None, flipx=False, flipy=False):
-    res = ''
+    """
+    Draws the given grid to the screen.
+
+    grid may be a list of lists (in which case each element is a row, printed top to bottom) or a dict.
+    If grid is a dict, its keys may either be complex numbers or (x, y) pairs.
+    In this case, positive y values are interpreted as higher.
+    """
 
     if symbols == None:
         symbols = {0: ' ', 1: '█'}
 
-    if type(symbols) != dict:
+    if not isinstance(symbols, dict):
         symbols = {i: v for i, v in enumerate(symbols)}
 
     if type(grid) == list:
-        for y in (range(len(grid)) if not flipy else range(len(grid)-1, -1, -1)):
-            for x in (range(len(grid[y])) if not flipx else range(len(grid[y])-1, -1, -1)):
-                elt = grid[y][x]
-                sym = symbols[elt] if elt in symbols else str(elt)[0]
-                res += sym
-            res += '\n'
+        grid = grid_to_cplx(grid)
 
-    elif type(grid) == dict:
-        coords = grid.keys()
-        if len(coords) == 0:
-            return
-        if type(list(coords)[0]) == complex:
-            xcoords = [int(z.real) for z in coords]
-            ycoords = [int(z.imag) for z in coords]
-        else:
-            xcoords = [x for (x, y) in coords]
-            ycoords = [y for (x, y) in coords]
+    if not isinstance(grid, dict):
+        raise Exception("draw_grid: Expected list or dict")
 
-        for y in (range(min(ycoords), max(ycoords)+1) if not flipy else range(max(ycoords), min(ycoords)-1, -1)):
-            for x in (range(min(xcoords), max(xcoords)+1) if not flipx else range(max(xcoords), min(xcoords)-1, -1)):
-                if type(list(coords)[0]) == complex:
-                    elt = grid[(x+y*1j)] if (x+y*1j) in grid else ' '
-                else:
-                    elt = grid[(x, y)] if (x, y) in grid else ' '
-                sym = symbols[elt] if elt in symbols else str(elt)[0]
-                res += sym
-            res += '\n'
+    coords = grid.keys()
+    if len(coords) == 0:
+        return
+    if type(list(coords)[0]) == complex:
+        xcoords = [int(z.real) for z in coords]
+        ycoords = [int(z.imag) for z in coords]
+    else:
+        xcoords = [x for (x, y) in coords]
+        ycoords = [y for (x, y) in coords]
+
+    yrange = range(min(ycoords), max(ycoords)+1)
+    if not flipy:
+        yrange = reversed(yrange)
+
+    xrange = range(min(xcoords), max(xcoords)+1)
+    if flipx:
+        xrange = reversed(xrange)
+
+    res = ''
+    for y in yrange:
+        for x in xrange:
+            if type(list(coords)[0]) == complex:
+                coord = (x+y*1j)
+            else:
+                coord = (x, y)
+            elt = grid[coord] if coord in grid else ' '
+            sym = symbols[elt] if elt in symbols else str(elt)[0]
+            res += sym
+        res += '\n'
 
     print(res)
 
 
 def grid_to_cplx(grid):
-    cgrid = {}
-    for y, line in enumerate(grid):
+    """
+    Converts a grid represented as a list of lists into o defaultdict with complex-valued keys.
+    The outer list is first reversed, so that higher imaginary values correspond to "up".
+    """
+    cgrid = defaultdict()
+    for y, line in enumerate(reversed(grid)):
         for x, c in enumerate(line):
             cgrid[x+y*1j] = c
 
@@ -59,6 +75,7 @@ def grid_to_cplx(grid):
 
 
 def sign(x):
+    """Returns the sign of x"""
     if x < 0:
         return -1
     if x > 0:
@@ -67,6 +84,10 @@ def sign(x):
 
 
 def egcd(a, b):
+    """
+    Performs the extended Euclidian algorithm.
+    Returns (g, x, y) such that x*a + y*b = g, and g = gcd(a, b).
+    """
     if a == 0:
         return (b, 0, 1)
     else:
@@ -75,6 +96,7 @@ def egcd(a, b):
 
 
 def mod_inv(a, m):
+    """Returns the inverse of a modulo m"""
     g, x, _ = egcd(a, m)
     if g != 1:
         raise Exception('modular inverse does not exist')
@@ -83,26 +105,53 @@ def mod_inv(a, m):
 
 
 def clear_screen():
+    """Clears the screen of the terminal"""
     print(chr(27) + "[2J")
 
 
-def lmap(f, xs):
-    return [f(x) for x in xs]
+def mapl(f, *xs):
+    """Like map but returns a list"""
+    return list(map(f, *xs))
 
 
 def ints(xs):
-    return lmap(int, xs)
+    """Casts each element of xs to an int"""
+    return mapl(int, xs)
 
 
 def neighbours(p):
+    """
+    When p is a complex number with integer components, returns the four orthagonal neighbours of p.
+    """
     return [p+1j**dir for dir in range(4)]
 
 
 def ident(x):
+    """The identity function."""
     return x
 
 
 def BFS(start, adjfun, end=None, key=ident):
+    """
+    Performs a breadth-first search.
+
+    Arguments:
+    - start: the root of the search
+    - adjfun: the function called to determine the adjacent nodes. 
+        Sould return an iterable or None. 
+    - end: The end point of the search. 
+        If it's a function, the search ends when it returns True for a node.
+        Otherwise, the search ends when the node is equal to end.
+    - key: The key function, used to determine whether two nodes should be treated as equal.
+
+    Returns:
+    - (d, True) if end was found and was distance d from the start.
+    - (d, False) if end was not found, and d is the maximum distance from the start to any node.
+
+    Variables accessible during calls to each user-provided function:
+    - BFS.dist: The distance to the node under consideration.
+    - BFS.queue: The queue. Should not be mutated.
+    """
     queue = deque([(start, 0)])
     visited = {key(start)}
     d = 0
@@ -128,6 +177,31 @@ def BFS(start, adjfun, end=None, key=ident):
 
 
 def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
+    """
+    Performs the A-star algorithm / dijkstra's algorithm.
+
+    Arguments:
+    - start: the root of the search
+    - adjfun: the function called to determine the adjacent nodes. 
+        Sould return an iterable or None. 
+        The returned iterable should produce (node, distance) pairs.
+    - end: The end point of the search. 
+        If it's a function, the search ends when it returns True for a node.
+        Otherwise, the search ends when the node is equal to end.
+    - key: The key function, used to determine whether two nodes should be treated as equal.
+    - h: The heuristic function. 
+
+    Returns:
+    - (True, d) if end was found at distance d from the start.
+    - (False, dists) if end was not found. 
+        dists contains the distances from the start of each node seen.
+
+    Variables accessible during calls to each user-provided function:
+    - astar.dist: The distance from the start to the node under consideration.
+    - astar.dists: The best known distatances of from the start of the queue to each node seen so far.
+    - astar.pqueue: The priority queue. Should not be mutated.
+    - 
+    """
     pqueue = [(h(start), 0, 0, start)]
     i = 0
     dists = {key(start): 0}
@@ -140,7 +214,7 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
             astar.pqueue = None
             astar.dists = None
             astar.dist = 0
-            return d
+            return (True, d)
 
         astar.pqueue = pqueue
         astar.dists = dists
@@ -157,16 +231,17 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
     astar.pqueue = None
     astar.dists = None
     astar.dist = 0
-    if end != None:
-        return None
-    else:
-        return dists
+    return(False, dists)
 
 
 dijkstra = astar
 
 
 def submit(answer, day=None, year=2020):
+    """
+    Submits the answer to the AOC server, then exits.
+    Use with caution, as an incorrect answer will lock you out for a minute.
+    """
     cmd = "./submit " + str(answer)
     if(day):
         cmd += f" {str(day)} {str(year)}"

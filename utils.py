@@ -66,13 +66,6 @@ def sign(x):
     return 0
 
 
-gcd = math.gcd
-
-
-def lcm(a, b):
-    return a * b / gcd(a, b)
-
-
 def egcd(a, b):
     if a == 0:
         return (b, 0, 1)

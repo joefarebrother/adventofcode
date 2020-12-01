@@ -1,14 +1,16 @@
+import math
+from itertools import product
 from utils import *
 data = ints(list(open("input1")))
 
-for i in data:
-    for j in data:
-        if i+j == 2020:
-            print(i*j, i, j)
-            # submit(i*j)
+# not my original solution; that's in the commit history
 
-for i in data:
-    for j in data:
-        for k in data:
-            if i+j+k == 2020:
-                print(i*j*k, i, j, k)
+
+def f(n):
+    for xs in product(data, repeat=n):
+        if sum(xs) == 2020:
+            print(math.prod(xs), xs)
+
+
+f(2)
+f(3)

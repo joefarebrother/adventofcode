@@ -16,7 +16,7 @@ def draw_grid(grid, symbols=None, flipx=False, flipy=False):
 
   if type(grid) == list :
     for y in (range(len(grid)) if not flipy else range(len(grid)-1, -1, -1)):
-      for x in (range(len(grid[y])) if not flipy else range(len(grid[y])-1, -1, -1)):
+      for x in (range(len(grid[y])) if not flipx else range(len(grid[y])-1, -1, -1)):
         elt = grid[y][x]
         sym = symbols[elt] if elt in symbols else str(elt)[0]
         res += sym
@@ -152,6 +152,8 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _:0):
 
 dijkstra = astar
 
+def readLines(file):
+  return list(open(file).readlines())
 
 
 

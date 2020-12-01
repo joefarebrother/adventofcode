@@ -1,0 +1,3 @@
+Day 1:
+- Not using an IDE
+- `import utils` instead of `from utils import *`

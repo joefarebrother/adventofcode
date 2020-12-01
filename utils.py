@@ -54,6 +54,8 @@ def draw_grid(grid, symbols=None, flipx=False, flipy=False):
             else:
                 coord = (x, y)
             elt = grid[coord] if coord in grid else ' '
+            if elt == None:
+                elt = ' '
             sym = symbols[elt] if elt in symbols else str(elt)[0]
             res += sym
         res += '\n'
@@ -61,12 +63,12 @@ def draw_grid(grid, symbols=None, flipx=False, flipy=False):
     print(res)
 
 
-def grid_to_cplx(grid):
+def grid_to_cplx(grid, default=None):
     """
-    Converts a grid represented as a list of lists into o defaultdict with complex-valued keys.
+    Converts a grid represented as a list of lists into to defaultdict with complex-valued keys.
     The outer list is first reversed, so that higher imaginary values correspond to "up".
     """
-    cgrid = defaultdict()
+    cgrid = defaultdict(lambda _: default)
     for y, line in enumerate(reversed(grid)):
         for x, c in enumerate(line):
             cgrid[x+y*1j] = c

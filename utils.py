@@ -74,7 +74,7 @@ def egcd(a, b):
         return (g, x - (b // a) * y, y)
 
 def mod_inv(a, m):
-    g, x, y = egcd(a, m)
+    g, x, _ = egcd(a, m)
     if g != 1:
         raise Exception('modular inverse does not exist')
     else:
@@ -83,8 +83,11 @@ def mod_inv(a, m):
 def clear_screen():
   print(chr(27) + "[2J")
 
-def map(f, xs):
+def lmap(f, xs):
   return [f(x) for x in xs]
+
+def ints(xs):
+  return lmap(int, xs)
 
 def neighbours(p):
   return [p+1j**dir for dir in range(4)]
@@ -153,12 +156,10 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _:0):
 
 dijkstra = astar
 
-def readLines(file):
-  return list(open(file).readlines())
-
 
 def submit(answer, day=None, year=2020):
   cmd = "./submit " + str(answer)
   if(day):
     cmd += f" {str(day)} {str(year)}"
   os.system(cmd)
+  exit()

@@ -1,3 +1,4 @@
+# pylint: disable=unused-wildcard-import
 from utils import *
 
 data = list(open("input2"))

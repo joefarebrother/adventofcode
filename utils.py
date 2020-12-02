@@ -147,8 +147,8 @@ def BFS(start, adjfun, end=None, key=ident):
     - key: The key function, used to determine whether two nodes should be treated as equal.
 
     Returns:
-    - (d, True) if end was found and was distance d from the start.
-    - (d, False) if end was not found, and d is the maximum distance from the start to any node.
+    - (True, d) if end was found and was distance d from the start.
+    - (False. d) if end was not found, and d is the maximum distance from the start to any node.
 
     Variables accessible during calls to each user-provided function:
     - BFS.dist: The distance to the node under consideration.
@@ -163,7 +163,7 @@ def BFS(start, adjfun, end=None, key=ident):
         if (callable(end) and end(p)) or end == p:
             BFS.queue = None
             BFS.dist = 0
-            return (d, True)
+            return (True, d)
         BFS.queue = queue
         BFS.dist = d
         next = adjfun(p)
@@ -175,7 +175,7 @@ def BFS(start, adjfun, end=None, key=ident):
                 queue += [(n, d+1)]
     BFS.queue = None
     BFS.dist = 0
-    return (d, False)
+    return (False, d)
 
 
 def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
@@ -200,9 +200,8 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
 
     Variables accessible during calls to each user-provided function:
     - astar.dist: The distance from the start to the node under consideration.
-    - astar.dists: The best known distatances of from the start of the queue to each node seen so far.
+    - astar.dists: The best known distatances from the start of the queue to each node seen so far.
     - astar.pqueue: The priority queue. Should not be mutated.
-    - 
     """
     pqueue = [(h(start), 0, 0, start)]
     i = 0

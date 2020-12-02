@@ -133,6 +133,26 @@ def ident(x):
     return x
 
 
+def DFS(start, adjfun, key=ident):
+    """
+    Performs a depth-first search. 
+    Every node reachable from start will be visited by adjfun.
+
+    Arguments:
+    - start: the root of the search
+    - adjfun: the function called to determine the adjacent nodes. 
+        Sould return an iterable or None. 
+    - key: The key function, used to determine whether two nodes should be treated as equal.
+
+    Returns:
+    - (True, d) if end was found and was distance d from the start.
+    - (False. d) if end was not found, and d is the maximum distance from the start to any node.
+
+    Variables accessible during calls to each user-provided function:
+    - DFS.dist: The distance to the node under consideration.
+    """
+
+
 def BFS(start, adjfun, end=None, key=ident):
     """
     Performs a breadth-first search.
@@ -236,6 +256,48 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
 
 
 dijkstra = astar
+
+
+def bin_search(lo, hi, f):
+    """
+    Performs a binary search on an abstract search space.
+
+    Arguments:
+    - lo: The low endpoint.
+    - hi: The high endpoint. Can be None to represent infinity.
+    - f: A monotone-decreasing function int->bool; i.e. goes 11110000
+
+    Returns:
+    - The unique int target in the range [lo, hi) such that f = (lambda i: i <= target) on this range.
+      In other words, the unique target such that f(target) and not f(target+1)
+
+    Example:
+    - If xs is a sorted list, bin_search(0, len(xs), lambda i: xs[i]<=n) returns the index of n in xs.
+    """
+
+    if (not (hi == None or lo < hi)):
+        raise Exception("Empty range")
+
+    if not f(lo):
+        return lo
+
+    if(hi == None):
+        hi = lo*2 if lo > 0 else 32
+        while(f(hi)):
+            (lo, hi) = (hi, lo*2)
+
+    # Invariant: lo <= target < hi; i.e. f(lo) and not f(hi)
+    # This invariant is not completely checked at the start; since f might be undefined on hi.
+    # However, it still holds if we assume f "would be" false beyond its range.
+
+    while(hi - lo > 1):
+        mid = (lo+hi)//2
+        if f(mid):
+            lo = mid
+        else:
+            hi = mid
+
+    return lo
 
 
 def submit(answer, part=1, day=None, year=2020):

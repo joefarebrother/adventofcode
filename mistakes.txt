@@ -1,3 +1,6 @@
 Day 1:
 - Not using an IDE
 - `import utils` instead of `from utils import *`
+
+Day2:
+- Bug in submit script: level should be part, not day (didn't catch it since I only tested on 2018 part 1 day 1)

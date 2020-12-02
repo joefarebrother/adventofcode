@@ -20,7 +20,7 @@ def valid(pol, pw):
 def valid2(pol, pw):
     (lo, hi, ch) = parse_pol(pol)
     # since we don't strip the leading space in pw, we get 1-based indexing for free :)
-    return int(pw[lo] == ch) + int(pw[hi] == ch) == 1
+    return (pw[lo] == ch) ^ (pw[hi] == ch)
 
 
 validcount = 0

@@ -3,17 +3,18 @@ if [ -z $AOC_KEY ] ; then
   exit 1
 fi
 
-Y=$3
+Y=$4
 if [ -z $Y ] ; then Y=2020 ; fi
 
-D=$2
+D=$3
 if [ -z $D ]
   then
   # use bc to deal with 01-09 (we want 1-9)
   D=`date -u +%d | bc`
 fi
 
-ANS=$1
+ANS=$2
+PART=$1
 
-curl -b "session=$AOC_KEY" https://adventofcode.com/$Y/day/$D/answer -d "level=$D&answer=$ANS" > curl_output
+curl -b "session=$AOC_KEY" https://adventofcode.com/$Y/day/$D/answer -d "level=$PART&answer=$ANS" > curl_output
 grep article curl_output

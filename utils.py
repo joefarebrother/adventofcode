@@ -239,12 +239,16 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
 dijkstra = astar
 
 
-def submit(answer, day=None, year=2020):
+def submit(answer, part=1, day=None, year=2020):
     """
-    Submits the answer to the AOC server, then exits.
+    Submits the answer to the AOC server, then exits. Asks for confirmation first.
     Use with caution, as an incorrect answer will lock you out for a minute.
     """
-    cmd = "./submit " + str(answer)
+    print(f"Submit {answer} to part {part}? (y/n)")
+    if input()[0] != "y":
+        return
+
+    cmd = f"./submit {part} {answer}"
     if(day):
         cmd += f" {str(day)} {str(year)}"
     os.system(cmd)

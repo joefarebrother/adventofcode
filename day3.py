@@ -3,21 +3,27 @@ from utils import *
 from itertools import *
 
 
-grid = readlines("input3")
+grid = Grid("input3", wrapx=True)
 trees = 0
+
+grid.draw()
+print(grid.width(), grid.height())
 
 
 def check_tree(pos: complex):
-    return grid[int(pos.imag)][int(pos.real) % (len(grid[0]))] == '#'
+    return grid[pos] == '#'
 
 
 def trees_for_slope(slope):
     trees = 0
 
     pos = 0j
-    while pos.imag < len(grid):
+    while pos in grid:
         if check_tree(pos):
             trees += 1
+        #     grid[pos] = 'X'
+        # else:
+        #     grid[pos] = 'O'
 
         pos += slope
 

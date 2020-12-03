@@ -300,6 +300,13 @@ def bin_search(lo, hi, f):
     return lo
 
 
+def readlines(filename):
+    """
+    Returns the list of lines in the given file. Strips the trailing newline on each.
+    """
+    return mapl(lambda l: l[:-1], open(filename))
+
+
 def submit(answer, part=1, day=None, year=2020):
     """
     Submits the answer to the AOC server, then exits. Asks for confirmation first.

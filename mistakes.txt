@@ -6,5 +6,5 @@ Day2:
 - Bug in submit script: level should be part, not day (didn't catch it since I only tested on 2018 part 1 day 1)
 
 Day3:
-- Not expecting there to be a trailing newline on each line; messing uo my "% len(grid)" calculation
+- Not expecting there to be a trailing newline on each line; messing up my `% len(line)` calculation
 - Transposing my x and y coords for the slopes in part 2

@@ -11,7 +11,8 @@ Day3:
 
 Day 4:
 - Incorrectly truncating the last record
+- Forgetting to actually return something from a function
 - Mistyping 260 as 280 in the submission field
 - Putting [:-2] in the wrong place when validating inches
 - Not making my strings with \ in them raw (thanks vscode)
-- Not wrapping my regexes with ^ and $
+- Not wrapping my regexes with ^ and $ [edit: or using re.fullmatch]

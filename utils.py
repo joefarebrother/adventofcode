@@ -295,7 +295,7 @@ class Grid:
                 raise Exception(
                     "An explicit height must be set when initialising from a dict")
 
-            keys = dict.keys()
+            keys = grid.keys()
             for key in keys:
                 elt = grid[key]
                 (x, y) = convert_pos(key, True)

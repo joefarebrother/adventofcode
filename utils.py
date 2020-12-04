@@ -40,13 +40,13 @@ class Rectangle:
         """
         Returns the range of x-positions this rectangle spans.
         """
-        return range(self.minx, self.maxx+1)
+        return irange(self.minx, self.maxx)
 
     def yrange(self):
         """
         Returns the range of y-positions this rectangle spans.
         """
-        return range(self.miny, self.maxy+1)
+        return irange(self.miny, self.maxy)
 
     def __contains__(self, pos):
         (x, y) = convert_pos(pos)

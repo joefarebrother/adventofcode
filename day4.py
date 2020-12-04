@@ -22,19 +22,20 @@ print(data)
 
 
 def num(field, min, max):
-    return mint(field, -math.inf) in irange(min, max)
+    return min <= mint(field, 0) <= max
 
 
 def valid(rec):
     if len(rec.keys()) != 8:
         return False
 
+    # pylint: disable=used-before-assignment
     return (num(rec.byr, 1920, 2002) and
             num(rec.iyr, 2010, 2020) and
             num(rec.eyr, 2020, 2030) and
-            (re.fullmatch(r'\d*cm', rec.hgt) and int(rec.hgt[:-2]) in irange(150, 193)
-             or re.fullmatch(r'\d*in', rec.hgt) and int(rec.hgt[:-2]) in irange(59, 76)) and
-            re.fullmatch('^#[0-9a-f]{6}$', rec.hcl) and
+            ((m := re.fullmatch(r'(\d*)cm', rec.hgt)) and 150 <= int(m[1]) <= 193
+             or (m := re.fullmatch(r'(\d*)in', rec.hgt)) and 59 <= int(m[1]) <= 76) and
+            re.fullmatch(r'#[0-9a-f]{6}', rec.hcl) and
             rec.ecl in "amb blu brn gry grn hzl oth".split() and
             re.fullmatch(r'\d{9}', rec.pid))
 

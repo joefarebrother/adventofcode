@@ -105,7 +105,7 @@ class Rectangle:
     def __hash__(self):
         return hash((self.minx, self.maxx, self.miny, self.maxy))
 
-    def __and__(self, other) -> Optional[Rectangle]:
+    def __and__(self, other):
         if not isinstance(other, Rectangle):
             return NotImplemented
 
@@ -295,7 +295,7 @@ class Grid:
                 raise Exception(
                     "An explicit height must be set when initialising from a dict")
 
-            keys = dict.keys()
+            keys = grid.keys()
             for key in keys:
                 elt = grid[key]
                 (x, y) = convert_pos(key, True)

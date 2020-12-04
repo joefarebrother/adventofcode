@@ -8,3 +8,10 @@ Day2:
 Day3:
 - Not expecting there to be a trailing newline on each line; messing up my `% len(line)` calculation
 - Transposing my x and y coords for the slopes in part 2
+
+Day 4:
+- Incorrectly truncating the last record
+- Mistyping 260 as 280 in the submission field
+- Putting [:-2] in the wrong place when validating inches
+- Not making my strings with \ in them raw (thanks vscode)
+- Not wrapping my regexes with ^ and $

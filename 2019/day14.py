@@ -1,21 +1,30 @@
 from utils2020 import bin_search
+import re
 inp = open("input14").readlines()
 
 react = {}
 
 for line in inp:
-    spl = line.split('=>')
-    rhs = spl[1].strip().split()
-    lhs_ = spl[0].strip().split(",")
+    (lhs_, rhs_amt, rhs_chem) = re.match(
+        r'(.*) => (\d+) ([A-Z]+)', line).groups()
     lhs = []
-    for w_ in lhs_:
-        w = w_.strip().split()
-        lhs.append((int(w[0]), w[1]))
+    for w in lhs_.split(','):
+        (amt, chem) = re.search(r'(\d+) ([A-Z]+)', w).groups()
+        lhs.append((int(amt), chem))
 
-    react[rhs[1]] = (int(rhs[0]), lhs)
+    react[rhs_chem] = (int(rhs_amt), lhs)
+    # spl = line.split('=>')
+    # rhs = spl[1].strip().split()
+    # lhs_ = spl[0].strip().split(",")
+    # lhs = []
+    # for w_ in lhs_:
+    #     w = w_.strip().split()
+    #     lhs.append((int(w[0]), w[1]))
 
-# for rhs in react:
-#  print(rhs, react[rhs])
+    # react[rhs[1]] = (int(rhs[0]), lhs)
+
+    # for rhs in react:
+    #  print(rhs, react[rhs])
 
 
 def balanced(amts):

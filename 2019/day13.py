@@ -1,27 +1,29 @@
 import intcode
-from utils import *
+from utils2020 import *
 
 outbuf = []
-tiles = {}
+tiles = Grid({}, y_is_down=True)
+
+
 def outfun(m, val):
-  global outbuf, tiles
-  outbuf.append(val)
-  if len(outbuf) == 3:
-    tiles[(outbuf[0], outbuf[1])] = outbuf[2]
-    outbuf = []
+    global outbuf, tiles
+    outbuf.append(val)
+    if len(outbuf) == 3:
+        tiles[(outbuf[0], outbuf[1])] = outbuf[2]
+        outbuf = []
+
 
 def infun(m):
-  print(tiles[(-1, 0)])
-  draw_grid(tiles, [' ', '#', 'x', '=', 'o'])
-  for x, y in tiles:
-        
-        if tiles[(x, y)] == 4:
-          ballx = x
-        if tiles[(x, y)] == 3:
-          paddlex = x
-  
-  return sign(ballx-paddlex)
-  
+    tiles.draw([' ', '#', 'x', '=', 'o'])
+    print(tiles[(-1, 0)])
+    for pos in tiles:
+
+        if tiles[pos] == 4:
+            ballx = pos.real
+        if tiles[pos] == 3:
+            paddlex = pos.real
+
+    return sign(ballx-paddlex)
 
 
 m = intcode.Machine("input13", infun, outfun)
@@ -34,7 +36,7 @@ print(tiles[(-1, 0)])
 
 count = 0
 for i in tiles:
-  if tiles[i] == 2:
-    count += 1
+    if tiles[i] == 2:
+        count += 1
 
 print(count)

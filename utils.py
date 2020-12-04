@@ -4,7 +4,7 @@ import math
 import os
 import re
 from attrdict import AttrDict
-from typing import List, Tuple, Callable, Iterable
+from typing import List, Tuple, Callable, Iterable, Optional
 
 block_char = '█'
 
@@ -39,20 +39,24 @@ class Rectangle:
 
     def xrange(self) -> range:
         """
-        Returns the range of x-positions this rectangle spans.
+        Returns the range of x-positions this rectangle spans. 
+        Only valid if the coordinates are integers.
         """
         return irange(self.minx, self.maxx)
 
     def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
+        Only valid if the coordinates are integers.
         """
         return irange(self.miny, self.maxy)
 
-    def __contains__(self, pos):
-        if is_pos(pos):
-            (x, y) = convert_pos(pos)
+    def __contains__(self, other):
+        if is_pos(other):
+            (x, y) = convert_pos(other)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
+        if isinstance(other, Rectangle):
+            return all(map(lambda pt: pt in self, other.opposite_corners))
         return NotImplemented
 
     def corners(self, type=complex) -> list:
@@ -100,6 +104,36 @@ class Rectangle:
 
     def __hash__(self):
         return hash((self.minx, self.maxx, self.miny, self.maxy))
+
+    def __and__(self, other) -> Optional[Rectangle]:
+        if not isinstance(other, Rectangle):
+            return NotImplemented
+
+        xint = intersect_irange((self.minx, self.maxx),
+                                (other.minx, other.maxx))
+        yint = intersect_irange((self.miny, self.maxy),
+                                (other.miny, other.maxy))
+
+        if xint and yint:
+            (minx, maxx) = xint
+            (miny, maxy) = yint
+            return Rectangle((minx, miny), (maxx, maxy))
+
+
+def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
+    """
+    Computes the intersection of the two given inclusive ranges, represented as tuples.
+    Returns None if the intersection is empty.
+    Actual range objects aren't used because they can't contain floats.
+    """
+    (l1, h1) = r1
+    (l2, h2) = r2
+    upper = min(h1, h2)
+    lower = max(l1, l2)
+    if lower <= upper:
+        return (lower, upper)
+    else:
+        return None
 
 
 def bounding_box(points: Iterable) -> Rectangle:

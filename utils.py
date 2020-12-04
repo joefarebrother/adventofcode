@@ -4,6 +4,7 @@ import math
 import os
 import re
 from attrdict import AttrDict
+from typing import List, Tuple, Callable
 
 block_char = '█'
 
@@ -24,35 +25,37 @@ class Rectangle:
         self.minx, self.maxx = min(x0, x1), max(x0, x1)
         self.miny, self.maxy = min(y0, y1), max(y0, y1)
 
-    def width(self):
+    def width(self) -> int:
         """
         Returns the width of this rectangle.
         """
         return self.maxx-self.minx+1
 
-    def height(self):
+    def height(self) -> int:
         """
         Returns the height of this rectangle.
         """
         return self.maxy-self.miny+1
 
-    def xrange(self):
+    def xrange(self) -> range:
         """
         Returns the range of x-positions this rectangle spans.
         """
         return irange(self.minx, self.maxx)
 
-    def yrange(self):
+    def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
         """
         return irange(self.miny, self.maxy)
 
     def __contains__(self, pos):
-        (x, y) = convert_pos(pos)
-        return x in self.xrange() and y in self.yrange()
+        if is_pos(pos):
+            (x, y) = convert_pos(pos)
+            return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
+        return NotImplemented
 
-    def corners(self, type=complex):
+    def corners(self, type=complex) -> list:
         """
         Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
         """
@@ -63,7 +66,7 @@ class Rectangle:
         else:
             return mapl(lambda p: _pos_as(p, type), corners)
 
-    def opposite_corners(self, type=complex):
+    def opposite_corners(self, type=complex) -> list:
         """
         Returns the 2 opposite corners with the min/max x/y positions.
         """
@@ -78,17 +81,32 @@ class Rectangle:
         if isinstance(other, Rectangle):
             (p0, p1) = other.opposite_corners()
             return (self + p0) + p1
-        else:
+        elif is_pos(other):
             if other in self:
                 return self
-            return bounding_box(self.opposite_corners() + [other])
+            return bounding_box(self.opposite_corners(tuple) + [other])
+        else:
+            return NotImplemented
+
+    __radd__ = __add__
+
+    def __repr__(self):
+        return f"Rectangle({tuple(self.opposite_corners(tuple))})"
+
+    def __eq__(self, other):
+        if not isinstance(other, Rectangle):
+            return NotImplemented
+        return (self.minx, self.maxx, self.miny, self.maxy) == (other.minx, other.maxx, other.miny, other.maxy)
+
+    def __hash__(self):
+        return hash((self.minx, self.maxx, self.miny, self.maxy))
 
 
-def bounding_box(points):
+def bounding_box(points) -> Rectangle:
     """
-    Computes the bounding box of the given points.
+    Computes the bounding box of the given points. Returns None when given an empty list.
     """
-    points = mapl(convert_pos(points))
+    points = mapl(convert_pos, points)
     if len(points) == 0:
         return None
 
@@ -101,18 +119,27 @@ def bounding_box(points):
     return Rectangle((minx, miny), (maxx, maxy))
 
 
-def convert_pos(pos, to_ints=False):
+def is_pos(pos) -> bool:
+    """
+    Checks whether pos is a 2D position. Can be a complex number or a tuple.
+    """
+    if isinstance(pos, complex):
+        return True
+    if isinstance(pos, (tuple, list)):
+        return len(pos) == 2
+    return False
+
+
+def convert_pos(pos, to_ints=False) -> tuple:
     """
     Converts the given position to the type used internally; (x,y) tuples.
     Supported position types are complex numbers, and length 2 tuples/lists.
     """
+    if not is_pos(pos):
+        raise TypeError("Expected a position", type(pos), pos)
+
     if isinstance(pos, complex):
         pos = (pos.real, pos.imag)
-    if isinstance(pos, tuple) or isinstance(pos, list):
-        if len(pos) != 2:
-            raise Exception("Expected a position of length 2", pos)
-    else:
-        raise TypeError("Unsupported position type", type(pos), pos)
     return tuple(map(int, pos)) if to_ints else tuple(pos)
 
 
@@ -126,7 +153,7 @@ def _pos_as(pos, type):
         (x, y) = pos
         return x + y*1j
     else:
-        raise Exception("Unknown position type", type)
+        raise Exception("Unsupported position type", type)
 
 
 class Grid:
@@ -280,6 +307,8 @@ class Grid:
         if value == None:
             return
         if self.bounding_box == None:
+            self.bounding_box = Rectangle(key, key)
+        else:
             self.bounding_box += key
 
     def keys(self, type=complex, include_nones=False):
@@ -291,9 +320,6 @@ class Grid:
         - include_nones: Whether to include keys that map to None.
             These may be spuriously created since it's backed by a defaultdict.
         """
-        if type not in [complex, tuple]:
-            raise Exception("Unsupported type", type)
-
         for key in self.data:
             if include_nones or self.data[key] != None:
                 yield _pos_as(key, type)
@@ -325,7 +351,7 @@ class Grid:
         for key in self.keys(type, include_nones):
             yield (key, self[key])
 
-    def width(self):
+    def width(self) -> int:
         """
         Returns the width of this grid.
         """
@@ -335,7 +361,7 @@ class Grid:
             return 0
         return self.bounding_box.width()
 
-    def height(self):
+    def height(self) -> int:
         """
         Returns the height of this grid.
         """
@@ -345,7 +371,7 @@ class Grid:
             return 0
         return self.bounding_box.height()
 
-    def draw(self, symbols=None, flipx=False, flipy=False):
+    def draw(self, symbols=None, flipx=False, flipy=False) -> None:
         """
         Draws the grid to the screen.
 
@@ -386,7 +412,7 @@ class Grid:
         print(res)
 
 
-def sign(x):
+def sign(x) -> int:
     """Returns the sign of x"""
     if x < 0:
         return -1
@@ -395,7 +421,7 @@ def sign(x):
     return 0
 
 
-def egcd(a, b):
+def egcd(a: int, b: int) -> Tuple[int, int, int]:
     """
     Performs the extended Euclidian algorithm.
     Returns (g, x, y) such that x*a + y*b = g, and g = gcd(a, b).
@@ -407,7 +433,7 @@ def egcd(a, b):
         return (g, x - (b // a) * y, y)
 
 
-def mod_inv(a, m):
+def mod_inv(a: int, m: int):
     """Returns the inverse of a modulo m"""
     g, x, _ = egcd(a, m)
     if g != 1:
@@ -416,17 +442,17 @@ def mod_inv(a, m):
         return x % m
 
 
-def clear_screen():
+def clear_screen() -> None:
     """Clears the screen of the terminal"""
     print(chr(27) + "[2J")
 
 
-def mapl(f, *xs):
+def mapl(f: Callable, *xs) -> list:
     """Like map but returns a list"""
     return list(map(f, *xs))
 
 
-def ints(xs):
+def ints(xs: list) -> List[int]:
     """Casts each element of xs to an int"""
     return mapl(int, xs)
 
@@ -439,13 +465,13 @@ def mint(x, default=None):
         return default
 
 
-def ints_in(x: str, positive=True):
+def ints_in(x: str, allow_neg=False) -> List[int]:
     """Finds all integers in the string x"""
-    ex = r'\d+' if positive else r'-?\d+'
+    ex = r'-?\d+' if allow_neg else r'\d+'
     return ints(re.findall(ex, x))
 
 
-def neighbours(p):
+def neighbours(p: complex) -> List[complex]:
     """When p is a complex number with integer components, returns the four orthagonal neighbours of p."""
     return [p+1j**dir for dir in range(4)]
 
@@ -562,7 +588,7 @@ def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
 dijkstra = astar
 
 
-def bin_search(lo, hi, f):
+def bin_search(lo, hi, f: Callable):
     """
     Performs a binary search on an abstract search space.
 
@@ -604,14 +630,14 @@ def bin_search(lo, hi, f):
     return lo
 
 
-def readlines(filename):
+def readlines(filename: str) -> List[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
     return mapl(lambda l: l[:-1], open(filename))
 
 
-def irange(*args):
+def irange(*args) -> range:
     """Inclusive range"""
     args = list(args)
     if len(args) == 1:
@@ -621,7 +647,7 @@ def irange(*args):
     return range(*args)
 
 
-def submit(answer, part=1, day=None, year=2020, confirm=True):
+def submit(answer: int, part=1, day=None, year=2020, confirm=True) -> None:
     """
     Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.
     Use with caution, as an incorrect answer will lock you out for a minute.

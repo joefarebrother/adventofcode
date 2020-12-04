@@ -105,7 +105,7 @@ class Rectangle:
     def __hash__(self):
         return hash((self.minx, self.maxx, self.miny, self.maxy))
 
-    def __and__(self, other):
+    def __and__(self, other) -> Optional[Rectangle]:
         if not isinstance(other, Rectangle):
             return NotImplemented
 

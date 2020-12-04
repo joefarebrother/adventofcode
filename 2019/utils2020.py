@@ -1,3 +1,4 @@
+from functools import reduce
 from collections import deque, defaultdict
 from heapq import heappush, heappop
 import math
@@ -467,13 +468,29 @@ def egcd(a: int, b: int) -> Tuple[int, int, int]:
         return (g, x - (b // a) * y, y)
 
 
-def mod_inv(a: int, m: int):
+def mod_inv(a: int, m: int) -> int:
     """Returns the inverse of a modulo m"""
     g, x, _ = egcd(a, m)
     if g != 1:
         raise Exception('modular inverse does not exist')
     else:
         return x % m
+
+
+def lcm2(x: int, y: int) -> int:
+    """Returns the least common multiple of x and y"""
+    return x * y // math.gcd(x, y)
+
+
+def lcm(*xs) -> int:
+    """
+    Returns the least common multiple of the arguments.
+    This exists in math in python 3.9, but I don't have that.
+    """
+    return reduce(lcm2, xs, 1)
+
+
+foldr = reduce
 
 
 def clear_screen() -> None:

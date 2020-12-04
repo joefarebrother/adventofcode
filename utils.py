@@ -4,7 +4,7 @@ import math
 import os
 import re
 from attrdict import AttrDict
-from typing import List, Tuple, Callable
+from typing import List, Tuple, Callable, Iterable
 
 block_char = '█'
 
@@ -102,7 +102,7 @@ class Rectangle:
         return hash((self.minx, self.maxx, self.miny, self.maxy))
 
 
-def bounding_box(points) -> Rectangle:
+def bounding_box(points: Iterable) -> Rectangle:
     """
     Computes the bounding box of the given points. Returns None when given an empty list.
     """

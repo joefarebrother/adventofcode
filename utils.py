@@ -2,6 +2,8 @@ from collections import deque, defaultdict
 from heapq import heappush, heappop
 import math
 import os
+import re
+from attrdict import AttrDict
 
 block_char = '█'
 
@@ -429,10 +431,22 @@ def ints(xs):
     return mapl(int, xs)
 
 
+def mint(x, default=None):
+    """Maybe int - casts to int and returns default on failure"""
+    try:
+        return int(x)
+    except ValueError:
+        return default
+
+
+def ints_in(x: str, positive=True):
+    """Finds all integers in the string x"""
+    ex = r'\d+' if positive else r'-?\d+'
+    return ints(re.findall(ex, x))
+
+
 def neighbours(p):
-    """
-    When p is a complex number with integer components, returns the four orthagonal neighbours of p.
-    """
+    """When p is a complex number with integer components, returns the four orthagonal neighbours of p."""
     return [p+1j**dir for dir in range(4)]
 
 
@@ -441,25 +455,7 @@ def ident(x):
     return x
 
 
-def DFS(start, adjfun, key=ident):
-    """
-    Performs a depth-first search.
-    Every node reachable from start will be visited by adjfun.
-
-    Arguments:
-    - start: the root of the search
-    - adjfun: the function called to determine the adjacent nodes.
-        Sould return an iterable or None.
-    - key: The key function, used to determine whether two nodes should be treated as equal.
-
-    Returns:
-    - (True, d) if end was found and was distance d from the start.
-    - (False. d) if end was not found, and d is the maximum distance from the start to any node.
-
-    Variables accessible during calls to each user-provided function:
-    - DFS.dist: The distance to the node under consideration.
-    """
-
+# TODO: Refactor these graph search functions to a common class
 
 def BFS(start, adjfun, end=None, key=ident):
     """
@@ -615,14 +611,25 @@ def readlines(filename):
     return mapl(lambda l: l[:-1], open(filename))
 
 
-def submit(answer, part=1, day=None, year=2020):
+def irange(*args):
+    """Inclusive range"""
+    args = list(args)
+    if len(args) == 1:
+        args[0] += 1
+    else:
+        args[1] += 1
+    return range(*args)
+
+
+def submit(answer, part=1, day=None, year=2020, confirm=True):
     """
-    Submits the answer to the AOC server, then exits. Asks for confirmation first.
+    Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.
     Use with caution, as an incorrect answer will lock you out for a minute.
     """
-    print(f"Submit {answer} to part {part}? (y/n)")
-    if input()[0] != "y":
-        return
+    if confirm:
+        print(f"Submit {answer} to part {part}? (y/n)")
+        if input()[0] != "y":
+            return
 
     cmd = f"./submit {part} {answer}"
     if(day):

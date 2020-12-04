@@ -7,15 +7,15 @@ data = mapl(lambda l: l.split(":"), data)
 
 
 def parse_pol(pol):
-    (rng, char) = pol.split(" ")
-    (lo, hi) = ints(rng.split("-"))
+    (lo, hi) = ints_in(pol)
+    char = pol[-1]
     return (lo, hi, char)
 
 
 def valid(pol, pw):
     (lo, hi, ch) = parse_pol(pol)
     cnt = list(pw).count(ch)
-    return lo <= cnt and cnt <= hi
+    return lo <= cnt <= hi
 
 
 def valid2(pol, pw):

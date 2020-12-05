@@ -29,15 +29,14 @@ def valid(rec):
     if len(rec.keys()) != 8:
         return False
 
-    # pylint: disable=used-before-assignment
     return (num(rec.byr, 1920, 2002) and
             num(rec.iyr, 2010, 2020) and
             num(rec.eyr, 2020, 2030) and
-            ((m := re.fullmatch(r'(\d*)cm', rec.hgt)) and 150 <= int(m[1]) <= 193
-             or (m := re.fullmatch(r'(\d*)in', rec.hgt)) and 59 <= int(m[1]) <= 76) and
-            re.fullmatch(r'#[0-9a-f]{6}', rec.hcl) and
+            (150 <= match(r'(\d*)cm', rec.hgt, onfail=[0])[0] <= 193
+             or 59 <= match(r'(\d*)in', rec.hgt, onfail=[0])[0] <= 76) and
+            match(r'#[0-9a-f]{6}', rec.hcl) and
             rec.ecl in "amb blu brn gry grn hzl oth".split() and
-            re.fullmatch(r'\d{9}', rec.pid))
+            match(r'\d{9}', rec.pid))
 
     # byr (Birth Year) - four digits; at least 1920 and at most 2002.
     # iyr (Issue Year) - four digits; at least 2010 and at most 2020.

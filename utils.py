@@ -522,6 +522,7 @@ def ints_in(x: str, allow_neg=False) -> List[int]:
 def match(regex: str, text: str, exact=True, ints=True, onfail=None):
     """
     Matches the given regex against the given string, and returns the capture groups.
+    If the match succeeds but there were no capture groups, returns True.
     Returns onfail if the match failed.
     exact determines whether the whole string must be matched, and ints determines whether to parse integers from the result.
     """
@@ -530,6 +531,8 @@ def match(regex: str, text: str, exact=True, ints=True, onfail=None):
     if not m:
         return onfail
     grs = list(m.groups())
+    if len(grs) == 0:
+        return True
 
     if ints:
         grs = [mint(x, x) for x in grs]

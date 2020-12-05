@@ -29,7 +29,7 @@ def find_portal(lab):
 portals = {}
 for (p, c) in grid.items():
     if c.isupper():
-        for p2 in [p+1j**dir for dir in range(4)]:
+        for p2 in neighbours(p):
             if p2 in grid:
                 c2 = grid[p2]
                 if c2.isupper():
@@ -55,7 +55,7 @@ def adj1(p):
         return res
 
 
-print(BFS(start, adj1, end))
+print(FGraph(adj1).BFS(start, end))
 
 
 def adj2(p_):
@@ -66,8 +66,9 @@ def adj2(p_):
         if p in portals:
             (np, dl, lab) = portals[p]
             res += [(np, l+dl)]
-            #print(l+dl, d, len(queue), lab)
+            print(l+dl, lab)
         return res
 
 
-print(BFS((start, 0), adj2, (end, 0)))
+print(FGraph(adj2).dist1().astar(
+    (start, 0), (end, 0), h=lambda p_: p_[1]*1000))

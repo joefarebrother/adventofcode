@@ -7,36 +7,38 @@ import re
 from attrdict import AttrDict
 from typing import List, Tuple, Callable, Iterable, Optional
 from geom import Rectangle, bounding_box, convert_pos, neighbours, intersect_irange, _pos_as
+from collections.abc import MutableMapping
 
 block_char = '█'
 
 
-class Grid:
+class Grid(MutableMapping):
     """
     A grid that can be indexed by positions.
 
     Constructor arguments:
     - grid: Determines the initial data.
-        Can be a another Grid, a list (of rows which are lists or strings), or a dict (with keys being either complex or (x,y) tuples)
+        Can be a another Grid, a list (of rows which are lists or strings), or a dict (with keys being positions)
         Data is copies and isn't aliased.
         Can also be a string, which will be treated as a filenane, where the lines will be rows.
     - y_is_down: Whether a higher y index is to be interpreted as down.
         The default is determined by the type of grid: If it's a list/file, it's True, if it's a dict its False, and if its' a Grid it's copied.
-        If it's set to False when its a list, the bottom left corner will be (0,0), rather than the top left.
+        If it's set to False when its a list, the the top-left corner will still be (0,0), so it will be negative for subsequent rows.
         Otherwise, it only matters for printing.
     - wrapx, wrapy: Determines whether to wrap in the given direction, making the grid into a cylinder or torus.
         Grid indicies must be in the range [0, width/height)
         If data is initialised from a dict or another Grid, this should be a positive integer, False, or None. An integer represents an explicit width/height.
         If it's initialised from a list, it should be a boolean or None.
         If it's initialised from a Grid and it's None, the wrapping information of the copied grid is used.
-
+    - keyty: The position type of keys to return by default from iteration. Can be complex or tuple.
     """
 
-    def __init__(self, grid, y_is_down=None, wrapx=None, wrapy=None):
+    def __init__(self, grid, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
         if isinstance(grid, str):
             grid = readlines(grid)
 
         self.bounding_box = None
+        self.keyty = keyty
 
         if isinstance(grid, Grid):
             wrapx = grid.wrapx if wrapx == None else wrapx
@@ -64,7 +66,7 @@ class Grid:
         self.wrapy = wrapy
         self.y_is_down = y_is_down
 
-        self.data = defaultdict(lambda: None)
+        self.data = {}
 
         if isinstance(grid, list):
             if y_is_down == None:
@@ -153,54 +155,35 @@ class Grid:
         self.bounding_box = bounding_box(self.keys(tuple))
 
     def __getitem__(self, key):
-        return self.data[self._convert_pos1(key)]
+        key = self._convert_pos1(key)
+        return self.data[key] if key in self.data else None
 
     def __setitem__(self, key, value):
         key = self._convert_pos1(key)
         self.data[key] = value
-        if value == None:
-            return
         self.bounding_box += key
 
-    def keys(self, type=complex, include_nones=False):
+    def __delitem__(self, key):
+        key = self._convert_pos1(key)
+
+    def keys(self, type=None):
         """
         Iterates over the keys of this grid.
 
         Arguments:
-        - type: The type of keys to return. complex and tuple are supported.
-        - include_nones: Whether to include keys that map to None.
-            These may be spuriously created since it's backed by a defaultdict.
+        - type: The type of positions to return. Default is self.keytype.
         """
+        if not type:
+            type = self.keyty
         for key in self.data:
-            if include_nones or self.data[key] != None:
-                yield _pos_as(key, type)
+            yield _pos_as(key, type)
 
     def __iter__(self):
         return self.keys()
 
     def __contains__(self, key):
         key = self._convert_pos1(key)
-        return self._in_bb(key) and key in self.data
-
-    def _in_bb(self, key):
-        """
-        Checks whetehr the given key is in the bounding box.
-        """
-        if self.bounding_box == None:
-            return False
-        return key in self.bounding_box
-
-    def items(self, type=complex, include_nones=False):
-        """
-        Iterates over the keys and values of this grid.
-
-        Arguments:
-        - type: The type of keys to return. complex and tuple are supported.
-        - include_nones: Whether to include keys that map to None.
-            These may be spuriously created since it's backed by a defaultdict.
-        """
-        for key in self.keys(type, include_nones):
-            yield (key, self[key])
+        return key in self.data
 
     def width(self) -> int:
         """
@@ -208,8 +191,6 @@ class Grid:
         """
         if self.wrapx:
             return self.wrapx
-        if self.bounding_box == None:
-            return 0
         return self.bounding_box.width()
 
     def height(self) -> int:
@@ -218,8 +199,6 @@ class Grid:
         """
         if self.wrapy:
             return self.wrapy
-        if self.bounding_box == None:
-            return 0
         return self.bounding_box.height()
 
     def draw(self, symbols=None, flipx=False, flipy=False) -> None:

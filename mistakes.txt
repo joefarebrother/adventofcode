@@ -16,3 +16,6 @@ Day 4:
 - Putting [:-2] in the wrong place when validating inches
 - Not making my strings with \ in them raw (thanks vscode)
 - Not wrapping my regexes with ^ and $ [edit: or using re.fullmatch]
+
+Day 5:
+- Trying to fiddle around with my submit function cost me a lot more time than just copying it to my browser would

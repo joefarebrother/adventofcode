@@ -6,194 +6,14 @@ import os
 import re
 from attrdict import AttrDict
 from typing import List, Tuple, Callable, Iterable, Optional
+from geom import Rectangle, bounding_box, convert_pos, neighbours, _pos_as
 
 block_char = '█'
 
 
-class Rectangle:
-    """
-    A rectangle.
-
-    Constructed by specifying two opposite corners as either (x,y) tuples or complex numbers. These points are inclusive.
-
-    Supports addition of points and other rectangles.
-    """
-
-    def __init__(self, p0, p1):
-        (x0, y0) = convert_pos(p0)
-        (x1, y1) = convert_pos(p1)
-
-        self.minx, self.maxx = min(x0, x1), max(x0, x1)
-        self.miny, self.maxy = min(y0, y1), max(y0, y1)
-
-    def width(self) -> int:
-        """
-        Returns the width of this rectangle.
-        """
-        return self.maxx-self.minx+1
-
-    def height(self) -> int:
-        """
-        Returns the height of this rectangle.
-        """
-        return self.maxy-self.miny+1
-
-    def xrange(self) -> range:
-        """
-        Returns the range of x-positions this rectangle spans. 
-        Only valid if the coordinates are integers.
-        """
-        return irange(self.minx, self.maxx)
-
-    def yrange(self) -> range:
-        """
-        Returns the range of y-positions this rectangle spans.
-        Only valid if the coordinates are integers.
-        """
-        return irange(self.miny, self.maxy)
-
-    def __contains__(self, other):
-        if is_pos(other):
-            (x, y) = convert_pos(other)
-            return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
-        if isinstance(other, Rectangle):
-            return all(map(lambda pt: pt in self, other.opposite_corners))
-        return NotImplemented
-
-    def corners(self, type=complex) -> list:
-        """
-        Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
-        """
-        minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
-        corners = [(minx, miny), (minx, maxy), (maxx, maxy), (maxx, miny)]
-        if type == tuple:
-            return corners
-        else:
-            return mapl(lambda p: _pos_as(p, type), corners)
-
-    def opposite_corners(self, type=complex) -> list:
-        """
-        Returns the 2 opposite corners with the min/max x/y positions.
-        """
-        minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
-        corners = [(minx, miny), (maxx, maxy)]
-        if type == tuple:
-            return corners
-        else:
-            return mapl(lambda p: _pos_as(p, type), corners)
-
-    def __add__(self, other):
-        if isinstance(other, Rectangle):
-            (p0, p1) = other.opposite_corners()
-            return (self + p0) + p1
-        elif is_pos(other):
-            if other in self:
-                return self
-            return bounding_box(self.opposite_corners(tuple) + [other])
-        else:
-            return NotImplemented
-
-    __radd__ = __add__
-
-    def __repr__(self):
-        return f"Rectangle({tuple(self.opposite_corners(tuple))})"
-
-    def __eq__(self, other):
-        if not isinstance(other, Rectangle):
-            return NotImplemented
-        return (self.minx, self.maxx, self.miny, self.maxy) == (other.minx, other.maxx, other.miny, other.maxy)
-
-    def __hash__(self):
-        return hash((self.minx, self.maxx, self.miny, self.maxy))
-
-    def __and__(self, other):
-        if not isinstance(other, Rectangle):
-            return NotImplemented
-
-        xint = intersect_irange((self.minx, self.maxx),
-                                (other.minx, other.maxx))
-        yint = intersect_irange((self.miny, self.maxy),
-                                (other.miny, other.maxy))
-
-        if xint and yint:
-            (minx, maxx) = xint
-            (miny, maxy) = yint
-            return Rectangle((minx, miny), (maxx, maxy))
-
-
-def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
-    """
-    Computes the intersection of the two given inclusive ranges, represented as tuples.
-    Returns None if the intersection is empty.
-    Actual range objects aren't used because they can't contain floats.
-    """
-    (l1, h1) = r1
-    (l2, h2) = r2
-    upper = min(h1, h2)
-    lower = max(l1, l2)
-    if lower <= upper:
-        return (lower, upper)
-    else:
-        return None
-
-
-def bounding_box(points: Iterable) -> Rectangle:
-    """
-    Computes the bounding box of the given points. Returns None when given an empty list.
-    """
-    points = mapl(convert_pos, points)
-    if len(points) == 0:
-        return None
-
-    xs = [x for (x, y) in points]
-    ys = [y for (x, y) in points]
-
-    minx, maxx = min(xs), max(xs)
-    miny, maxy = min(ys), max(ys)
-
-    return Rectangle((minx, miny), (maxx, maxy))
-
-
-def is_pos(pos) -> bool:
-    """
-    Checks whether pos is a 2D position. Can be a complex number or a tuple.
-    """
-    if isinstance(pos, complex):
-        return True
-    if isinstance(pos, (tuple, list)):
-        return len(pos) == 2
-    return False
-
-
-def convert_pos(pos, to_ints=False) -> tuple:
-    """
-    Converts the given position to the type used internally; (x,y) tuples.
-    Supported position types are complex numbers, and length 2 tuples/lists.
-    """
-    if not is_pos(pos):
-        raise TypeError("Expected a position", type(pos), pos)
-
-    if isinstance(pos, complex):
-        pos = (pos.real, pos.imag)
-    return tuple(map(int, pos)) if to_ints else tuple(pos)
-
-
-def _pos_as(pos, type):
-    """
-    Converts the given position from an (x,y) tuple to the given type. Supported types are complex and tuple.
-    """
-    if type == tuple:
-        return pos
-    elif type == complex:
-        (x, y) = pos
-        return x + y*1j
-    else:
-        raise Exception("Unsupported position type", type)
-
-
 class Grid:
     """
-    A grid that can be indexed with either (x,y) pairs or complex numbers.
+    A grid that can be indexed by positions.
 
     Constructor arguments:
     - grid: Determines the initial data.
@@ -478,12 +298,13 @@ def mod_inv(a: int, m: int) -> int:
 
 
 def lcm(*xs) -> int:
-    def lcm2(x: int, y: int) -> int:
-        return x * y // math.gcd(x, y)
     """
     Returns the least common multiple of the arguments.
     This exists in math in python 3.9, but I don't have that.
     """
+    def lcm2(x: int, y: int) -> int:
+        return x * y // math.gcd(x, y)
+
     return reduce(lcm2, xs, 1)
 
 
@@ -514,7 +335,7 @@ def mint(x, default=None):
 
 
 def ints_in(x: str, allow_neg=False) -> List[int]:
-    """Finds all integers in the string x"""
+    """Finds and parses all integers in the string x"""
     ex = r'-?\d+' if allow_neg else r'\d+'
     return ints(re.findall(ex, x))
 
@@ -540,11 +361,6 @@ def match(regex: str, text: str, exact=True, ints=True, onfail=None):
     return grs
 
 
-def neighbours(p: complex) -> List[complex]:
-    """When p is a complex number with integer components, returns the four orthagonal neighbours of p."""
-    return [p+1j**dir for dir in range(4)]
-
-
 def modify_idx(xs, i: int, v):
     """
     When xs is a list or tuple, return a new list or tuple with the item at index i being changed to v
@@ -554,7 +370,7 @@ def modify_idx(xs, i: int, v):
     elif isinstance(xs, tuple):
         ty = tuple
     else:
-        raise TypeError("Espected list or tuple", type(xs), xs)
+        raise TypeError("Expected list or tuple", type(xs), xs)
 
     new = [x for x in xs]
     new[i] = v

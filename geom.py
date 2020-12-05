@@ -1,4 +1,3 @@
-from utils import irange, mapl
 from typing import Optional, Iterable, List, NewType, Union
 
 Position = NewType('Position', Union[complex, tuple])
@@ -50,14 +49,14 @@ class Rectangle:
         Returns the range of x-positions this rectangle spans. 
         Only valid if the coordinates are integers.
         """
-        return irange(self.minx, self.maxx) if self else range(0)
+        return range(self.minx, self.maxx+1) if self else range(0)
 
     def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
         Only valid if the coordinates are integers.
         """
-        return irange(self.miny, self.maxy) if self else range(0)
+        return range(self.miny, self.maxy+1) if self else range(0)
 
     def __contains__(self, other):
         if is_pos(other):
@@ -165,13 +164,20 @@ def bounding_box(points: Iterable) -> Rectangle:
 
 def is_pos(pos) -> bool:
     """
-    Checks whether pos is a 2D position. Can be a complex number or a tuple.
+    Checks whether pos is a 2D position. Can be a complex number or a 2-tuple.
     """
     if isinstance(pos, complex):
         return True
     if isinstance(pos, (tuple, list)):
         return len(pos) == 2
     return False
+
+
+def is_pos_ty(ty) -> bool:
+    """
+    Checks whether ty is a type that can represent a 2d position., i.e. complex or tuple.
+    """
+    return ty in [complex, tuple]
 
 
 def convert_pos(pos: Position, ints=True) -> tuple:

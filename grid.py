@@ -27,9 +27,12 @@ class Grid(MutableMapping):
     - keyty: The position type of keys to return from iteration. Can be complex or tuple.
     """
 
-    def __init__(self, grid, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
+    def __init__(self, grid=None, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
         if isinstance(grid, str):
             grid = readlines(grid)
+
+        if grid == None:
+            grid = {}
 
         self.bounding_box = None
         self.keyty(keyty)

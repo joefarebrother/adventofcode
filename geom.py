@@ -210,7 +210,7 @@ def neighbours(p: Position) -> List[Position]:
     """
     Returns the 4 orthoganal neighbours of p.
     """
-    if isinstance(p, complex):
+    if isinstance(p, complex) or p == 0:
         return [p+1j**dir for dir in range(4)]
     else:
         (x, y) = p

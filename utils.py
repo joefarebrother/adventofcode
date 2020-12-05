@@ -6,7 +6,7 @@ import os
 import re
 from attrdict import AttrDict
 from typing import List, Tuple, Callable, Iterable, Optional
-from geom import Rectangle, bounding_box, convert_pos, neighbours, _pos_as
+from geom import Rectangle, bounding_box, convert_pos, neighbours, intersect_irange, _pos_as
 
 block_char = '█'
 
@@ -535,7 +535,7 @@ def readlines(filename: str) -> List[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
-    return mapl(lambda l: l[:-1], open(filename))
+    return [l[:-1] for l in open(filename)]
 
 
 def irange(*args) -> range:

@@ -63,7 +63,7 @@ class Rectangle:
         if type == tuple:
             return corners
         else:
-            return mapl(lambda p: _pos_as(p, type), corners)
+            return [_pos_as(p, type) for p in corners]
 
     def opposite_corners(self, type=complex) -> List[Position]:
         """
@@ -74,7 +74,7 @@ class Rectangle:
         if type == tuple:
             return corners
         else:
-            return mapl(lambda p: _pos_as(p, type), corners)
+            return [_pos_as(p, type) for p in corners]
 
     def __add__(self, other):
         if isinstance(other, Rectangle):

@@ -38,7 +38,6 @@ class Grid(MutableMapping):
             wrapx = grid.wrapx if wrapx == None else wrapx
             wrapy = grid.wrapy if wrapy == None else wrapy
             y_is_down = grid.y_is_down if y_is_down == None else y_is_down
-            self.bounding_box = grid.bounding_box
             grid = grid.data
 
         wrapx = wrapx if wrapx != None else False
@@ -63,33 +62,30 @@ class Grid(MutableMapping):
         self.data = {}
 
         if isinstance(grid, list):
-            self.y_is_down = True
-
-            height = len(grid)
-
-            widths = set(map(len, grid))
-            if len(widths) != 1:
-                print(
-                    "WARNING: widths are not uniform. The maximum will be used.")
-            width = max(widths)
-
-            if width > 0 and height > 0:
-                self.bounding_box = Rectangle((0, 0), (width-1, height-1))
+            if self.y_is_down == None:
+                self.y_is_down = True
 
             if wrapy:
                 if type(wrapy) == int:
                     raise Exception(
                         "An explicit height may not be set when initialising from a list")
+                height = len(grid)
                 self.wrapy = height
-                if self.wrapy == 0:
+                if height == 0:
                     raise Exception("Height may not be 0")
 
             if wrapx:
                 if type(wrapx) == int:
                     raise Exception(
                         "An explicit width may not be set when initialising from a list")
+                widths = set(map(len, grid))
+                if len(widths) != 1:
+                    print(
+                        "WARNING: widths are not uniform. The maximum will be used.")
+                width = max(widths)
+
                 self.wrapx = width
-                if self.wrapx == 0:
+                if width == 0:
                     raise Exception("Width may not be 0")
 
             for (y, row) in enumerate(grid):
@@ -122,11 +118,10 @@ class Grid(MutableMapping):
                         "y index must by in range [0,wrapy)", y, wrapy)
                 self.data[x, y] = elt
 
-            if self.bounding_box == None:
-                self._compute_bb()
-
         else:
             raise TypeError("Unsupported grid type", type(grid), grid)
+
+        self._compute_bb()
 
     def _convert_pos1(self, key):
         """
@@ -146,8 +141,9 @@ class Grid(MutableMapping):
         type should be complex or tuple.
         """
         if not is_pos_ty(ty):
-            raise ValueError("Invalid position ty[e", ty)
+            raise ValueError("Invalid position type", ty)
         self._keyty = ty
+        return self
 
     def _compute_bb(self):
         """

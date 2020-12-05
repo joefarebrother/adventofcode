@@ -17,17 +17,17 @@ class Rectangle:
     def __init__(self, *ps: Position, ints=True):
         if len(ps) == 0:
             self.minx, self.mixx, self.miny, self.maxy = None, None, None, None
-
-        if ps[0] == None:
-            # internal optimisation
-            (_, self.minx, self.miny, self.maxx, self.maxy) = ps
         else:
-            ps = [convert_pos(p, ints) for p in ps]
-            xs = [x for (x, y) in ps]
-            ys = [x for (x, y) in ps]
+            if ps[0] == None:
+                # internal optimisation
+                (_, self.minx, self.miny, self.maxx, self.maxy) = ps
+            else:
+                ps = [convert_pos(p, ints) for p in ps]
+                xs = [x for (x, y) in ps]
+                ys = [y for (x, y) in ps]
 
-            self.minx, self.maxx = min(xs), max(xs)
-            self.miny, self.maxy = min(ys), max(ys)
+                self.minx, self.maxx = min(xs), max(xs)
+                self.miny, self.maxy = min(ys), max(ys)
 
     def __bool__(self):
         return self.minx != None

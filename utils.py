@@ -1,6 +1,5 @@
 from functools import reduce
-from collections import deque, defaultdict
-from heapq import heappush, heappop
+from collections import defaultdict
 import math
 import os
 import re
@@ -8,6 +7,7 @@ from attrdict import AttrDict
 from typing import List, Tuple, Callable, Iterable, Optional
 from geom import Rectangle, bounding_box, convert_pos, neighbours, intersect_irange
 from grid import Grid
+from graph import AbGraph, FGraph, DGraph
 
 block_char = '█'
 
@@ -125,113 +125,6 @@ def modify_idx(xs, i: int, v):
 def ident(x):
     """The identity function."""
     return x
-
-
-# TODO: Refactor these graph search functions to a common class
-
-def BFS(start, adjfun, end=None, key=ident):
-    """
-    Performs a breadth-first search.
-
-    Arguments:
-    - start: the root of the search
-    - adjfun: the function called to determine the adjacent nodes.
-        Sould return an iterable or None.
-    - end: The end point of the search.
-        If it's a function, the search ends when it returns True for a node.
-        Otherwise, the search ends when the node is equal to end.
-    - key: The key function, used to determine whether two nodes should be treated as equal.
-
-    Returns:
-    - (True, d) if end was found and was distance d from the start.
-    - (False. d) if end was not found, and d is the maximum distance from the start to any node.
-
-    Variables accessible during calls to each user-provided function:
-    - BFS.dist: The distance to the node under consideration.
-    - BFS.queue: The queue. Should not be mutated.
-    """
-    queue = deque([(start, 0)])
-    visited = {key(start)}
-    d = 0
-    while len(queue) > 0:
-        p, d = queue.popleft()
-
-        if (callable(end) and end(p)) or end == p:
-            BFS.queue = None
-            BFS.dist = 0
-            return (True, d)
-        BFS.queue = queue
-        BFS.dist = d
-        next = adjfun(p)
-        if next != None:
-            for n in next:
-                if key(n) in visited:
-                    continue
-                visited |= {key(n)}
-                queue += [(n, d+1)]
-    BFS.queue = None
-    BFS.dist = 0
-    return (False, d)
-
-
-def astar(start, adjfun, end=None, key=ident, h=lambda _: 0):
-    """
-    Performs the A-star algorithm / dijkstra's algorithm.
-
-    Arguments:
-    - start: the root of the search
-    - adjfun: the function called to determine the adjacent nodes.
-        Sould return an iterable or None.
-        The returned iterable should produce (node, distance) pairs.
-    - end: The end point of the search.
-        If it's a function, the search ends when it returns True for a node.
-        Otherwise, the search ends when the node is equal to end.
-    - key: The key function, used to determine whether two nodes should be treated as equal.
-    - h: The heuristic function.
-
-    Returns:
-    - (True, d) if end was found at distance d from the start.
-    - (False, dists) if end was not found.
-        dists contains the distances from the start of each node seen.
-
-    Variables accessible during calls to each user-provided function:
-    - astar.dist: The distance from the start to the node under consideration.
-    - astar.dists: The best known distatances from the start of the queue to each node seen so far.
-    - astar.pqueue: The priority queue. Should not be mutated.
-    """
-    pqueue = [(h(start), 0, 0, start)]
-    i = 0
-    dists = {key(start): 0}
-    while len(pqueue) > 0:
-        _, d, _, p = heappop(pqueue)
-        if dists[key(p)] < d:
-            continue
-
-        if (callable(end) and end(p)) or end == p:
-            astar.pqueue = None
-            astar.dists = None
-            astar.dist = 0
-            return (True, d)
-
-        astar.pqueue = pqueue
-        astar.dists = dists
-        astar.dist = d
-        next = adjfun(p)
-        if next != None:
-            for n, nd in next:
-                if key(n) in dists and dists[key(n)] <= d+nd:
-                    continue
-                dists[key(n)] = d+nd
-                i += 1
-                heappush(pqueue, (d+nd+h(n), d+nd, i, n))
-
-    astar.pqueue = None
-    astar.dists = None
-    astar.dist = 0
-    return(False, dists)
-
-
-dijkstra = astar
 
 
 def bin_search(lo, hi, f: Callable):

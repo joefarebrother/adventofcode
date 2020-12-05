@@ -519,9 +519,43 @@ def ints_in(x: str, allow_neg=False) -> List[int]:
     return ints(re.findall(ex, x))
 
 
+def match(regex: str, text: str, exact=True, ints=True, onfail=None):
+    """
+    Matches the given regex against the given string, and returns the capture groups.
+    Returns onfail if the match failed.
+    exact determines whether the whole string must be matched, and ints determines whether to parse integers from the result.
+    """
+    f = re.fullmatch if exact else re.search
+    m = f(regex, text)
+    if not m:
+        return onfail
+    grs = list(m.groups())
+
+    if ints:
+        grs = [mint(x, x) for x in grs]
+
+    return grs
+
+
 def neighbours(p: complex) -> List[complex]:
     """When p is a complex number with integer components, returns the four orthagonal neighbours of p."""
     return [p+1j**dir for dir in range(4)]
+
+
+def modify_idx(xs, i: int, v):
+    """
+    When xs is a list or tuple, return a new list or tuple with the item at index i being changed to v
+    """
+    if isinstance(xs, list):
+        ty = list
+    elif isinstance(xs, tuple):
+        ty = tuple
+    else:
+        raise TypeError("Espected list or tuple", type(xs), xs)
+
+    new = [x for x in xs]
+    new[i] = v
+    return ty(new)
 
 
 def ident(x):

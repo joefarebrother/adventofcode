@@ -8,56 +8,76 @@ class Rectangle:
     """
     A rectangle.
 
-    Constructed by specifying two opposite corners. These points are inclusive.
+    Rectangle(*ps) is the bounding box of the given points. These points are inclusive.
+    If ints is True, all coordinates will be converted to ints.
+    Rectangle() represents an empty rectangle.
 
     Supports addition of points and other rectangles.
     """
 
-    def __init__(self, p0: Position, p1: Position):
-        (x0, y0) = convert_pos(p0)
-        (x1, y1) = convert_pos(p1)
+    def __init__(self, *ps: Position, ints=True):
+        if len(ps) == 0:
+            self.minx, self.mixx, self.miny, self.maxy = None, None, None, None
 
-        self.minx, self.maxx = min(x0, x1), max(x0, x1)
-        self.miny, self.maxy = min(y0, y1), max(y0, y1)
+        if ps[0] == None:
+            # internal optimisation
+            (_, self.minx, self.miny, self.maxx, self.maxy) = ps
+        else:
+            ps = [convert_pos(p, ints) for p in ps]
+            xs = [x for (x, y) in ps]
+            ys = [x for (x, y) in ps]
+
+            self.minx, self.maxx = min(xs), max(xs)
+            self.miny, self.maxy = min(ys), max(ys)
+
+    def __bool__(self):
+        return self.minx != None
 
     def width(self) -> int:
         """
         Returns the width of this rectangle.
         """
-        return self.maxx-self.minx+1
+        return self.maxx-self.minx+1 if self else 0
 
     def height(self) -> int:
         """
         Returns the height of this rectangle.
         """
-        return self.maxy-self.miny+1
+        return self.maxy-self.miny+1 if self else 0
 
     def xrange(self) -> range:
         """
         Returns the range of x-positions this rectangle spans. 
         Only valid if the coordinates are integers.
         """
-        return irange(self.minx, self.maxx)
+        return irange(self.minx, self.maxx) if self else range(0)
 
     def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
         Only valid if the coordinates are integers.
         """
-        return irange(self.miny, self.maxy)
+        return irange(self.miny, self.maxy) if self else range(0)
 
     def __contains__(self, other):
         if is_pos(other):
+            if not self:
+                return False
             (x, y) = convert_pos(other)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
-        if isinstance(other, Rectangle):
-            return all(map(lambda pt: pt in self, other.opposite_corners))
         return NotImplemented
+
+    def __le__(self, other):
+        if not isinstance(other, Rectangle):
+            return NotImplemented
+        return all([p in other for p in self.opposite_corners()])
 
     def corners(self, type=complex) -> List[Position]:
         """
         Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
         """
+        if not self:
+            return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
         corners = [(minx, miny), (minx, maxy), (maxx, maxy), (maxx, miny)]
         if type == tuple:
@@ -69,6 +89,8 @@ class Rectangle:
         """
         Returns the 2 opposite corners with the min/max x/y positions.
         """
+        if not self:
+            return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
         corners = [(minx, miny), (maxx, maxy)]
         if type == tuple:
@@ -104,6 +126,9 @@ class Rectangle:
         if not isinstance(other, Rectangle):
             return NotImplemented
 
+        if not (self and other):
+            return Rectangle()
+
         xint = intersect_irange((self.minx, self.maxx),
                                 (other.minx, other.maxx))
         yint = intersect_irange((self.miny, self.maxy),
@@ -112,7 +137,7 @@ class Rectangle:
         if xint and yint:
             (minx, maxx) = xint
             (miny, maxy) = yint
-            return Rectangle((minx, miny), (maxx, maxy))
+            return Rectangle(None, minx, miny, maxx, maxy)
 
 
 def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
@@ -133,19 +158,9 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
 
 def bounding_box(points: Iterable) -> Rectangle:
     """
-    Computes the bounding box of the given points. Returns None when given an empty list.
+    Computes the bounding box of the given points. 
     """
-    points = mapl(convert_pos, points)
-    if len(points) == 0:
-        return None
-
-    xs = [x for (x, y) in points]
-    ys = [y for (x, y) in points]
-
-    minx, maxx = min(xs), max(xs)
-    miny, maxy = min(ys), max(ys)
-
-    return Rectangle((minx, miny), (maxx, maxy))
+    return Rectangle(*points)
 
 
 def is_pos(pos) -> bool:
@@ -159,7 +174,7 @@ def is_pos(pos) -> bool:
     return False
 
 
-def convert_pos(pos: Position, to_ints=True) -> tuple:
+def convert_pos(pos: Position, ints=True) -> tuple:
     """
     Converts the given position to the type used internally; (x,y) tuples.
     Supported position types are complex numbers, and length 2 tuples/lists.
@@ -169,7 +184,7 @@ def convert_pos(pos: Position, to_ints=True) -> tuple:
 
     if isinstance(pos, complex):
         pos = (pos.real, pos.imag)
-    return tuple(map(int, pos)) if to_ints else tuple(pos)
+    return tuple(map(int, pos)) if ints else tuple(pos)
 
 
 def _pos_as(pos: tuple, type):

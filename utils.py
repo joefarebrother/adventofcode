@@ -128,8 +128,7 @@ class Grid:
                         "y index must by in range [0,wrapy)", y, wrapy)
                 self.data[x, y] = elt
 
-            if self.bounding_box != None:
-                # This only happens when we're copying another grid
+            if self.bounding_box == None:
                 self._compute_bb()
 
         else:
@@ -161,10 +160,7 @@ class Grid:
         self.data[key] = value
         if value == None:
             return
-        if self.bounding_box == None:
-            self.bounding_box = Rectangle(key, key)
-        else:
-            self.bounding_box += key
+        self.bounding_box += key
 
     def keys(self, type=complex, include_nones=False):
         """

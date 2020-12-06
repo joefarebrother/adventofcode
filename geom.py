@@ -1,4 +1,5 @@
 from typing import Optional, Iterable, List, NewType, Union
+import cmath
 
 Position = NewType('Position', Union[complex, tuple])
 
@@ -204,3 +205,26 @@ def neighbours(p: Position) -> List[Position]:
     else:
         (x, y) = p
         return [(x+1, y), (x, y+1), (x-1, y), (x, y-1)]
+
+
+def dist(p1: Position, p2: Position) -> float:
+    """
+    Returns the Euclidian distance between the two specified points.
+    """
+    return abs(pos_as(complex, p1), pos_as(complex, p2))
+
+
+def angle(p0: Position, p1=None) -> float:
+    """
+    angle(p0) returns the angle of p as seen from the origin. 
+    angle(p0, p1) returns the angle of p1 as seen from p0.
+    Returns a float in [0,tau); which is anticlockwise in the y-is-up convention and clockwise in the y-is-down convention.
+    """
+    if p1 == None:
+        p = pos_as(complex, p)
+    else:
+        p = pos_as(complex, p1) - pos_as(complex, p0)
+    ang = cmath.phase(p)  # range [-pi, pi]
+    if ang < 0:
+        ang += cmath.tau
+    return ang

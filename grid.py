@@ -1,4 +1,4 @@
-from geom import Rectangle, bounding_box, convert_pos, is_pos_ty, _pos_as
+from geom import Rectangle, bounding_box, is_pos_ty, pos_as
 from collections.abc import MutableMapping
 
 
@@ -112,7 +112,7 @@ class Grid(MutableMapping):
             keys = grid.keys()
             for key in keys:
                 elt = grid[key]
-                (x, y) = convert_pos(key, True)
+                (x, y) = pos_as(tuple, key, True)
                 if wrapx and x not in range(0, wrapx):
                     raise KeyError(
                         "x index must by in range [0,wrapx)", x, wrapx)
@@ -131,7 +131,7 @@ class Grid(MutableMapping):
         Converts the given external key to the type used internally; (x,y) tuples.
         Takes wrapping into account.
         """
-        (x, y) = convert_pos(key, True)
+        (x, y) = pos_as(tuple, key, True)
         if self.wrapx:
             x %= self.wrapx
         if self.wrapy:
@@ -168,7 +168,7 @@ class Grid(MutableMapping):
 
     def __iter__(self):
         for key in self.data:
-            yield _pos_as(key, self._keyty)
+            yield pos_as(self._keyty, key)
 
     def __contains__(self, key):
         key = self._convert_pos1(key)

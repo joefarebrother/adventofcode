@@ -22,7 +22,7 @@ class Rectangle:
                 # internal optimisation
                 (_, self.minx, self.miny, self.maxx, self.maxy) = ps
             else:
-                ps = [convert_pos(p, ints) for p in ps]
+                ps = [pos_as(tuple, p, ints) for p in ps]
                 xs = [x for (x, y) in ps]
                 ys = [y for (x, y) in ps]
 
@@ -46,7 +46,7 @@ class Rectangle:
 
     def xrange(self) -> range:
         """
-        Returns the range of x-positions this rectangle spans. 
+        Returns the range of x-positions this rectangle spans.
         Only valid if the coordinates are integers.
         """
         return range(self.minx, self.maxx+1) if self else range(0)
@@ -62,7 +62,7 @@ class Rectangle:
         if is_pos(other):
             if not self:
                 return False
-            (x, y) = convert_pos(other)
+            (x, y) = pos_as(tuple, other)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
         return NotImplemented
 
@@ -71,7 +71,7 @@ class Rectangle:
             return NotImplemented
         return all([p in other for p in self.opposite_corners()])
 
-    def corners(self, type=complex) -> List[Position]:
+    def corners(self, ty=complex) -> List[Position]:
         """
         Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
         """
@@ -79,12 +79,9 @@ class Rectangle:
             return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
         corners = [(minx, miny), (minx, maxy), (maxx, maxy), (maxx, miny)]
-        if type == tuple:
-            return corners
-        else:
-            return [_pos_as(p, type) for p in corners]
+        return [pos_as(ty, p) for p in corners]
 
-    def opposite_corners(self, type=complex) -> List[Position]:
+    def opposite_corners(self, ty=complex) -> List[Position]:
         """
         Returns the 2 opposite corners with the min/max x/y positions.
         """
@@ -92,10 +89,7 @@ class Rectangle:
             return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
         corners = [(minx, miny), (maxx, maxy)]
-        if type == tuple:
-            return corners
-        else:
-            return [_pos_as(p, type) for p in corners]
+        return [pos_as(ty, p) for p in corners]
 
     def __add__(self, other):
         if isinstance(other, Rectangle):
@@ -157,7 +151,7 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
 
 def bounding_box(points: Iterable) -> Rectangle:
     """
-    Computes the bounding box of the given points. 
+    Computes the bounding box of the given points.
     """
     return Rectangle(*points)
 
@@ -168,7 +162,7 @@ def is_pos(pos) -> bool:
     """
     if isinstance(pos, complex):
         return True
-    if isinstance(pos, (tuple, list)):
+    if isinstance(pos, tuple):
         return len(pos) == 2
     return False
 
@@ -180,37 +174,32 @@ def is_pos_ty(ty) -> bool:
     return ty in [complex, tuple]
 
 
-def convert_pos(pos: Position, ints=True) -> tuple:
+def pos_as(ty, pos: Position, ints=False):
     """
-    Converts the given position to the type used internally; (x,y) tuples.
-    Supported position types are complex numbers, and length 2 tuples/lists.
+    Converts the given position to the given type. Supported types are complex and tuple.
+    ints determines whther to cast complex coords to ints.
     """
-    if not is_pos(pos):
-        raise TypeError("Expected a position", type(pos), pos)
-
-    if isinstance(pos, complex):
-        pos = (pos.real, pos.imag)
-    return tuple(map(int, pos)) if ints else tuple(pos)
-
-
-def _pos_as(pos: tuple, type):
-    """
-    Converts the given position from an (x,y) tuple to the given type. Supported types are complex and tuple.
-    """
-    if type == tuple:
+    if ty == type(pos):
         return pos
-    elif type == complex:
+    elif ty == tuple:
+        if type(pos) != complex:
+            raise TypeError("Expected a position (2-tuple or complex)")
+        tup = (pos.real, pos.imag)
+        return tuple(map(int, tup)) if ints else tup
+    elif ty == complex:
+        if type(pos) != tuple or len(pos) != 2:
+            raise TypeError("Expected a position (2-tuple or complex)")
         (x, y) = pos
         return x + y*1j
     else:
-        raise Exception("Unsupported position type", type)
+        raise ValueError("Unsupported position type", type)
 
 
 def neighbours(p: Position) -> List[Position]:
     """
-    Returns the 4 orthoganal neighbours of p.
+    Returns the 4 orthoganal neighbours of p. We return the same type.
     """
-    if isinstance(p, complex) or p == 0:
+    if type(p) == complex or p == 0:
         return [p+1j**dir for dir in range(4)]
     else:
         (x, y) = p

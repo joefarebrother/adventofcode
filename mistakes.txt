@@ -19,3 +19,7 @@ Day 4:
 
 Day 5:
 - Trying to fiddle around with my submit function cost me a lot more time than just copying it to my browser would
+
+Day 6:
+- Coutning the set of words rather than the set of letters (wrong submission)
+- Traling newline in final group messing up count for part 2 (interpreted as an extra person answering no questions) (ws)

@@ -10,13 +10,11 @@ data = groups("input6")
 #     ans += len(uniq)
 #     print(ans)
 
-print(data)
-
 ans = 0
 for grp in data:
-    all = set(list("qwertyuiopasdfghjklzxcvbnm"))
+    all = set("qwertyuiopasdfghjklzxcvbnm")
     for per in grp.split("\n"):
-        qs = set(filter(lambda c: c.islower(), list(per)))
+        qs = set(per)
         all &= qs
     ans += len(all)
     print(ans, all)

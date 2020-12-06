@@ -53,7 +53,7 @@ def lcm(*xs) -> int:
     return reduce(lcm2, xs, 1)
 
 
-foldr = reduce
+foldl = reduce
 
 
 def clear_screen() -> None:
@@ -174,6 +174,13 @@ def readlines(filename: str) -> List[str]:
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
     return [l[:-1] for l in open(filename)]
+
+
+def groups(filename: str) -> List[str]:
+    """
+    Splits the contets of the given file into groups separated by two newlines. Strips the trailing newline that can occour on the last element.
+    """
+    return [gr.strip() for gr in open(filename).read().split("\n\n")]
 
 
 def irange(*args) -> range:

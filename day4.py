@@ -3,12 +3,12 @@ from utils import *
 from itertools import *
 import re
 
-data = open("input4").read().split("\n\n")
+data = groups("input4")
 
 
-def parse(line):
+def parse(gr):
     res = {}
-    for field in line.split():
+    for field in gr.split():
         kv = field.split(":")
         if len(kv) == 2:
             k, v = kv
@@ -51,8 +51,8 @@ def valid(rec):
 
 
 ans = 0
-for line in data:
-    p = parse(line)
+for gr in data:
+    p = parse(gr)
     if valid(p):
         print("valid: ", p)
         ans += 1

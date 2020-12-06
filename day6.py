@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-data = [grp.strip() for grp in open("input6").read().split("\n\n")]
+data = groups("input6")
 
 # ans = 0
 # for i in data:

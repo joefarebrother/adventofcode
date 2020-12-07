@@ -179,7 +179,8 @@ def readlines(filename: str) -> List[str]:
 
 def groups(filename: str) -> List[str]:
     """
-    Splits the contets of the given file into groups separated by two newlines. Strips the trailing newline that can occour on the last element.
+    Splits the contets of the given file into groups separated by two newlines. 
+    Strips whitespace around each group, such as trailing newlines.
     """
     return [gr.strip() for gr in open(filename).read().split("\n\n")]
 

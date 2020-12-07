@@ -23,3 +23,10 @@ Day 5:
 Day 6:
 - Coutning the set of words rather than the set of letters (wrong submission)
 - Traling newline in final group messing up count for part 2 (interpreted as an extra person answering no questions) (ws)
+
+Day 7:
+- Skipped the start time due to not being able to get enough sleep
+- Something didn't work at first (producing 0) and I don't know what I changed that made it work again (edit: I believe I missed a return statement making a function always return none)
+- Included the shily gold bag in the result (wrong submission - off by one)
+- Thought that I had misunderstood the question and it wanted unqualified colours (e.g. just 'orange') instead of things like 'dim orange' but I in fact had it right the first time (ws)
+- Included my own bag in the total count of bags again, leading to off-by-one (ws)

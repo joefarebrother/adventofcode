@@ -77,7 +77,7 @@ class AbGraph():
         """
         Traverses the graph in a depth first order until end is found or the search space is exhausted.
 
-        Returns (True, d) if end was found d steps from the start, and (False, d) if it wasn't and d is the maximum depth.
+        Returns (endpoint, d) if an endpoint was found d steps from the start, and (None, d) if it wasn't and d is the maximum depth.
         """
         return _consume(self.DFS_gen(start), end)
 

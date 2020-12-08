@@ -170,7 +170,7 @@ def is_pos(pos) -> bool:
 
 def is_pos_ty(ty) -> bool:
     """
-    Checks whether ty is a type that can represent a 2d position., i.e. complex or tuple.
+    Checks whether ty is a type that can represent a 2d position, i.e. complex or tuple.
     """
     return ty in [complex, tuple]
 

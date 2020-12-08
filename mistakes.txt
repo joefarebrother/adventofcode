@@ -30,3 +30,6 @@ Day 7:
 - Included the shily gold bag in the result (wrong submission - off by one)
 - Thought that I had misunderstood the question and it wanted unqualified colours (e.g. just 'orange') instead of things like 'dim orange' but I in fact had it right the first time (ws)
 - Included my own bag in the total count of bags again, leading to off-by-one (ws)
+
+Day 8:
+- None!!!

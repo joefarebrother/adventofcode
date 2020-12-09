@@ -33,3 +33,10 @@ Day 7:
 
 Day 8:
 - None!!!
+
+Day 9:
+- Using the first 25 numbers rather than the previous 25
+- Printing too much debugging info that the right answer got burried in it without me realising (thinking I hadn't produced the answer)
+- Issue in a util function caused incorrect result on example input
+- Thinking that getting 2 results for part 2 was a problem (one of them was the singleton range of the number itself)
+- Using the endpoints of the range rather than its maximum and minimum values (ws)

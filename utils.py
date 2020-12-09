@@ -174,7 +174,7 @@ def readlines(filename: str) -> List[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
-    return [l[:-1] for l in open(filename)]
+    return [l[:-1] if l[-1] == '\n' else l for l in open(filename)]
 
 
 def groups(filename: str) -> List[str]:

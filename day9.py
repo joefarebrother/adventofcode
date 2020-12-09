@@ -11,12 +11,10 @@ for (i, num) in enumerate(nums):
     if i < 25:
         continue
     before = nums[i-25: i]
-    found = True
     for c in itertools.combinations(before, 2):
         if sum(c) == num:
-            found = False
             break
-    if found:
+    else:
         print("p1:", num)
         invalid = num
         break

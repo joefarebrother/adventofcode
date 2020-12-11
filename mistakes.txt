@@ -41,8 +41,12 @@ Day 9:
 - Thinking that getting 2 results for part 2 was a problem (one of them was the singleton range of the number itself)
 - Using the endpoints of the range rather than its maximum and minimum values (ws)
 
-Day 20:
+Day 10:
 - Not adding an extra 3 to the differences (ws)
 - Not including the base outlet of 0 in the differences calculation (ws)
 - Counting up to len(nums) rather than max(nums) (ws)
 - Printing (and submitting) the value for len(nums) rather than the last one (ws)
+
+Day 11:
+- Missing the return statement in my count function (this happened on both parts)
+- += instead of = (ws)

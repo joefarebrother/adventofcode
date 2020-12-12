@@ -23,12 +23,7 @@ def evolve1(grid):
 
 
 def count_n(k, grid):
-    count = 0
-    for dx in irange(-1, 1):
-        for dy in irange(-1, 1):
-            if dx or dy:
-                count += int(grid[k + dx + dy*1j] == "#")
-    return count
+    return [grid[n] for n in neighbours8(k)].count("#")
 
 
 def count_o(grid):
@@ -51,10 +46,8 @@ def evolve2(grid):
 
 def count_seen(k, grid):
     count = 0
-    for dx in irange(-1, 1):
-        for dy in irange(-1, 1):
-            if dx or dy:
-                count += int(can_see_in_dir(grid, k, dx+dy*1j))
+    for dp in neighbours8(0):
+        count += int(can_see_in_dir(grid, k, dp))
     return count
 
 

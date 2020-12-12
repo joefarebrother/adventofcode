@@ -1,5 +1,7 @@
 from typing import Optional, Iterable, List, NewType, Union
 import cmath
+import itertools
+from attrdict import AttrDict
 
 Position = NewType('Position', Union[complex, tuple])
 
@@ -50,14 +52,22 @@ class Rectangle:
         Returns the range of x-positions this rectangle spans.
         Only valid if the coordinates are integers.
         """
-        return range(self.minx, self.maxx+1) if self else range(0)
+        return irange(self.minx, self.maxx) if self else range(0)
 
     def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
         Only valid if the coordinates are integers.
         """
-        return range(self.miny, self.maxy+1) if self else range(0)
+        return irange(self.miny, self.maxy) if self else range(0)
+
+    def points(self, ty=complex):
+        for x in self.xrange():
+            for y in self.yrange():
+                yield pos_as(ty, (x, y))
+
+    def __iter__(self):
+        return self.points()
 
     def __contains__(self, other):
         if is_pos(other):
@@ -134,6 +144,16 @@ class Rectangle:
             return Rectangle(None, minx, miny, maxx, maxy)
 
 
+def irange(*args) -> range:
+    """Inclusive range"""
+    args = list(args)
+    if len(args) == 1:
+        args[0] += 1
+    else:
+        args[1] += 1
+    return range(*args)
+
+
 def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
     """
     Computes the intersection of the two given inclusive ranges, represented as tuples.
@@ -180,6 +200,8 @@ def pos_as(ty, pos: Position, ints=False):
     Converts the given position to the given type. Supported types are complex and tuple.
     ints determines whther to cast complex coords to ints.
     """
+    if pos == 0:
+        pos = 0j
     if ty == type(pos):
         return pos
     elif ty == tuple:
@@ -207,11 +229,29 @@ def neighbours(p: Position) -> List[Position]:
         return [(x+1, y), (x, y+1), (x-1, y), (x, y-1)]
 
 
-def dist(p1: Position, p2: Position) -> float:
+def neighbours8(p: Position) -> List[complex]:
+    """
+    Returns the 8 neighbors of p. 
+    """
+    z = pos_as(complex, p)
+    return [z+d for d in Rectangle(-1-1j, 1+1j) if d != 0j]
+
+
+def dist(p1: Position, p2: Position = 0j) -> float:
     """
     Returns the Euclidian distance between the two specified points.
     """
     return abs(pos_as(complex, p1), pos_as(complex, p2))
+
+
+def man_dist(p1: Position, p2: Position = 0j, toint=True) -> float:
+    """
+    Returns the manhatten distance between the two specified points.
+    Converts to an integer if toint is set.
+    """
+    diff = pos_as(complex, p1) - pos_as(complex, p2)
+    dist = abs(diff.real) + abs(diff.imag)
+    return int(dist) if toint else dist
 
 
 def angle(p0: Position, p1=None) -> float:
@@ -228,3 +268,10 @@ def angle(p0: Position, p1=None) -> float:
     if ang < 0:
         ang += cmath.tau
     return ang
+
+
+Dirs = AttrDict()
+Dirs.up = Dirs.U = Dirs.north = Dirs.N = 1j
+Dirs.right = Dirs.R = Dirs.east = Dirs.E = 1+0j
+Dirs.down = Dirs.D = Dirs.south = Dirs.S = -1j
+Dirs.left = Dirs.L = Dirs.west = Dirs.W = -1+0j

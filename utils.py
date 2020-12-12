@@ -185,16 +185,6 @@ def groups(filename: str) -> List[str]:
     return [gr.strip() for gr in open(filename).read().split("\n\n")]
 
 
-def irange(*args) -> range:
-    """Inclusive range"""
-    args = list(args)
-    if len(args) == 1:
-        args[0] += 1
-    else:
-        args[1] += 1
-    return range(*args)
-
-
 def submit(answer: int, part=1, day=None, year=2020, confirm=True) -> None:
     """
     Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.

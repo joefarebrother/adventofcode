@@ -3,20 +3,22 @@ from utils import *
 
 instrs = readlines("12.in")
 
+# Original version is in the commit history
+
 pos = 0j
-dir = 1+0j
+Dirs.F = Dirs.E
 
 for l in instrs:
     c, n = l[0], int(l[1:])
     if c == "L":
-        dir *= 1j**(n//90)
+        Dirs.F *= 1j**(n//90)
     elif c == "R":
-        dir /= 1j**(n//90)
+        Dirs.F /= 1j**(n//90)
     else:
-        pos += {"N": 1j, "E": 1, "S": -1j, "W": -1, "F": dir}[c] * n
-    print(l, pos, dir)
+        pos += Dirs[c] * n
+    print(l, pos, Dirs.F)
 
-print(int(abs(pos.real) + abs(pos.imag)))
+print(man_dist(pos))
 
 pos = 0j
 way = 10+1j
@@ -30,7 +32,7 @@ for l in instrs:
     elif c == "F":
         pos += way*n
     else:
-        way += {"N": 1j, "E": 1, "S": -1j, "W": -1}[c] * n
+        way += Dirs[c] * n
     print(l, pos, way)
 
-print(int(abs(pos.real) + abs(pos.imag)))
+print(man_dist(pos))

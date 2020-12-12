@@ -54,5 +54,6 @@ Day 11:
 Day 12:
 - Allowing my phone (with my alarm on it) to run out of battery
 - Forgetting to multiply by the magnitude of each instruction (effectively treating it as 1 always) (ws)
-- Adding to my direction instead of rotating it (multiplying by it) (ws)
+- Adding to my direction instead of rotating it (multiplying it) (ws)
+- Forgetting to take absolute value when calculating manhatten distance (ws)
 - Mistyping ** as *

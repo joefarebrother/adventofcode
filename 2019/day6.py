@@ -4,7 +4,7 @@ from collections import defaultdict
 graph_ = defaultdict(list)
 
 for line in open("input6").readlines():
-    [start, end] = line.strip().split(")")
+    start, end = line.strip().split(")")
     graph_[start].append(end)
 
 count = 0
@@ -25,10 +25,6 @@ def path(start, end):
 
 print(sum(counts.values()))  # part 1
 
-minorb = 10000000000000000
-for i in topsorted:
-    minorb = min(minorb, path(i, "YOU") + path(i, "SAN"))
-    if i == "YOU" or i == "SAN":
-        break
+_, minorb = graph.sym().BFS("YOU", "SAN")
 
 print(minorb-2)

@@ -272,6 +272,9 @@ def angle(p0: Position, p1=None) -> float:
 
 Dirs = AttrDict()
 Dirs.up = Dirs.U = Dirs.north = Dirs.N = 1j
-Dirs.right = Dirs.R = Dirs.east = Dirs.E = 1+0j
 Dirs.down = Dirs.D = Dirs.south = Dirs.S = -1j
 Dirs.left = Dirs.L = Dirs.west = Dirs.W = -1+0j
+Dirs.right = Dirs.R = Dirs.east = Dirs.E = 1+0j
+
+Dirs.tL = 1j
+Dirs.tR = -1j

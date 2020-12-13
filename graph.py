@@ -1,6 +1,7 @@
 from heapq import heappush, heappop
 from typing import Callable
-from collections import deque
+from collections import deque, defaultdict
+from itertools import chain
 
 
 class AbGraph():
@@ -48,6 +49,28 @@ class AbGraph():
 
         return D1Gr(self)
 
+    def __or__(self, other):
+        class UGraph(AbGraph):
+            def __init__(self, g1, g2):
+                self._g1 = g1
+                self._g2 = g2
+
+            def adj(self, node):
+                a1 = self._g1.adj(node)
+                a2 = self._g2.adj(node)
+                if isinstance(a1, dict) and isinstance(a2, dict):
+                    res = defaultdict(int)
+                    res.update(a1)
+                    for (k, v) in a2.items():
+                        res[k] = min(res[k], v)
+                    return res
+                else:
+                    return chain(a1, a2)
+
+            def key(self, node):
+                return self._g1.key(node)
+        return UGraph(self, other)
+
     def get_rev_path(self, end, keys_only=False):
         """
         After a graph search has completed, generates the path it saved from end to the start.
@@ -86,6 +109,14 @@ class AbGraph():
         Returns the nodes reachable from start in a topologically sorted order.
         """
         return [n for (n, d) in self.DFS_gen(start)]
+
+    def leaves(self, start):
+        """
+        Computes the leaves (nodes with no adjacent nodes) reachable from the start.
+        """
+        for (node, _) in self.DFS_gen(start):
+            if not self.adj(node):
+                yield node
 
     def BFS_gen(self, start):
         """
@@ -225,3 +256,23 @@ class DGraph(AbGraph):
         if self._key != None:
             return self._key(node)
         return node
+
+    def reverse(self):
+        """
+        Computes the reverse graph (with the arrows pointing in the opposite direction).
+        """
+        res = defaultdict(lambda: defaultdict(dict))
+        for (a, adj) in self._adj.items():
+            if isinstance(adj, dict):
+                for (b, d) in adj.items():
+                    res[b][a] = d
+            else:
+                for b in adj:
+                    res[b][a] = 1
+        return DGraph(res, self.key)
+
+    def sym(self):
+        """
+        Computes the symetric graph (with each arrow being replaced by an arrow in both directions)
+        """
+        return self | self.reverse()

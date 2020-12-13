@@ -10,10 +10,8 @@ Dirs.F = Dirs.E
 
 for l in instrs:
     c, n = l[0], int(l[1:])
-    if c == "L":
-        Dirs.F *= 1j**(n//90)
-    elif c == "R":
-        Dirs.F /= 1j**(n//90)
+    if c in "LR":
+        Dirs.F *= Dirs["t"+c]**(n//90)
     else:
         pos += Dirs[c] * n
     print(l, pos, Dirs.F)
@@ -25,10 +23,8 @@ way = 10+1j
 
 for l in instrs:
     c, n = l[0], int(l[1:])
-    if c == "L":
-        way *= 1j**(n//90)
-    elif c == "R":
-        way /= 1j**(n//90)
+    if c in "LR":
+        way *= Dirs["t"+c]**(n//90)
     elif c == "F":
         pos += way*n
     else:

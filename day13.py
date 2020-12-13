@@ -26,19 +26,7 @@ mods = [(int(x), (-i) % int(x))
 print(mods)
 
 
-def chinese_remainder(mods):
-    """
-    https://rosettacode.org/wiki/Chinese_remainder_theorem#Python
-    """
-    sum = 0
-    prod = math.prod([p for (p, i) in mods])
-    for n_i, a_i in mods:
-        p = prod // n_i
-        sum += a_i * mod_inv(p, n_i) * p
-    return sum % prod
-
-
-res = chinese_remainder(mods)
+res = crt(mods)
 print(res)
 
 print([(res % p, p, i) for (p, i) in mods])

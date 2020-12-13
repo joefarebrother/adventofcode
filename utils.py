@@ -38,9 +38,30 @@ def mod_inv(a: int, m: int) -> int:
     """Returns the inverse of a modulo m"""
     g, x, _ = egcd(a, m)
     if g != 1:
-        raise Exception('modular inverse does not exist')
+        raise Exception('Modular inverse does not exist', a, m)
     else:
         return x % m
+
+
+def crt(mods, vals=None):
+    """
+    Implements the Chinese Remainder Theorem to find the smallest X such that X % n_i = a_i for each applicable i.
+    The n_i must be pairwise coprime.
+    mods is either a dict {n_i:a_i}, a list [(n_i,a_i)], or a list [n_i] along with vals = [a_i]
+
+    Implementation adapted from https://rosettacode.org/wiki/Chinese_remainder_theorem#Python
+    """
+    if vals != None:
+        mods = zip(mods, vals)
+    elif isinstance(mods, dict):
+        mods = mods.items()
+
+    sum = 0
+    prod = math.prod([n for (n, i) in mods])
+    for n_i, a_i in mods:
+        p = prod // n_i
+        sum += a_i * mod_inv(p, n_i) * p
+    return sum % prod
 
 
 def lcm(*xs) -> int:

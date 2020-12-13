@@ -57,3 +57,8 @@ Day 12:
 - Adding to my direction instead of rotating it (multiplying it) (ws)
 - Forgetting to take absolute value when calculating manhatten distance (ws)
 - Mistyping ** as *
+
+Day 13:
+- Not testing on the test input sooner (as well as the test output)
+- When switching to test input, still using the product calculated from the real input
+- Wrong inputs to CRT (didn't negate my modulus) (ws)

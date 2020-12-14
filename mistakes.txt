@@ -62,3 +62,8 @@ Day 13:
 - Not testing on the test input sooner (as well as the test output)
 - When switching to test input, still using the product calculated from the real input
 - Wrong inputs to CRT (didn't negate my modulus) (ws)
+
+Day 14:
+- Spending a long time trying to think of a way to not have to iterate over 2^(number of Xs) without checking that max number of Xs is actually small 
+- Misreading part 2 and using an & instead of an |
+- Not setting the X bits to 0 before |-ing in the floating bits 

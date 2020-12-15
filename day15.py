@@ -3,22 +3,6 @@ from utils import *
 
 nums = ints_in(open("15.in").read())
 
-# while True:
-#     last = nums[-1]
-#     for (i, x) in enumerate(reversed(nums)):
-#         if i == 0:
-#             continue
-#         if x == last:
-#             nums.append(i)
-#             break
-#     else:
-#         nums.append(0)
-#     print(len(nums), nums[-1])
-#     if len(nums) == 15:
-#         break
-
-nums = [0, 3, 6]
-
 timestamps = defaultdict(lambda: t)
 t = 1
 for x in nums:
@@ -34,7 +18,7 @@ while True:
     lastt = timestamps[nxt]
     timestamps[nxt] = t
 
-    if True:
+    if t % 1000000 == 0:
         print(t, len(timestamps), nxt)
 
     if t == 30000000:

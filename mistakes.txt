@@ -67,3 +67,9 @@ Day 14:
 - Spending a long time trying to think of a way to not have to iterate over 2^(number of Xs) without checking that max number of Xs is actually small 
 - Misreading part 2 and using an & instead of an |
 - Not setting the X bits to 0 before |-ing in the floating bits 
+
+Day 15:
+- A few inacuracies in translating from the list based solution to the timestamp table based solution such as an off by one error
+- Running out of memory in vscode, and thinking that the puzzle was to find a better solution than the timestamp table one
+- Running the full expensive computation on test data rather than the real input 
+- Not realising that the entire time the bottleneck was printing so much debugging info (one line per number outputted) and that it could have run efficiently on my normal machine 

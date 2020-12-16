@@ -73,3 +73,9 @@ Day 15:
 - Running out of memory in vscode, and thinking that the puzzle was to find a better solution than the timestamp table one
 - Running the full expensive computation on test data rather than the real input 
 - Not realising that the entire time the bottleneck was printing so much debugging info (one line per number outputted) and that it could have run efficiently on my normal machine 
+
+Day 16:
+- Checking whether a number is valid for any rule rather than for all rules (ws)
+- Submitting the sum rather than the product of the final fields determined (ws)
+- Truncating the first rule (ws)
+- Making a compicated algorithm to search for a legal set of positions since there wasn't an obvious unique one for my truncated input

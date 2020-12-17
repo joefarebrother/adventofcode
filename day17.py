@@ -3,7 +3,7 @@ from utils import *
 
 
 def neighbours_dim(p):
-    for delta in itertools.product(irange(-1, 1), repeat=len(p)):
+    for delta in it.product([-1, 0, 1], repeat=len(p)):
         if any(delta):
             yield tuple(x+dx for (x, dx) in zip(p, delta))
 
@@ -11,16 +11,11 @@ def neighbours_dim(p):
     # If a cube is inactive but exactly 3 of its neighbors are active, the cube becomes active. Otherwise, the cube remains inactive.
 
 
-def bounds(xs, key=None):
-    xs = list(xs)
-    return (min(xs, key=key), max(xs, key=key))
-
-
 def evolve(grid):
     ngrid = set()
     dim = len(next(iter(grid)))
     bs = [bounds(p[i] for p in grid) for i in range(dim)]
-    for p in itertools.product(*(irange(l-1, h+1) for (l, h) in bs)):
+    for p in it.product(*(irange(l-1, h+1) for (l, h) in bs)):
         ns = len(grid & set(neighbours_dim(p)))
         if (p in grid and ns in [2, 3]) or (p not in grid and ns == 3):
             ngrid.add(p)

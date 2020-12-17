@@ -3,6 +3,7 @@ from typing import Optional, Iterable, NewType, Union
 import cmath
 import itertools
 from attrdict import AttrDict
+from misc_utils import irange, bounds
 
 Position = NewType('Position', Union[complex, tuple])
 
@@ -30,8 +31,8 @@ class Rectangle:
                 xs = [x for (x, y) in ps]
                 ys = [y for (x, y) in ps]
 
-                self.minx, self.maxx = min(xs), max(xs)
-                self.miny, self.maxy = min(ys), max(ys)
+                self.minx, self.maxx = bounds(xs)
+                self.miny, self.maxy = bounds(ys)
 
     def __bool__(self):
         return self.minx != None
@@ -145,16 +146,6 @@ class Rectangle:
             return Rectangle(None, minx, miny, maxx, maxy)
 
 
-def irange(*args) -> range:
-    """Inclusive range"""
-    args = list(args)
-    if len(args) == 1:
-        args[0] += 1
-    else:
-        args[1] += 1
-    return range(*args)
-
-
 def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
     """
     Computes the intersection of the two given inclusive ranges, represented as tuples.
@@ -171,7 +162,7 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
         return None
 
 
-def bounding_box(points: Iterable) -> Rectangle:
+def bounding_box(points: Iterable[Position]) -> Rectangle:
     """
     Computes the bounding box of the given points.
     """

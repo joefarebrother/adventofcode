@@ -9,7 +9,7 @@ My inputs aren't included.
 `mistakes.txt` documents the mistakes I make each day.
 
 ## Dependencies
-- Python >= 3.8.5
+- Python >= 3.9
 - `pip install attrdict`
 
 ## Utility scripts

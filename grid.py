@@ -2,7 +2,7 @@ from geom import Rectangle, bounding_box, is_pos_ty, pos_as
 from collections.abc import MutableMapping
 
 
-def readlines(filename: str) -> list:
+def readlines(filename: str) -> list[str]:
     return [l[:-1] for l in open(filename)]
 
 

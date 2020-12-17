@@ -1,4 +1,5 @@
-from typing import Optional, Iterable, List, NewType, Union
+# pylint: disable=unsubscriptable-object # pylint bug in python 3.9
+from typing import Optional, Iterable, NewType, Union
 import cmath
 import itertools
 from attrdict import AttrDict
@@ -82,7 +83,7 @@ class Rectangle:
             return NotImplemented
         return all([p in other for p in self.opposite_corners()])
 
-    def corners(self, ty=complex) -> List[Position]:
+    def corners(self, ty=complex) -> list[Position]:
         """
         Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
         """
@@ -92,7 +93,7 @@ class Rectangle:
         corners = [(minx, miny), (minx, maxy), (maxx, maxy), (maxx, miny)]
         return [pos_as(ty, p) for p in corners]
 
-    def opposite_corners(self, ty=complex) -> List[Position]:
+    def opposite_corners(self, ty=complex) -> list[Position]:
         """
         Returns the 2 opposite corners with the min/max x/y positions.
         """
@@ -218,7 +219,7 @@ def pos_as(ty, pos: Position, ints=False):
         raise ValueError("Unsupported position type", type)
 
 
-def neighbours(p: Position) -> List[Position]:
+def neighbours(p: Position) -> list[Position]:
     """
     Returns the 4 orthoganal neighbours of p. We return the same type.
     """
@@ -229,7 +230,7 @@ def neighbours(p: Position) -> List[Position]:
         return [(x+1, y), (x, y+1), (x-1, y), (x, y-1)]
 
 
-def neighbours8(p: Position) -> List[complex]:
+def neighbours8(p: Position) -> list[complex]:
     """
     Returns the 8 neighbors of p. 
     """

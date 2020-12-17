@@ -1,4 +1,4 @@
-from utils2020 import lcm
+from math import lcm
 
 
 class Moon:

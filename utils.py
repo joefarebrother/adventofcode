@@ -1,11 +1,11 @@
 # pylint: disable=unused-wildcard-import
-from functools import reduce
+from functools import *
 from collections import defaultdict
 import math
 import os
 import re
 from attrdict import AttrDict
-from typing import List, Tuple, Callable, Iterable, Optional
+from typing import Tuple, Callable, Iterable, Optional
 from geom import *
 from grid import Grid
 from graph import AbGraph, FGraph, DGraph
@@ -64,17 +64,6 @@ def crt(mods, vals=None):
     return sum % prod
 
 
-def lcm(*xs) -> int:
-    """
-    Returns the least common multiple of the arguments.
-    This exists in math in python 3.9, but I don't have that.
-    """
-    def lcm2(x: int, y: int) -> int:
-        return x * y // math.gcd(x, y)
-
-    return reduce(lcm2, xs, 1)
-
-
 foldl = reduce
 
 
@@ -88,7 +77,7 @@ def mapl(f: Callable, *xs) -> list:
     return list(map(f, *xs))
 
 
-def ints(xs: list) -> List[int]:
+def ints(xs: list) -> list[int]:
     """Casts each element of xs to an int"""
     return mapl(int, xs)
 
@@ -101,7 +90,7 @@ def mint(x, default=None):
         return default
 
 
-def ints_in(x: str, allow_neg=False) -> List[int]:
+def ints_in(x: str, allow_neg=False) -> list[int]:
     """Finds and parses all integers in the string x"""
     ex = r'-?\d+' if allow_neg else r'\d+'
     return ints(re.findall(ex, x))
@@ -191,14 +180,14 @@ def bin_search(lo, hi, f: Callable):
     return lo
 
 
-def readlines(filename: str) -> List[str]:
+def readlines(filename: str) -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
     return [l[:-1] if l[-1] == '\n' else l for l in open(filename)]
 
 
-def groups(filename: str) -> List[str]:
+def groups(filename: str) -> list[str]:
     """
     Splits the contets of the given file into groups separated by two newlines. 
     Strips whitespace around each group, such as trailing newlines.

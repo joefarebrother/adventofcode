@@ -79,3 +79,7 @@ Day 16:
 - Submitting the sum rather than the product of the final fields determined (ws)
 - Truncating the first rule (ws)
 - Making a compicated algorithm to search for a legal set of positions since there wasn't an obvious unique one for my truncated input
+
+Day 17:
+- Not adding 1 to my bounds for the next grid
+- Missing adding a w in a few places

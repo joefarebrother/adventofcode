@@ -83,3 +83,7 @@ Day 16:
 Day 17:
 - Not adding 1 to my bounds for the next grid
 - Missing adding a w in a few places
+
+Day 18:
+- Evaluating right to left (ws)
+- Writing a parser in the first place

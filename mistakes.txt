@@ -91,3 +91,10 @@ Day 18:
 Day 19:
 - Misinterpreting the 11 rule
 - Trying for a very long time to make the 11 rule work in full generality by inspecting the capture groups after the match
+
+Day 20:
+- My "lookup position in oriented grid" function applied the transformation to the position being looked up instead of to the grid
+- Various fiddling around with the orientations to make them line up right, confusing myself a lot in the process
+- Bug in grid library (delete didn't work)
+- Missing the orientations when building the main image
+- Not searching a big enough boudning box for monsters

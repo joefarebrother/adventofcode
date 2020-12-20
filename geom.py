@@ -210,15 +210,14 @@ def pos_as(ty, pos: Position, ints=False):
         raise ValueError("Unsupported position type", type)
 
 
-def neighbours(p: Position) -> list[Position]:
+def neighbours(p: Position) -> list[complex]:
     """
-    Returns the 4 orthoganal neighbours of p. We return the same type.
+    Returns the 4 orthoganal neighbours of p.
     """
-    if type(p) == complex or p == 0:
-        return [p+1j**dir for dir in range(4)]
-    else:
-        (x, y) = p
-        return [(x+1, y), (x, y+1), (x-1, y), (x, y-1)]
+    if p == 0:
+        p = 0j
+    p = pos_as(complex, p)
+    return [p+1j**dir for dir in range(4)]
 
 
 def neighbours8(p: Position) -> list[complex]:

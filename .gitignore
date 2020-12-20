@@ -5,3 +5,4 @@ example*
 curl_output
 *.in
 *.timestamp
+*.pkl

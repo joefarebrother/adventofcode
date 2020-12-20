@@ -165,6 +165,8 @@ class Grid(MutableMapping):
 
     def __delitem__(self, key):
         key = self._convert_pos1(key)
+        del self.data[key]
+        self._compute_bb()
 
     def __iter__(self):
         for key in self.data:

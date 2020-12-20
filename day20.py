@@ -71,9 +71,18 @@ def get_in_ori(tile, ori, pos):
 
 
 def top_edge(tile, ori):
-    r = [get_in_ori(tile, ori, x) for x in range(10)]
+    r = [get_in_ori(tile, ori, x) for x in range(sz)]
     assert all(x != None for x in r)
     return r
+
+
+def right_edge(tile, ori):
+    # in the convention where y points down, i (aka r) is clockwise rotation. Therefore we want r^-1.
+    return top_edge(tile, ori*r3)
+
+
+def left_edge(tile, ori):
+    return top_edge(tile, ori*r)
 
 
 fst = next(iter(tiles))
@@ -83,8 +92,9 @@ print(fst)
 
 
 def compat(t1, or1, t2, or2, ed):
-    # i drew a diagram to figure this out and still got it wrong like 10 times
-    return top_edge(tiles[t1], or1*D8(ed.conjugate()*1j)) == top_edge(tiles[t2], or2*(D8(-ed.conjugate()*1j)))[::-1]
+    # ed is the direction of tile t2 as seen from t1.
+    # we divide by it (rotate in the opposite direction) to inspect the correct edge
+    return right_edge(tiles[t1], or1*D8(1/ed)) == left_edge(tiles[t2], or2*(D8(1/ed)))[::-1]
 
 
 def fits(tile, pos, ori):
@@ -97,7 +107,7 @@ def fits(tile, pos, ori):
         if pos+d not in jigsaw:
             continue
         (t2, ori2) = jigsaw[pos+d]
-        if not compat(tile, ori, t2, ori2, -d):
+        if not compat(tile, ori, t2, ori2, d):
             return False
     return True
 

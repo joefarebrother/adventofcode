@@ -98,3 +98,8 @@ Day 20:
 - Bug in grid library (delete didn't work)
 - Missing the orientations when building the main image
 - Not searching a big enough boudning box for monsters
+
+Day 21:
+- Not enough logic to rule out ingredients (only considering lines with one allergen) (ws)
+- Not using all allergens to remove possible ingredients from a given line (only allergens appearing on that line) (ws)
+- Misreading problem and sorting by name of ingredient rather than allergen (ws)

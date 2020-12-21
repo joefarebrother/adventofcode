@@ -31,20 +31,8 @@ for (ing, _) in food:
     t += len(imposs & ing)
 print(t)
 
-# copy-paste day 16
-conf = {}
-while True:
-    for al in poss:
-        if len(poss[al]) == 1:
-            ing = list(poss[al])[0]
-            conf[ing] = [al]
-            break
-    else:
-        break
-    for al in poss:
-        if ing in poss[al]:
-            poss[al] -= {ing}
+conf = pick_uniq(poss)
 
 print(poss, conf)
-c = sorted(conf, key=lambda k: conf[k])
+c = [conf[k] for k in sorted(conf)]
 print(",".join(c))

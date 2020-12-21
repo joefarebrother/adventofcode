@@ -11,7 +11,6 @@ class Rule:
         self.range1 = irange(l1, u1)
         self.range2 = irange(l2, u2)
         self.line = line
-        self.fpos = None
         self.pos = set()
 
     def __str__(self):
@@ -19,6 +18,12 @@ class Rule:
 
     def __contains__(self, num):
         return num in self.range1 or num in self.range2
+
+    def __hash__(self):
+        return hash(self.line)
+
+    def __eq__(self, other):
+        return self.line == other.line
 
 
 def ticket(line):
@@ -53,26 +58,16 @@ for r in rules:
         tick[p] in r for tick in valid)}
     print(r, r.pos)
 
-while True:
-    for r in rules:
-        if len(r.pos) == 1:
-            p = list(r.pos)[0]
-            r.fpos = p
-            break
-    else:
-        break
-    for r in rules:
-        if p in r.pos:
-            r.pos.remove(p)
+fpos = pick_uniq({r: r.pos for r in rules})
 
-print([r.fpos for r in rules])
+print([fpos[r] for r in rules])
 
-ans = [my_tick[r.fpos]
+ans = [my_tick[fpos[r]]
        for r in rules if r.name.startswith("depart")]
 print(ans, math.prod(ans))
 
 # sanity check
 for tick in valid:
     for r in rules:
-        if tick[r.fpos] not in r:
+        if tick[fpos[r]] not in r:
             print("Invalid!", r.name, tick)

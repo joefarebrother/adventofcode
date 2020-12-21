@@ -193,6 +193,39 @@ def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):
     return lo
 
 
+def pick_uniq(poss: dict) -> dict:
+    """
+    Given a map {k: S_k} where S_k are sets, returns a map {k: s_k} where s_k is in S_k and the s_k are unique.
+    If no solution or multiple solutions, raises an error.
+    """
+    poss = {k: set(s) for (k, s) in poss.items()}
+    res = {}
+    while True:
+        for k in poss:
+            if len(poss[k]) == 1:
+                v = list(poss[k])[0]
+                res[k] = v
+                for k in poss:
+                    poss[k] -= {v}
+                break
+        else:
+            break
+    for k in poss:
+        if not poss[k] and k not in res:
+            raise Exception("No solution")
+    for k in poss:
+        if poss[k]:
+            raise Exception("Multiple solutions", res, poss)
+    return res
+
+
+def inv_mapping(d: dict) -> dict:
+    """
+    Given a mapping {k:v}, returns the mapping {v:k}
+    """
+    return {v: k for k, v in d.items()}
+
+
 def readlines(filename: str) -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.

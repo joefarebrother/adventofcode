@@ -6,3 +6,4 @@ from grid import Grid
 from graph import AbGraph, FGraph, DGraph
 import re
 import itertools as it
+from dataclasses import dataclass

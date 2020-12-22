@@ -3,11 +3,11 @@ from utils import *
 import pickle
 
 
+@dataclass
 class D8:
     # <xa | x2 = a4 = e, xa = a-1x>
-    def __init__(self, rot, flip=False):
-        self.rot = rot
-        self.flip = flip
+    rot: complex
+    flip: bool
 
     def __mul__(self, other):
         if isinstance(other, D8):
@@ -25,15 +25,6 @@ class D8:
             return self
         else:
             return D8(1/self.rot, False)
-
-    def __eq__(self, other):
-        return (self.rot, self.flip) == (other.rot, other.flip)
-
-    def __hash__(self):
-        return hash((self.rot, self.flip))
-
-    def __repr__(self):
-        return "D8" + repr((self.rot, self.flip))
 
     def __str__(self):
         i = [1j**i for i in range(4)].index(self.rot)

@@ -4,7 +4,10 @@ from utils import *
 raw = [g.split("\n") for g in groups("16.in")]
 
 
+@dataclass(init=False, unsafe_hash=True)
 class Rule:
+    line: str
+
     def __init__(self, line):
         (l1, u1, l2, u2) = ints_in(line)
         self.name = line.split(":")[0]
@@ -18,12 +21,6 @@ class Rule:
 
     def __contains__(self, num):
         return num in self.range1 or num in self.range2
-
-    def __hash__(self):
-        return hash(self.line)
-
-    def __eq__(self, other):
-        return self.line == other.line
 
 
 def ticket(line):

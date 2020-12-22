@@ -21,7 +21,7 @@ class Rectangle:
 
     def __init__(self, *ps: Position, ints=True):
         if len(ps) == 0:
-            self.minx, self.mixx, self.miny, self.maxy = None, None, None, None
+            self.minx, self.maxx, self.miny, self.maxy = None, None, None, None
         else:
             if ps[0] == None:
                 # internal optimisation

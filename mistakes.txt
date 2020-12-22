@@ -103,3 +103,8 @@ Day 21:
 - Not enough logic to rule out ingredients (only considering lines with one allergen) (ws)
 - Not using all allergens to remove possible ingredients from a given line (only allergens appearing on that line) (ws)
 - Misreading problem and sorting by name of ingredient rather than allergen (ws)
+
+Day 22:
+- Off by one error calculating scores (ws)
+- Missing one important sentence in the problem statement (that you only take as many cards as the number you drew)
+- In doing so, it took up all my memory / cpu and made me have to reboot my pc; and also made me think this was an optimization problem (as it worked on test data)

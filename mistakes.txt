@@ -108,3 +108,7 @@ Day 22:
 - Off by one error calculating scores (ws)
 - Missing one important sentence in the problem statement (that you only take as many cards as the number you drew)
 - In doing so, it took up all my memory / cpu and made me have to reboot my pc; and also made me think this was an optimization problem (as it worked on test data)
+
+Day 23:
+- Spending a very long time implementing a way more compicated data structure than I needed (which was still not efficient enough)
+- Off by one error when extending the cup list

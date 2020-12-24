@@ -112,3 +112,9 @@ Day 22:
 Day 23:
 - Spending a very long time implementing a way more compicated data structure than I needed (which was still not efficient enough)
 - Off by one error when extending the cup list
+
+Day 24: 
+- Floating point errors (ws)
+- Misreading thq question (thought that you flip every node visited rather than just the last one) (ws))
+- Implementing a quadratic time algorithm to try to get around floating point errors 
+- Off by one error (ws - submitted 101st step)

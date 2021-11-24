@@ -241,7 +241,7 @@ def groups(filename: str) -> list[str]:
     return [gr.strip() for gr in open(filename).read().split("\n\n")]
 
 
-def submit(answer: int, part=1, day=None, year=2020, confirm=True) -> None:
+def submit(answer: int, part=1, day=None, year=2021, confirm=True) -> None:
     """
     Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.
     Use with caution, as an incorrect answer will lock you out for a minute.

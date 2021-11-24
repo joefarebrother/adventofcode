@@ -5,7 +5,7 @@ import itertools
 from attrdict import AttrDict
 from misc_utils import irange, bounds
 
-Position = NewType('Position', Union[complex, tuple])
+Position = Union[complex, tuple]
 
 
 class Rectangle:
@@ -252,7 +252,7 @@ def angle(p0: Position, p1=None) -> float:
     Returns a float in [0,tau); which is anticlockwise in the y-is-up convention and clockwise in the y-is-down convention.
     """
     if p1 == None:
-        p = pos_as(complex, p)
+        p = pos_as(complex, p1)
     else:
         p = pos_as(complex, p1) - pos_as(complex, p0)
     ang = cmath.phase(p)  # range [-pi, pi]

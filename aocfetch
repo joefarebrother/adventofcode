@@ -12,7 +12,7 @@ if [ -z $AOC_KEY ] ; then
 fi
 
 Y=$2
-if [ -z $Y ] ; then Y=2020 ; fi
+if [ -z $Y ] ; then Y=2021 ; fi
 
 D=$1
 if [ -z $D ]

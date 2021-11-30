@@ -1,6 +1,5 @@
 from collections import defaultdict
 import math
-import os
 import re
 from attrdict import AttrDict
 from typing import Tuple, Callable, Iterable, Optional
@@ -88,7 +87,7 @@ def mapl(f: Callable, *xs) -> list:
     return list(map(f, *xs))
 
 
-def ints(xs: list) -> list[int]:
+def ints(xs: Iterable) -> list[int]:
     """Casts each element of xs to an int"""
     return mapl(int, xs)
 
@@ -224,35 +223,3 @@ def inv_mapping(d: dict) -> dict:
     Given a mapping {k:v}, returns the mapping {v:k}
     """
     return {v: k for k, v in d.items()}
-
-
-def readlines(filename: str) -> list[str]:
-    """
-    Returns the list of lines in the given file. Strips the trailing newline on each.
-    """
-    return [l[:-1] if l[-1] == '\n' else l for l in open(filename)]
-
-
-def groups(filename: str) -> list[str]:
-    """
-    Splits the contets of the given file into groups separated by two newlines. 
-    Strips whitespace around each group, such as trailing newlines.
-    """
-    return [gr.strip() for gr in open(filename).read().split("\n\n")]
-
-
-def submit(answer: int, part=1, day=None, year=2021, confirm=True) -> None:
-    """
-    Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.
-    Use with caution, as an incorrect answer will lock you out for a minute.
-    """
-    if confirm:
-        print(f"Submit {answer} to part {part}? (y/n)")
-        if input()[0] != "y":
-            return
-
-    cmd = f"./submit {part} {answer}"
-    if(day):
-        cmd += f" {str(day)} {str(year)}"
-    os.system(cmd)
-    exit()

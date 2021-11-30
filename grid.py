@@ -1,4 +1,5 @@
 from geom import Rectangle, bounding_box, is_pos_ty, pos_as
+from input_utils import readlines
 from collections.abc import MutableMapping
 
 
@@ -14,7 +15,7 @@ class Grid(MutableMapping):
     - grid: Determines the initial data.
         Can be a another Grid, a list (of rows which are lists or strings), or a dict (with keys being positions)
         Data is copies and isn't aliased.
-        Can also be a string, which will be treated as a filenane, where the lines will be rows.
+        Can also be a string, which will be treated as a filenane, where the lines will be rows; or an integer, which uses the input file for that day.
     - y_is_down: Whether a higher y index is to be interpreted as down.
         The default is determined by the type of grid: If it's a list/file, it's True, if it's a dict its False, and if its' a Grid it's copied.
         If it's set to False when its a list, the the top-left corner will still be (0,0), so it will be negative for subsequent rows.
@@ -28,7 +29,7 @@ class Grid(MutableMapping):
     """
 
     def __init__(self, grid=None, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
-        if isinstance(grid, str):
+        if isinstance(grid, str) or isinstance(grid, int):
             grid = readlines(grid)
 
         if grid == None:

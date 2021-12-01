@@ -1,0 +1,3 @@
+Day 1:
+- Not testing my new input function
+- Off by one: finding sliding windows using range(len(in)-3) misses final window (ws)

@@ -1,6 +1,8 @@
 import os
 from datetime import date
 
+from misc_utils import ints_in
+
 
 def readlines(filename: str) -> list[str]:
     """
@@ -66,7 +68,7 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
         day = date.today().day
 
     filename = filename_for(day)
-    if not os.path.isfile(filename) or open(filename).readall() == "":
+    if not os.path.isfile(filename) or open(filename).read().strip() == "":
         printv(f"Downloading input for {year} day {day} to {filename}")
         os.system(f"bash -c './aocfetch {day} {year} > {filename}'")
     else:
@@ -79,8 +81,13 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
         print(f"Blank lines: {inp.count('')}")
         print(f"Numeric lines: {len([numeric(l) for l in inp])}")
         print(f"CSV Numeric lines: {len([csv_numeric(l) for l in inp])}")
-        if len(set(len(l) for l in inp)) == 1:
+        if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
             print("Looks like a grid")
+
+        ints = ints_in(" ".join(inp))
+        if ints:
+            print(f"Min integer: {min(ints)}")
+            print(f"Max integer: {max(ints)}")
 
         if len(inp) < 10 and all(len(l) < 100 for l in inp):
             for l in inp:

@@ -4,7 +4,7 @@ if [ -z $AOC_KEY ] ; then
 fi
 
 Y=$4
-if [ -z $Y ] ; then Y=2020 ; fi
+if [ -z $Y ] ; then Y=2021 ; fi
 
 D=$3
 if [ -z $D ]

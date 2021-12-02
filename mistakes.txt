@@ -4,4 +4,4 @@ Day 1:
 
 Day 2:
 - += instead of -= (ws)
-- misinterpreting instructions (affecting depth in the up/down commands as well) (ws)
+- misinterpreting instructions (affecting depth in the up/down commands as well as aim) (ws)

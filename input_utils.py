@@ -65,7 +65,7 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
             return False
 
     def csv_numeric(s):
-        all(numeric(x) for x in s.split(","))
+        return all(numeric(x) for x in s.split(","))
 
     now = datetime.now()
 

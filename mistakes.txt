@@ -5,3 +5,6 @@ Day 1:
 Day 2:
 - += instead of -= (ws)
 - misinterpreting instructions (affecting depth in the up/down commands as well as aim) (ws)
+
+Day 3:
+- Calculating the most common thing twice instead of most and least common (ws)

@@ -58,6 +58,8 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
             print(s)
 
     def numeric(s):
+        if s[0] == "0" and len(s) > 1:
+            return False
         try:
             int(s)
             return True
@@ -97,16 +99,16 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
         if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
             print("Looks like a grid")
 
-        ints = ints_in(" ".join(inp))
-        if ints:
-            print(f"Min integer: {min(ints)}")
-            print(f"Max integer: {max(ints)}")
+        nums = ints_in(" ".join(inp))
+        if nums:
+            print(f"Min integer: {min(nums)}")
+            print(f"Max integer: {max(nums)}")
 
         if len(inp) < 10 and all(len(l) < 100 for l in inp):
             for l in inp:
                 print(l)
 
     if all(numeric(l) for l in inp):
-        return ints(inp)
+        return [int(l) for l in inp]
 
     return inp

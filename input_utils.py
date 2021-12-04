@@ -58,7 +58,7 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
             print(s)
 
     def numeric(s):
-        if s[0] == "0" and len(s) > 1:
+        if len(s) > 1 and s[0] == "0":
             return False
         try:
             int(s)

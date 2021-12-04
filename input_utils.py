@@ -17,7 +17,7 @@ def groups(filename: str) -> list[str]:
     Splits the contets of the given file into groups separated by two newlines. 
     Strips whitespace around each group, such as trailing newlines.
     """
-    return [gr.strip() for gr in open(filename).read().split("\n\n")]
+    return [gr.strip() for gr in open(filename_for(filename)).read().split("\n\n")]
 
 
 def submit(answer: int, part=1, day=None, year=2021, confirm=True) -> None:

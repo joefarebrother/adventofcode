@@ -10,6 +10,6 @@ Day 3:
 - Calculating the most common thing twice instead of most and least common (ws)
 
 Day 4: 
-- Getting no sleeo
+- Getting no sleep
 - Spending a long time fiddling about with parsing the input (including thinking the boards were commna seoarated rather than space separated)
-- == insstead of =
+- == instead of =

@@ -16,6 +16,8 @@ class Grid(MutableMapping):
         Can be a another Grid, a list (of rows which are lists or strings), or a dict (with keys being positions)
         Data is copies and isn't aliased.
         Can also be a string, which will be treated as a filenane, where the lines will be rows; or an integer, which uses the input file for that day.
+    - default: Default value for empty cells. 
+        Should be immutable else it may lead to bugs as the same reference would be used for each. 
     - y_is_down: Whether a higher y index is to be interpreted as down.
         The default is determined by the type of grid: If it's a list/file, it's True, if it's a dict its False, and if its' a Grid it's copied.
         If it's set to False when its a list, the the top-left corner will still be (0,0), so it will be negative for subsequent rows.
@@ -28,7 +30,7 @@ class Grid(MutableMapping):
     - keyty: The position type of keys to return from iteration. Can be complex or tuple.
     """
 
-    def __init__(self, grid=None, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
+    def __init__(self, grid=None, default=None, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
         if isinstance(grid, str) or isinstance(grid, int):
             grid = readlines(grid)
 
@@ -64,6 +66,7 @@ class Grid(MutableMapping):
         self.y_is_down = y_is_down
 
         self.data = {}
+        self.default = default
 
         if isinstance(grid, list):
             if self.y_is_down == None:
@@ -157,7 +160,7 @@ class Grid(MutableMapping):
 
     def __getitem__(self, key):
         key = self._convert_pos1(key)
-        return self.data[key] if key in self.data else None
+        return self.data[key] if key in self.data else self.default
 
     def __setitem__(self, key, value):
         key = self._convert_pos1(key)

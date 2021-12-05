@@ -1,4 +1,3 @@
-from re import L
 from utils import *
 
 inp = [ints_in(l) for l in readlines(5)]
@@ -13,17 +12,7 @@ for ((x1, y1, x2, y2), l) in zip(inp, inp):
     else:
         diags.append(l)
 
-grid = Grid()
-
-print(len(straight_lines), len(diags))
-
-
-def inc(x, y=None):
-    if y == None:
-        pos = x
-    else:
-        pos = x, y
-    grid[pos] = grid[pos] + 1 if grid[pos] else 1
+grid = Grid(default=0)
 
 
 def count():
@@ -36,7 +25,7 @@ def count():
 
 for r in straight_lines:
     for p in r:
-        inc(p)
+        grid[p] += 1
 
 print("Part 1: ", count())
 
@@ -45,7 +34,7 @@ for (x1, y1, x2, y2) in diags:
     ystep = sign(y2-y1)
     y = y1
     for x in irange(x1, x2, xstep):
-        inc(x, y)
+        grid[x, y] += 1
         y += ystep
 
 print("Part 2: ", count())

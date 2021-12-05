@@ -13,3 +13,10 @@ Day 4:
 - Getting no sleep
 - Spending a long time fiddling about with parsing the input (including thinking the boards were commna seoarated rather than space separated)
 - == instead of =
+
+Day 5:
+- Wasting time trying to write a regex for the input rather than using my ints_in utility
+- `x[0] == x[3] or x[1] == x[2]` doesn't select the rectangles lol 
+- Getting the sign wrong for ranges, leading to them being empty
+- Incrementing y before incrementing the grid cell ratehr than after (ws)
+- Re-running incorrect jupyter cells that had modified state (ws part 2, slow down part 1)

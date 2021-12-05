@@ -11,10 +11,11 @@ block_char = '█'
 def irange(*args) -> range:
     """Inclusive range"""
     args = list(args)
+    step = args[2] if len(args) > 2 else 1
     if len(args) == 1:
-        args[0] += 1
+        args[0] += step
     else:
-        args[1] += 1
+        args[1] += step
     return range(*args)
 
 

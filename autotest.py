@@ -178,7 +178,7 @@ def run_examples(part):
     Runs the examples (currently only supports running one).
     Returns (ans, extra_ans, all_passed)
     """
-    if read_string("{workdir}/input1") == "[NONE]":
+    if read_string(f"{workdir}/input1") == "[NONE]":
         return ([], [], True)
 
     print("==== trying sample input (10 second timeout)\n")

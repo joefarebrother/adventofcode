@@ -3,7 +3,7 @@
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
 import urllib.request as r
-from datetime import datetime
+from datetime import date, datetime
 import os
 import sys
 from input_utils import get_day_year, get_input, numeric, readlines
@@ -86,30 +86,6 @@ def get_or_save(url, file):
     return s
 
 
-def submit(part, answer):
-    global submittime
-    url = f"https://adventofcode.com/{year}/day/{day}/answer"
-    print(f"submitting", repr(answer), "to url", repr(url))
-    resp = r.urlopen(r.Request(url, data=bytes(
-        f"level={part}&answer={answer}", "utf8"), headers=headers))
-    submittime = datetime.now()
-    print("time", submittime)
-    print("response:")
-    prnt = False
-    content = ""
-    correct = False
-    for line in resp:
-        line = line.decode()
-        if "<article>" in line:
-            prnt = True
-        if prnt:
-            print(line, end="")
-            content += line
-        if "</article>" in line:
-            prnt = False
-    return resp, content
-
-
 for arg in sys.argv[1:]:
     if "help" in arg or "-h" in arg:
         print(usage)
@@ -120,13 +96,13 @@ day = sys.argv[2] if len(sys.argv) >= 3 else None
 day, year = get_day_year(day, year)
 
 workdir = os.path.normpath(
-    f"{os.path.dirname(sys.argv[0])}/test/{year}/{day}/")
+    f"{os.path.dirname(sys.argv[0])}/test/{year}/{day}/")+"/"
 os.makedirs(workdir, exist_ok=True)
 
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 input_file = f"{day}.in"
-solution_file = f"{day}.py"
+solution_file = f"day{day}.py"
 get_or_save(dayurl + "/input", f"{day}.in")
 
 
@@ -145,71 +121,95 @@ def add_bad(ans):
 
 
 def find_examples(part):
-    if not os.path.isfile(workdir+"input1"):
-        print("Trying to find sample input to save in ", workdir+"input1")
+    inputfile = workdir+"input1"
+    if not os.path.isfile(inputfile):
+        print("Trying to find sample input to save in ", inputfile)
         s = get_or_save(dayurl, f"{workdir}/page{part}.html")
 
         start = s.find("<pre><code>")
         end = s.find("</code></pre>")
-        assert start != -1  # can't find pre block
-        assert end != -1  # can't find end of pre block !!!
+        if start == -1 or end == -1:
+            print("Could not find example (No <pre><code> tags)")
+            writeTo(inputfile, "[NONE]")
+        else:
+            eg = s[start+len("<pre><code>"):end].replace("<em>",
+                                                         "").replace("</em>", "")
+            writeTo(inputfile, eg)
+            print("Assumed input:")
+            print(eg)
+    else:
+        print("Assumed input:")
+        print(read_string(inputfile))
 
-        eg = s[start+len("<pre><code>"):end].replace("<em>",
-                                                     "").replace("</em>", "")
-        writeTo(workdir+"input1", eg)
-        print("assumed input:")
-        print(eg)
     outputfile = workdir+"output1-"+part
     if not os.path.isfile(outputfile):
         print("Trying to find sample output to save in ", outputfile)
-        s = get_or_save(dayurl, f"page{part}.html")
+        s = get_or_save(dayurl, f"{workdir}/page{part}.html")
 
         completed = s.count("Your puzzle answer was")
         if str(completed+1) != part:
             raise Exception(
                 f"the given part ({part}) cannot be done when {completed} are completed")
 
+        if part == "2":
+            s = s[s.find("--- Part Two ---"):]
+
         last = s.rfind("</em></code>")
-        assert last != -1  # can't find sample output
+        if last == -1:
+            print("Could not find example output (no <code><em> tag)")
+            writeTo(outputfile, "[NONE]")
         start = s.rfind("<em>", 0, last)+len("<em>")
         assert start >= len("<em>")  # can't find start of sample output !!!
-        if part == "2" and start <= s.find("--- Part Two ---"):
-            raise Exception("Can't find part 2 sample output")
         sampleout = s[start:last]
         writeTo(outputfile, sampleout)
     else:
         sampleout = read_string(outputfile).strip()
+        if sampleout == "[NONE]":
+            print("No output specified.")
     print("assumed output:", sampleout)
 
 
+def tee(cmd, file):
+    return os.system(f"bash -c '{cmd} | tee {file}; exit ${{PIPESTATUS[0]}}'")
+
+
 def run_examples(part):
+    """
+    Runs the examples (currently only supports running one).
+    Returns (ans, extra_ans, all_passed)
+    """
+    if read_string("{workdir}/input1") == "[NONE]":
+        return ([], [], True)
+
     print("==== trying sample input (10 second timeout)\n")
-    p = os.system(
-        f"timeout 10 python3 {solution_file} {workdir}/input1 | tee {workdir}/tmp")
+    p = tee(
+        f"timeout 10 python3 {solution_file} {workdir}/input1", workdir+"tmp")
     if p:
         print("=== Example did not terminate successfully")
-        return False
+        return ([], [], False)
     answers = read_string(workdir+"tmp").split()
 
     if len(answers) == 0:
         print("=== Example produced no output")
-        return False
+        return ([], [], False)
 
     ans = answers[-1]
-    sampleout = read_string(workdir+"output1-"+part)
+    sampleout = read_string(workdir+"output1-"+part).strip()
+    if sampleout == "[NONE]":
+        return([], [ans], True)
 
     if ans != sampleout:
         print(
             f"=== Example failed: Expected {sampleout}, got {ans}")
-        return False
+        return ([], [ans], False)
 
-    return [ans]
+    return [ans], [], True
 
 
 def run_real():
     print("==== trying real input (no timeout)")
-    p = os.system(
-        f"python3 {solution_file} {input_file} | tee {workdir}/tmpreal")
+    p = tee(
+        f"python3 {solution_file} {input_file}", workdir+"tmpreal")
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
@@ -220,6 +220,40 @@ def run_real():
         return False
     answer = answer[-1]
     return answer
+
+
+submittime = None
+
+
+def submit(part, answer):
+    global submittime
+    url = f"https://adventofcode.com/{year}/day/{day}/answer"
+    print(f"Submitting", repr(answer), "to url", repr(url))
+    if submittime != None:
+        timeout = (datetime.now() - submittime).total_seconds()
+        if timeout < 60:
+            print(f"Waiting {timeout} seconds")
+            os.sleep(timeout+1)
+            print("Done")
+
+    resp = r.urlopen(r.Request(url, data=bytes(
+        f"level={part}&answer={answer}", "utf8"), headers=headers))
+
+    submittime = datetime.now()
+    print("time", submittime)
+    print("response:")
+    prnt = False
+    content = ""
+    for line in resp:
+        line = line.decode()
+        if "<article>" in line:
+            prnt = True
+        if prnt:
+            print(line, end="")
+            content += line
+        if "</article>" in line:
+            prnt = False
+    return resp, content
 
 
 def doPart(part=None):
@@ -233,6 +267,8 @@ def doPart(part=None):
     else:
         part = str(part)
 
+    find_examples(part)
+
     ns = 0
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
@@ -240,16 +276,26 @@ def doPart(part=None):
                 raise Exception("inotifywait did not terminate cleanly")
         ns = os.stat(solution_file).st_mtime_ns
 
-        example_answers = run_examples(part)
+        good_answers, unknown_answers, all_passed = run_examples(part)
+        example_answers = good_answers + unknown_answers
 
-        if example_answers:
+        if all_passed:
+            if not good_answers:
+                print(
+                    "No examples were verified, so the result will not be submitted without confirmation")
+
             answer = run_real()
             if not answer:
                 continue
+
+            print("Verified example answers: ", good_answers)
+            print("Unverified example answers: ", unknown_answers)
+            print("Real answer: ", answer)
+
             # do some checks on answer
             if(len(answer) < 3):
                 print(repr(answer), "looks too small. Not submitting")
-            elif answer in example_answers:
+            elif answer in good_answers + unknown_answers:
                 print(repr(answer),
                       "is the same as the example output. Not submitting")
             elif not numeric(answer, len_limit=False) and numeric(example_answers[0], len_limit=False):
@@ -258,10 +304,12 @@ def doPart(part=None):
             elif answer in bad_answers:
                 print(repr(answer), "previously submitted and failed. Not submitting")
             else:
-                if not bad_answers or input("Do you want to submit", repr(answer), "(y/n)?") == "y":
+                print("")
+                if (good_answers and not bad_answers) or input(f"Do you want to submit {repr(answer)} (y/n)?") == "y":
                     print("Submitting answer:", repr(answer))
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
+                        submittime = None
                         break
                     elif "That's not the right answer" in content:
                         add_bad(answer)

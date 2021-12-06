@@ -5,6 +5,8 @@ from time import sleep
 
 from misc_utils import ints_in
 
+is_ex = len(sys.argv) > 1 and "test" in sys.argv[1]
+
 
 def readlines(filename) -> list[str]:
     """
@@ -44,6 +46,9 @@ def filename_for(f, argv_override=True):
 
 
 def get_day_year(day=None, year=None):
+    """
+    If day or year are none and it's december, set them according to the corrent date and return them.
+    """
     now = datetime.now()
 
     if not (day and year) and now.month != 12:

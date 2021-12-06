@@ -1,78 +1,91 @@
 import os
+import sys
 from datetime import datetime
 from time import sleep
 
 from misc_utils import ints_in
 
 
-def readlines(filename: str) -> list[str]:
+def readlines(filename) -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
-    return [l[:-1] if l[-1] == '\n' else l for l in open(filename_for(filename))]
+    with open(filename_for(filename)) as f:
+        return [l[:-1] if l[-1] == '\n' else l for l in f]
 
 
-def groups(filename: str) -> list[str]:
+def readall(filename) -> str:
+    """
+    Returns the contents of the given file as a string.
+    """
+    with open(filename_for(filename)) as f:
+        return f.read()
+
+
+def groups(filename) -> list[str]:
     """
     Splits the contets of the given file into groups separated by two newlines. 
     Strips whitespace around each group, such as trailing newlines.
     """
-    return [gr.strip() for gr in open(filename_for(filename)).read().split("\n\n")]
+    return [gr.strip() for gr in readall(filename).split("\n\n")]
 
 
-def submit(answer: int, part=1, day=None, year=2021, confirm=True) -> None:
-    """
-    Submits the answer to the AOC server, then exits. Asks for confirmation first if confrm is set.
-    Use with caution, as an incorrect answer will lock you out for a minute.
-    """
-    if confirm:
-        print(f"Submit {answer} to part {part}? (y/n)")
-        if input()[0] != "y":
-            return
-
-    cmd = f"./submit {part} {answer}"
-    if(day):
-        cmd += f" {str(day)} {str(year)}"
-    os.system(cmd)
-    exit()
-
-
-def filename_for(f):
+def filename_for(f, argv_override=True):
     """
     If input is a string, returns it' if it's an integer then returns the filename for its input file.
+    If argv_override is true, sys.argv[1] will override this (e.g. for running on example data).
     """
+    if argv_override and len(sys.argv) > 1:
+        return sys.argv[1]
     if isinstance(f, str):
         return f
     else:
         return f"{f}.in"
 
 
-def get_input(day=None, year=2021, filename=None, verbose=True):
+def get_day_year(day=None, year=None):
+    now = datetime.now()
+
+    if not (day and year) and now.month != 12:
+        raise Exception("Not december so could not determine intended date")
+
+    if day == None:
+        day = now.day
+    if year == None:
+        year = now.year
+
+    return day, year
+
+
+def numeric(s, len_limit=True):
+    if len(s) >= 1 and (len(s) <= 16 or not len_limit) and s[0] == "0":
+        # aoc numbers are pretty much below 2^53 (16 digits) to avoid precision errors with ;anguages like JS that only offer floats.
+        # So anything longer than that should be treated as a string of digits.
+        return False
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+
+def csv_numeric(s):
+    return all(numeric(x) for x in s.split(",")) and "," in s
+
+
+def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=True):
     """
-    Downloads and returns the input, as a list of lines; or a list of ints if every line is an int. 
-    Defaults to today. 
+    Downloads and returns the input, as a list of lines.
     If verbose is true, prints some stats.
+    If convert_ints is true and every line is an numeric, casts them to integers. 
     """
     def printv(s):
         if verbose:
             print(s)
 
-    def numeric(s):
-        if len(s) > 1 and s[0] == "0":
-            return False
-        try:
-            int(s)
-            return True
-        except ValueError:
-            return False
-
-    def csv_numeric(s):
-        return all(numeric(x) for x in s.split(","))
-
     now = datetime.now()
 
-    if day == None:
-        day = now.day
+    day, year = get_day_year(day, year)
 
     waited = False
 
@@ -82,7 +95,7 @@ def get_input(day=None, year=2021, filename=None, verbose=True):
         printv(f"Waiting {diff} seconds")
         sleep(diff)
 
-    filename = filename_for(day)
+    filename = filename_for(day, argv_override=False)
     if not os.path.isfile(filename) or open(filename).read().strip() == "" or waited:
         printv(f"Downloading input for {year} day {day} to {filename}")
         os.system(f"bash -c './aocfetch {day} {year} > {filename}'")

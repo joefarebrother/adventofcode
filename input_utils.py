@@ -2,31 +2,32 @@ import os
 import sys
 from datetime import datetime
 from time import sleep
+import urllib.request as r
 
 from misc_utils import ints_in
 
 is_ex = len(sys.argv) > 1 and "test" in sys.argv[1]
 
 
-def readlines(filename) -> list[str]:
+def readlines(filename, argv_override=True) -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
-    with open(filename_for(filename)) as f:
+    with open(filename_for(filename, argv_override)) as f:
         return [l[:-1] if l[-1] == '\n' else l for l in f]
 
 
-def readall(filename) -> str:
+def readall(filename, argv_override=True) -> str:
     """
     Returns the contents of the given file as a string.
     """
-    with open(filename_for(filename)) as f:
+    with open(filename_for(filename, argv_override)) as f:
         return f.read()
 
 
 def groups(filename) -> list[str]:
     """
-    Splits the contets of the given file into groups separated by two newlines. 
+    Splits the contets of the given file into groups separated by two newlines.
     Strips whitespace around each group, such as trailing newlines.
     """
     return [gr.strip() for gr in readall(filename).split("\n\n")]
@@ -59,7 +60,7 @@ def get_day_year(day=None, year=None):
     if year == None:
         year = now.year
 
-    return day, year
+    return int(day), int(year)
 
 
 def numeric(s, len_limit=True):
@@ -82,7 +83,7 @@ def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=Tru
     """
     Downloads and returns the input, as a list of lines.
     If verbose is true, prints some stats.
-    If convert_ints is true and every line is an numeric, casts them to integers. 
+    If convert_ints is true and every line is an numeric, casts them to integers.
     """
     def printv(s):
         if verbose:
@@ -100,14 +101,24 @@ def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=Tru
         printv(f"Waiting {diff} seconds")
         sleep(diff)
 
-    filename = filename_for(day, argv_override=False)
-    if not os.path.isfile(filename) or open(filename).read().strip() == "" or waited:
+    if not filename:
+        filename = filename_for(day, argv_override=False)
+    if not os.path.isfile(filename) or readall(filename, argv_override=False).strip() == "" or waited:
+        sesh = os.environ["AOC_KEY"]
+        if not sesh:
+            raise Exception("Environment variable AOC_KEY not set")
+
+        headers = {"Cookie": "session="+sesh}
         printv(f"Downloading input for {year} day {day} to {filename}")
-        os.system(f"bash -c './aocfetch {day} {year} > {filename}'")
+        r1 = r.urlopen(r.Request(
+            f"https://adventofcode.com/{year}/day/{day}/input", headers=headers))
+        s = "".join(l.decode() for l in r1)
+        with open(filename, "w") as f:
+            f.write(s)
     else:
         printv(f"Using cached input from {filename}")
 
-    inp = readlines(filename)
+    inp = readlines(filename, argv_override=False)
 
     if verbose:
         print(f"Lines: {len(inp)}")
@@ -117,7 +128,7 @@ def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=Tru
         if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
             print("Looks like a grid")
 
-        nums = ints_in(" ".join(inp))
+        nums = ints_in(" ".join(inp), allow_neg=True)
         if nums:
             print(f"Min integer: {min(nums)}")
             print(f"Max integer: {max(nums)}")
@@ -126,7 +137,7 @@ def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=Tru
             for l in inp:
                 print(l)
 
-    if all(numeric(l) for l in inp):
+    if convert_ints and all(numeric(l) for l in inp):
         return [int(l) for l in inp]
 
     return inp

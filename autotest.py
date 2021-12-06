@@ -6,7 +6,8 @@ import urllib.request as r
 from datetime import date, datetime
 import os
 import sys
-from input_utils import get_day_year, get_input, numeric, readlines
+from input_utils import get_day_year, get_input, numeric
+from time import sleep
 
 usage = """
 Python script for advent of code which downloads the problem description,
@@ -103,8 +104,8 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 input_file = f"{day}.in"
 solution_file = f"day{day}.py"
-get_or_save(dayurl + "/input", f"{day}.in")
-
+real_input = get_input(day, year, input_file)
+print()
 
 wrong_ans_file = workdir + "wrong_ans"
 bad_answers = set()
@@ -158,6 +159,7 @@ def find_examples(part):
         if last == -1:
             print("Could not find example output (no <code><em> tag)")
             writeTo(outputfile, "[NONE]")
+            return
         start = s.rfind("<em>", 0, last)+len("<em>")
         assert start >= len("<em>")  # can't find start of sample output !!!
         sampleout = s[start:last]
@@ -166,7 +168,7 @@ def find_examples(part):
         sampleout = read_string(outputfile).strip()
         if sampleout == "[NONE]":
             print("No output specified.")
-    print("assumed output:", sampleout)
+    print("Assumed output:", sampleout)
 
 
 def tee(cmd, file):
@@ -223,17 +225,18 @@ def run_real():
 
 
 submittime = None
+bad_submittime = None
 
 
 def submit(part, answer):
-    global submittime
+    global submittime, bad_submittime
     url = f"https://adventofcode.com/{year}/day/{day}/answer"
     print(f"Submitting", repr(answer), "to url", repr(url))
-    if submittime != None:
-        timeout = (datetime.now() - submittime).total_seconds()
+    if bad_submittime != None:
+        timeout = (datetime.now() - bad_submittime).total_seconds()
         if timeout < 60:
             print(f"Waiting {timeout} seconds")
-            os.sleep(timeout+1)
+            sleep(61-timeout)
             print("Done")
 
     resp = r.urlopen(r.Request(url, data=bytes(
@@ -257,6 +260,7 @@ def submit(part, answer):
 
 
 def doPart(part=None):
+    global bad_submittime
     if part is None:
         s = get_or_save(dayurl, None)
         completed = s.count("Your puzzle answer was")
@@ -272,9 +276,11 @@ def doPart(part=None):
     ns = 0
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
-            if os.system(f"inotifywait -q {solution_file}"):
+            if os.system(f"inotifywait -q -e modify {solution_file}"):
                 raise Exception("inotifywait did not terminate cleanly")
         ns = os.stat(solution_file).st_mtime_ns
+
+        print()
 
         good_answers, unknown_answers, all_passed = run_examples(part)
         example_answers = good_answers + unknown_answers
@@ -309,10 +315,11 @@ def doPart(part=None):
                     print("Submitting answer:", repr(answer))
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
-                        submittime = None
+                        bad_submittime = None
                         break
                     elif "That's not the right answer" in content:
                         add_bad(answer)
+                        bad_submittime = submittime
                     else:
                         print(
                             "did not recognise success or incorrect, may be timeout or blank input or already completed")

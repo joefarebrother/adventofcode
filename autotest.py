@@ -22,7 +22,7 @@ environment variable $AOC_KEY set to the value of your session cookie
 files used:
 day{n}.py   This program assumes that your solution for the part you are
             currently working on is in this file.
-            Run as `python3 sol.py {input}` where {input} is the name of
+            Run as `python3.9 sol.py {input}` where {input} is the name of
             a file from which sol.py is expected to read the input
             for the day's problem
             
@@ -185,7 +185,7 @@ def run_examples(part):
 
     print("==== trying sample input (10 second timeout)\n")
     p = tee(
-        f"timeout 10 python3 {solution_file} {workdir}/input1", workdir+"tmp")
+        f"timeout 10 python3.9 {solution_file} {workdir}/input1", workdir+"tmp")
     if p:
         print("=== Example did not terminate successfully")
         return ([], [], False)
@@ -211,7 +211,7 @@ def run_examples(part):
 def run_real():
     print("==== trying real input (no timeout)")
     p = tee(
-        f"python3 {solution_file} {input_file}", workdir+"tmpreal")
+        f"python3.9 {solution_file} {input_file}", workdir+"tmpreal")
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")

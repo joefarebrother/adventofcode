@@ -6,7 +6,7 @@ import urllib.request as r
 from datetime import date, datetime
 import os
 import sys
-from input_utils import get_day_year, get_input, numeric
+from input_utils import get_day_year, wait_for_unlock, print_input_stats, numeric
 from time import sleep
 
 usage = """
@@ -92,9 +92,11 @@ for arg in sys.argv[1:]:
         print(usage)
         exit(0)
 
-year = sys.argv[1] if len(sys.argv) >= 2 else None
-day = sys.argv[2] if len(sys.argv) >= 3 else None
+year = sys.argv[1] if len(sys.argv) >= 3 else None
+day = sys.argv[2] if len(sys.argv) >= 3 else (
+    sys.argv[1] if len(sys.argv) >= 2 else None)
 day, year = get_day_year(day, year)
+wait_for_unlock(day, year)
 
 workdir = os.path.normpath(
     f"{os.path.dirname(sys.argv[0])}/test/{year}/{day}/")+"/"
@@ -104,7 +106,8 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 input_file = f"{day}.in"
 solution_file = f"day{day}.py"
-real_input = get_input(day, year, input_file)
+real_input = get_or_save(dayurl + "/input", input_file).splitlines()
+print_input_stats(real_input)
 print()
 
 wrong_ans_file = workdir + "wrong_ans"
@@ -133,8 +136,10 @@ def find_examples(part):
             print("Could not find example (No <pre><code> tags)")
             writeTo(inputfile, "[NONE]")
         else:
-            eg = s[start+len("<pre><code>"):end].replace("<em>",
-                                                         "").replace("</em>", "")
+            eg = s[start+len("<pre><code>"):end]
+            eg = eg.replace("<em>", "").replace("</em>", "")
+            eg = eg.replace("&gt;", ">").replace(
+                "&lt;", "<").replace("&amp;", "&")
             writeTo(inputfile, eg)
             print("Assumed input:")
             print(eg)

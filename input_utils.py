@@ -63,10 +63,19 @@ def get_day_year(day=None, year=None):
     return int(day), int(year)
 
 
-def numeric(s, len_limit=True):
-    if len(s) >= 1 and (len(s) <= 16 or not len_limit) and s[0] == "0":
-        # aoc numbers are pretty much below 2^53 (16 digits) to avoid precision errors with ;anguages like JS that only offer floats.
-        # So anything longer than that should be treated as a string of digits.
+def wait_for_unlock(day, year):
+    now = datetime.now()
+    if (now.day, now.month, now.year) == (day, 12, year) and now.hour < 5:
+        unlock = now.replace(hour=5, minute=0, second=1)
+        diff = (unlock-now).total_seconds()
+        print(f"Waiting {diff} seconds")
+        sleep(diff)
+
+
+def numeric(s, len_limit=False):
+    if len(s) > 1 and (len(s) <= 16 or not len_limit) and s[0] == "0":
+        # aoc numbers are pretty much always below 2^53 (16 digits) to avoid precision errors with ;anguages like JS that only offer floats.
+        # So anything longer than that should be treated as a string of digits for the pirpose of determining whether to auto-cast input.
         return False
     try:
         int(s)
@@ -76,7 +85,7 @@ def numeric(s, len_limit=True):
 
 
 def csv_numeric(s):
-    return all(numeric(x) for x in s.split(",")) and "," in s
+    return "," in s and all(numeric(x) for x in s.split(","))
 
 
 def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=True):
@@ -89,55 +98,42 @@ def get_input(day=None, year=None, filename=None, verbose=True, convert_ints=Tru
         if verbose:
             print(s)
 
-    now = datetime.now()
-
     day, year = get_day_year(day, year)
 
-    waited = False
-
-    if (now.day, now.month, now.year) == (day, 12, year) and now.hour < 5:
-        unlock = now.replace(hour=5, minute=0, second=1)
-        diff = (unlock-now).total_seconds()
-        printv(f"Waiting {diff} seconds")
-        sleep(diff)
+    wait_for_unlock(day, year)
 
     if not filename:
         filename = filename_for(day, argv_override=False)
-    if not os.path.isfile(filename) or readall(filename, argv_override=False).strip() == "" or waited:
-        sesh = os.environ["AOC_KEY"]
-        if not sesh:
-            raise Exception("Environment variable AOC_KEY not set")
-
-        headers = {"Cookie": "session="+sesh}
-        printv(f"Downloading input for {year} day {day} to {filename}")
-        r1 = r.urlopen(r.Request(
-            f"https://adventofcode.com/{year}/day/{day}/input", headers=headers))
-        s = "".join(l.decode() for l in r1)
-        with open(filename, "w") as f:
-            f.write(s)
+    if not os.path.isfile(filename) or readall(filename, argv_override=False).strip() == "":
+        printv(f"Downloading input to {filename}")
+        os.system(f"bash -c './aocfetch > {filename}")
     else:
         printv(f"Using cached input from {filename}")
 
     inp = readlines(filename, argv_override=False)
 
     if verbose:
-        print(f"Lines: {len(inp)}")
-        print(f"Blank lines: {inp.count('')}")
-        print(f"Numeric lines: {sum(numeric(l) for l in inp)}")
-        print(f"CSV Numeric lines: {sum(csv_numeric(l) for l in inp)}")
-        if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
-            print("Looks like a grid")
+        print_input_stats(inp)
 
-        nums = ints_in(" ".join(inp), allow_neg=True)
-        if nums:
-            print(f"Min integer: {min(nums)}")
-            print(f"Max integer: {max(nums)}")
-
-        if len(inp) < 10 and all(len(l) < 100 for l in inp):
-            for l in inp:
-                print(l)
-
-    if convert_ints and all(numeric(l) for l in inp):
+    if convert_ints and all(numeric(l, True) for l in inp):
         return [int(l) for l in inp]
 
     return inp
+
+
+def print_input_stats(inp):
+    print(f"Lines: {len(inp)}")
+    print(f"Blank lines: {inp.count('')}")
+    print(f"Numeric lines: {sum(numeric(l) for l in inp)}")
+    print(f"CSV Numeric lines: {sum(csv_numeric(l) for l in inp)}")
+    if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
+        print("Looks like a grid")
+
+    nums = ints_in(" ".join(inp), allow_neg=True)
+    if nums:
+        print(f"Min integer: {min(nums)}")
+        print(f"Max integer: {max(nums)}")
+
+    if len(inp) < 10 and all(len(l) < 100 for l in inp):
+        for l in inp:
+            print(l)

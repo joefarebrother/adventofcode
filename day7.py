@@ -3,10 +3,6 @@ from utils import *
 inp = ints(readlines(7)[0].split(","))
 
 
-def dist(x, i):
-    return abs(x-i)
-
-
 def tri(n):
     return n*(n+1)//2
 

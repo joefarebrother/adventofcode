@@ -228,10 +228,12 @@ def neighbours8(p: Position) -> list[complex]:
     return [z+d for d in Rectangle(-1-1j, 1+1j) if d != 0j]
 
 
-def dist(p1: Position, p2: Position = 0j) -> float:
+def dist(p1: Union[Position, int], p2: Union[Position, int] = 0j) -> float:
     """
-    Returns the Euclidian distance between the two specified points.
+    Returns the Euclidian distance between the two specified points or ints.
     """
+    if isinstance(p1, int) and (isinstance(p2, int) or p2 == 0j):
+        return int(abs(p1-p2))
     return abs(pos_as(complex, p1), pos_as(complex, p2))
 
 
@@ -269,3 +271,25 @@ Dirs.right = Dirs.R = Dirs.east = Dirs.E = 1+0j
 
 Dirs.tL = 1j
 Dirs.tR = -1j
+
+
+def _flipy(d):
+    def _dirs_flipy():
+        for x in d:
+            d[x] = d[x].conjugate()
+    return _dirs_flipy
+
+
+Dirs.flipy = _flipy(Dirs)
+
+HexDirs = AttrDict()
+HexDirs.up = HexDirs.U = HexDirs.north = HexDirs.N = 2j
+HexDirs.down = HexDirs.D = HexDirs.south = HexDirs.S = -2j
+HexDirs.left = HexDirs.L = HexDirs.west = HexDirs.W = -2+0j
+HexDirs.right = HexDirs.R = HexDirs.east = HexDirs.E = 2+0j
+HexDirs.upleft = HexDirs.UL = HexDirs.northwest = HexDirs.NW = -1+1j
+HexDirs.upright = HexDirs.UR = HexDirs.norteast = HexDirs.NE = 1+1j
+HexDirs.downleft = HexDirs.DL = HexDirs.southwest = HexDirs.SW = -1-1j
+HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = +1+1j
+
+HexDirs.flipy = _flipy(HexDirs)

@@ -16,7 +16,7 @@ then runs day{n}.py (where n is the day) on the sample input whenever day{n}.py 
 day{n}.py gives the sample output. When it does, day{n}.py gets run on the real input
 and if that succeeds, the last printed word gets submitted automatically.
 
-call as `autotest.py {year} {day}` with the
+call as `autotest.py {year} {day}`, `autotest.py {day}`, or `autotest.py` with the
 environment variable $AOC_KEY set to the value of your session cookie
 
 files used:

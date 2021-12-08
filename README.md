@@ -2,7 +2,7 @@
 My solutions to [Advent of Code](https://adventofcode.com).
 At the moment, I'm mostly trying to go fast, and then improve/cleanup the code later.
 
-My solutions can be found in `day(n).py` files or `day(n).ipynb`; and my original versions can be found in the commit history if I've refactored them afterwards.
+My solutions can be found in `day(n).py` files or `day(n).ipynb` in the `2021` folder; and my original versions can be found in the commit history if I've refactored them afterwards.
 
 Previous years are in their own folder.
 My inputs aren't included.

@@ -35,15 +35,18 @@ def groups(filename) -> list[str]:
 
 def filename_for(f, argv_override=True):
     """
-    If input is a string, returns it' if it's an integer then returns the filename for its input file.
-    If argv_override is true, sys.argv[1] will override this (e.g. for running on example data).
+    Gets the filename of the input file specified by f.
+    If f is a string, raturns that relative to the directory the solution is in (i.e. sys.argv[0])
+    If f is an int n, returns {n}.in relative to there
+    If argv_override is true, an sys.argv[1] exists, that is returned instead and f is ignored.
     """
     if argv_override and len(sys.argv) > 1:
         return sys.argv[1]
+    curdir = os.path.dirname(sys.argv[0])
     if isinstance(f, str):
-        return f
+        return os.path.join(curdir, f)
     else:
-        return f"{f}.in"
+        return f"{curdir}/{f}.in"
 
 
 def get_day_year(day=None, year=None):

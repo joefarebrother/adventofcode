@@ -96,16 +96,28 @@ year = sys.argv[1] if len(sys.argv) >= 3 else None
 day = sys.argv[2] if len(sys.argv) >= 3 else (
     sys.argv[1] if len(sys.argv) >= 2 else None)
 day, year = get_day_year(day, year)
-wait_for_unlock(day, year)
 
-workdir = os.path.normpath(
-    f"{os.path.dirname(sys.argv[0])}/test/{year}/{day}/")+"/"
+
+curdir = os.path.dirname(sys.argv[0])
+workdir = os.path.normpath(f"{curdir}/test/{year}/{day}")+"/"
 os.makedirs(workdir, exist_ok=True)
 
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
-input_file = f"{day}.in"
-solution_file = f"day{day}.py"
+input_file = f"{curdir}/{year}/{day}.in"
+solution_file = f"{curdir}/{year}/day{day}.py"
+
+
+def touch(fn):
+    with open(fn, "a") as f:
+        pass
+
+
+touch(input_file)
+touch(solution_file)
+
+wait_for_unlock(day, year)
+
 real_input = get_or_save(dayurl + "/input", input_file).splitlines()
 print_input_stats(real_input)
 print()

@@ -6,6 +6,7 @@ import urllib.request as r
 from datetime import date, datetime
 import os
 import sys
+import re
 from input_utils import get_day_year, wait_for_unlock, print_input_stats, numeric
 from time import sleep
 
@@ -76,7 +77,7 @@ def read_string(file):
 
 
 def get_or_save(url, file):
-    if file is None or not os.path.isfile(file) or read_string(file).trim() == "":
+    if file is None or not os.path.isfile(file) or read_string(file).strip() == "":
         print("requesting url", repr(url))
         r1 = r.urlopen(r.Request(url, headers=headers))
         s = "".join(l.decode() for l in r1)
@@ -85,6 +86,11 @@ def get_or_save(url, file):
     else:
         s = read_string(file)
     return s
+
+
+def touch(fn):
+    with open(fn, "a") as f:
+        pass
 
 
 for arg in sys.argv[1:]:
@@ -106,12 +112,6 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 input_file = f"{curdir}/{year}/{day}.in"
 solution_file = f"{curdir}/{year}/day{day}.py"
-
-
-def touch(fn):
-    with open(fn, "a") as f:
-        pass
-
 
 touch(input_file)
 touch(solution_file)
@@ -136,19 +136,36 @@ def add_bad(ans):
         print(ans, file=f)
 
 
+def tags(tag, html, exact_start=False, exact_end=False, strip=True):
+    # insert stackoverflow post about parsing html with regex here
+    r = f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>(.*?)</{tag}>{'$'*exact_end}"
+    if isinstance(html, str):
+        res = re.findall(r, html)
+    else:
+        res = [c for h in html for c in re.findall(r, h)]
+    return [c.strip() for c in res] if strip else res
+
+
+def remove_tags(tag, html, exact_start=False, exact_end=False):
+    r = f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>(.*?)</{tag}>{'$'*exact_end}"
+    return re.sub(r, "", html)
+
+
 def find_examples(part):
     inputfile = workdir+"input1"
+    pagefile = f"{workdir}/page{part}.html"
+    outputfile = workdir+"output1-"+part
+
     if not os.path.isfile(inputfile):
         print("Trying to find sample input to save in ", inputfile)
-        s = get_or_save(dayurl, f"{workdir}/page{part}.html")
+        s = get_or_save(dayurl, pagefile)
 
-        start = s.find("<pre><code>")
-        end = s.find("</code></pre>")
-        if start == -1 or end == -1:
+        eg = tags("code", tags("pre", s), True, True, False)
+        if not eg:
             print("Could not find example (No <pre><code> tags)")
             writeTo(inputfile, "[NONE]")
         else:
-            eg = s[start+len("<pre><code>"):end]
+            eg = eg[0]
             eg = eg.replace("<em>", "").replace("</em>", "")
             eg = eg.replace("&gt;", ">").replace(
                 "&lt;", "<").replace("&amp;", "&")
@@ -159,10 +176,9 @@ def find_examples(part):
         print("Assumed input:")
         print(read_string(inputfile))
 
-    outputfile = workdir+"output1-"+part
     if not os.path.isfile(outputfile):
         print("Trying to find sample output to save in ", outputfile)
-        s = get_or_save(dayurl, f"{workdir}/page{part}.html")
+        s = get_or_save(dayurl, pagefile)
 
         completed = s.count("Your puzzle answer was")
         if str(completed+1) != part:
@@ -172,14 +188,15 @@ def find_examples(part):
         if part == "2":
             s = s[s.find("--- Part Two ---"):]
 
-        last = s.rfind("</em></code>")
-        if last == -1:
+        # lists may contain other examples, but not the answer to the current example
+        s = remove_tags("li", s)
+
+        o = tags("em", tags("code", s), exact_end=True)
+        if not o:
             print("Could not find example output (no <code><em> tag)")
             writeTo(outputfile, "[NONE]")
             return
-        start = s.rfind("<em>", 0, last)+len("<em>")
-        assert start >= len("<em>")  # can't find start of sample output !!!
-        sampleout = s[start:last]
+        sampleout = o[-1]
         writeTo(outputfile, sampleout)
     else:
         sampleout = read_string(outputfile).strip()
@@ -201,6 +218,7 @@ def run_examples(part):
     inputfile = workdir+"input1"
     outputfile = workdir+"output1-"+part
     tmpfile = workdir+"tmp"
+
     if read_string(inputfile) == "[NONE]":
         return ([], [], True)
 
@@ -268,17 +286,9 @@ def submit(part, answer):
     submittime = datetime.now()
     print("time", submittime)
     print("response:")
-    prnt = False
-    content = ""
-    for line in resp:
-        line = line.decode()
-        if "<article>" in line:
-            prnt = True
-        if prnt:
-            print(line, end="")
-            content += line
-        if "</article>" in line:
-            prnt = False
+    resp = "".join(l.decode() for l in resp)
+    content = tags("article", resp)[0]
+    print(content)
     return resp, content
 
 
@@ -350,5 +360,8 @@ def doPart(part=None):
     return part
 
 
-if doPart() == "1":
-    doPart("2")
+if len(sys.argv) >= 4:
+    doPart(sys.argv[3])
+else:
+    if doPart() == "1":
+        doPart("2")

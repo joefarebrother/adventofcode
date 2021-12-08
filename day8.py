@@ -40,15 +40,13 @@ print("Part 1: ", c)
 
 
 def process(pat, out):
-    for perm in itertools.permutations(set("abcdefg")):
-        mp = {}
-        for i, c in enumerate(perm):
-            mp["abcdefg"[i]] = c
+    for perm in itertools.permutations("abcdefg"):
+        mp = {a: b for a, b in zip(perm, "abcdefg")}
 
         def repl(s):
             return "".join(sorted(mp[c] for c in s))
 
-        if all(repl(p) in segs for p in pat+out):
+        if all(repl(p) in segs for p in pat):
             out = [str(segs.index(repl(o))) for o in out]
             return int("".join(out))
 

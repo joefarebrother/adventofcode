@@ -185,23 +185,27 @@ def run_examples(part):
     Runs the examples (currently only supports running one).
     Returns (ans, extra_ans, all_passed)
     """
-    if read_string(f"{workdir}/input1") == "[NONE]":
+
+    inputfile = workdir+"input1"
+    outputfile = workdir+"output1-"+part
+    tmpfile = workdir+"tmp"
+    if read_string(inputfile) == "[NONE]":
         return ([], [], True)
 
     print("==== trying sample input (10 second timeout)\n")
     p = tee(
-        f"timeout 10 python3.9 {solution_file} {workdir}/input1", workdir+"tmp")
+        f"timeout 10 python3.9 {solution_file} {inputfile}", tmpfile)
     if p:
         print("=== Example did not terminate successfully")
         return ([], [], False)
-    answers = read_string(workdir+"tmp").split()
+    answers = read_string(tmpfile).split()
 
     if len(answers) == 0:
         print("=== Example produced no output")
         return ([], [], False)
 
     ans = answers[-1]
-    sampleout = read_string(workdir+"output1-"+part).strip()
+    sampleout = read_string(outputfile).strip()
     if sampleout == "[NONE]":
         return([], [ans], True)
 
@@ -214,14 +218,16 @@ def run_examples(part):
 
 
 def run_real():
+    tmpfile = workdir+"tmpreal"
+
     print("==== trying real input (no timeout)")
     p = tee(
-        f"python3.9 {solution_file} {input_file}", workdir+"tmpreal")
+        f"python3.9 {solution_file} {input_file}", tmpfile)
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
         return False
-    answer = read_string(workdir+"tmpreal").split()
+    answer = read_string(tmpfile).split()
     if len(answer) < 1:
         print("No output produced")
         return False

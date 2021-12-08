@@ -76,7 +76,7 @@ def read_string(file):
 
 
 def get_or_save(url, file):
-    if file is None or not os.path.isfile(file):
+    if file is None or not os.path.isfile(file) or read_string(file).trim() == "":
         print("requesting url", repr(url))
         r1 = r.urlopen(r.Request(url, headers=headers))
         s = "".join(l.decode() for l in r1)

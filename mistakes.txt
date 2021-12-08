@@ -27,3 +27,10 @@ Day 6:
 Day 7:
 - Changing the wrong instance of `inp` to `range(min(inp), max(inp))`
 - autotest bug: not using python3.9
+
+Day 8
+- Getting no sleep
+- autotest bug: doesn't download input file if it exists but is empty
+- Taking a long time understanding what the question is saying
+- Trying to figure out something clever for part 2 before realising brute force should work
+- Not sorting my permuted patterns before checking they were in segs

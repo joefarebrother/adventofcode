@@ -3,10 +3,6 @@ from input_utils import readlines
 from collections.abc import MutableMapping
 
 
-def readlines(filename: str) -> list[str]:
-    return [l[:-1] for l in open(filename)]
-
-
 class Grid(MutableMapping):
     """
     A grid that can be indexed by positions.

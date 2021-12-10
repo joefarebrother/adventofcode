@@ -37,3 +37,7 @@ Day 8
 
 Day 9:
 - Bug in grid.py: defines redundant version of readlines that was not kept up to date
+
+Day 10:
+- taking a long time to type out the dicts of closing brackets and scores
+- `process(inp)` rather than `map(process, inp)`

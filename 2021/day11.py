@@ -25,7 +25,7 @@ def step(grid):
 
 
 c = 0
-for i in range(100):
+for i in irange(100):
     c += step(grid)
     if i % 10 == 0 or i < 10:
         print(i)

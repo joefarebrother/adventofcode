@@ -202,15 +202,17 @@ class Grid(MutableMapping):
         Arguments:
         - symbols: The mapping of values to characters to use.
             Can be a dict or a list.
-            Defaults to mapping 0 to space and 1 to █.
+            If the grid consists entirely of 0 and 1, defaults to mapping 0 to space and 1 to █.
             Any value not in symbols is converted to a string, and the first character is taken.
             Coordinates not in the grid are rendered as spaces.
         - flipx, flipy: Mirrors the rendering.
             The direction y is to be interpreted as is determined by self.y_is_down, which may then be flipped by flipy.
         """
 
-        if symbols == None:
+        if symbols == None and all(x in [0, 1] for x in self.values()):
             symbols = {0: ' ', 1: '█'}
+        if symbols == None:
+            symbols = {}
 
         if not isinstance(symbols, dict):
             symbols = {i: v for i, v in enumerate(symbols)}

@@ -41,3 +41,7 @@ Day 9:
 Day 10:
 - taking a long time to type out the dicts of closing brackets and scores
 - `process(inp)` rather than `map(process, inp)`
+
+Day 11:
+- using orthoganal neighbours rather than including diagonals
+- flashing at 9 rather than >9

@@ -190,6 +190,7 @@ def find_examples(part):
 
         # lists may contain other examples, but not the answer to the current example
         s = remove_tags("li", s)
+        s = remove_tags("pre", s)
 
         o = tags("em", tags("code", s), exact_end=True)
         if not o:

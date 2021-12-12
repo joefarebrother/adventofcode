@@ -17,14 +17,9 @@ def paths(pt, part, visited=None):
         visited = [pt]
     c = 0
     for b in gr[pt]:
-        if b not in visited or b.isupper() or (part == 2 and b not in ["start", "end"] and lower_uniq(visited)):
+        if b not in visited or b.isupper() or (part == 2 and b not in ["start", "end"] and is_uniq(filter(lambda x: x.islower(), visited))):
             c += paths(b, part, visited+[b])
     return c
-
-
-def lower_uniq(xs):
-    low = list(filter(lambda x: x.islower(), xs))
-    return len(low) == len(set(low))
 
 
 print("Part 1:", paths("start", 1))

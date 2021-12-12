@@ -8,14 +8,19 @@ from typing import Tuple, Callable, Iterable, Optional
 block_char = '█'
 
 
-def irange(*args) -> range:
+def irange(start, stop=None, step=1) -> range:
     """Inclusive range"""
-    args = list(args)
-    if len(args) == 1:
-        args = [1, args[0]]
-    step = args[2] if len(args) > 2 else 1
-    args[1] += step
-    return range(*args)
+    if stop == None:
+        start, stop = 1, start
+    return range(start, stop+step, step)
+
+
+def is_uniq(xs: Iterable) -> bool:
+    """
+    Returns True if xs consits of unique elements
+    """
+    xs = list(xs)
+    return len(set(xs)) == len(xs)
 
 
 def bounds(xs, key=None):

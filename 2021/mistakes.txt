@@ -39,9 +39,14 @@ Day 9:
 - Bug in grid.py: defines redundant version of readlines that was not kept up to date
 
 Day 10:
-- taking a long time to type out the dicts of closing brackets and scores
+- Taking a long time to type out the dicts of closing brackets and scores
 - `process(inp)` rather than `map(process, inp)`
 
 Day 11:
-- using orthoganal neighbours rather than including diagonals
-- flashing at 9 rather than >9
+- Using orthoganal neighbours rather than including diagonals
+- Flashing at 9 rather than >9
+
+Day 12:
+- Worrying about whether i'd need to handle the possiblility of infinite loops
+- Misreading the problem: thinking you can visit any number of small nodes twice rather than just 1
+- Implementing the check wrong: only checking that the path contains no dupes, whereas duplicate big nodes would incorrectly disallow entry to a small node

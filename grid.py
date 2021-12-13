@@ -203,6 +203,7 @@ class Grid(MutableMapping):
         - symbols: The mapping of values to characters to use.
             Can be a dict or a list.
             If the grid consists entirely of 0 and 1, defaults to mapping 0 to space and 1 to █.
+            Similarly if the grid consists entirely of . and #.
             If the grid consists entirely of a single entry, defaults to mapping that to █.
             Any value not in symbols is converted to a string, and the first character is taken.
             Coordinates not in the grid are rendered as spaces.
@@ -211,9 +212,10 @@ class Grid(MutableMapping):
         """
 
         if symbols == None:
-            v = list(self.values())
-            if all(x in [0, 1, "0", "1"] for x in v):
-                symbols = {0: ' ', 1: '█', "0": " ", "1": '█'}
+            v = set(self.values())
+            if len(v) <= 2 and v <= {0, 1, "0", "1", "#", "."}:
+                symbols = {0: ' ', 1: '█', "0": " ",
+                           "1": '█', ".": " ", "#": '█'}
             elif len(v) == 1:
                 symbols = {v[0]: '█'}
             else:

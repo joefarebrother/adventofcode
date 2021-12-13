@@ -13,8 +13,7 @@ folds = [match(r'fold along (.)=(\d+)', f) for f in folds.splitlines()]
 def do_fold(axis, line):
     global grid
     ngrid = Grid()
-    for p in grid:
-        x, y = pos_as(tuple, p)
+    for x, y in grid.keyty(tuple):
         if axis == "x" and x > line:
             x = 2*line-x
         elif axis == "y" and y > line:
@@ -25,9 +24,10 @@ def do_fold(axis, line):
 
 
 do_fold(*folds[0])
-print(len(list(grid)))
+print("Part 1:", len(list(grid)))
 
 for f in folds[1:]:
     do_fold(*f)
 
+print("Part 2:")
 grid.draw(flipy=True)

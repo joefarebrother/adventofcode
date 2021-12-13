@@ -195,6 +195,8 @@ def pos_as(ty, pos: Position, ints=False):
     if pos == 0:
         pos = 0j
     if ty == type(pos):
+        if ints and ty == tuple:
+            return tuple(map(int, pos))
         return pos
     elif ty == tuple:
         if type(pos) != complex:

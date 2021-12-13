@@ -50,3 +50,7 @@ Day 12:
 - Worrying about whether i'd need to handle the possiblility of infinite loops
 - Misreading the problem: thinking you can visit any number of small nodes twice rather than just 1
 - Implementing the check wrong: only checking that the path contains no dupes, whereas duplicate big nodes would incorrectly disallow entry to a small node
+
+Day 13:
+- Bugs in utils: grid keys / bounding boxes being stored as floats leading to grid.draw breaking
+- line-x rather than 2*line-x

@@ -1,4 +1,4 @@
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, deque
 import math
 import re
 from attrdict import AttrDict
@@ -29,6 +29,22 @@ def bounds(xs, key=None):
     """
     xs = list(xs)
     return (min(xs, key=key), max(xs, key=key))
+
+
+def windows(xs: Iterable, n: int) -> Iterable:
+    """
+    Yields the sliding windows of size n from xs
+    e.g. windows("ABCD",2) = "AB","BC","CD
+    """
+    q = deque()
+    xs = iter(xs)
+    for _ in range(n):
+        q.append(next(xs))
+    yield tuple(q)
+    for x in xs:
+        q.append(x)
+        q.popleft()
+        yield tuple(q)
 
 
 def sign(x) -> int:

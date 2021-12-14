@@ -2,13 +2,11 @@ from utils import *
 
 inp = ints(readlines(6)[0].split(","))
 
-amts = defaultdict(int)
-for i in inp:
-    amts[i] += 1
+amts = Counter(inp)
 
 
 def step(amts):
-    new = defaultdict(int)
+    new = Counter()
     for i in amts:
         if i:
             new[i-1] = amts[i]
@@ -17,9 +15,9 @@ def step(amts):
     return new
 
 
-for i in range(256):
+for i in irange(256):
     amts = step(amts)
-    if i == 79:
+    if i == 80:
         print("Part 1: ", sum(amts.values()))
-    if i == 255:
+    if i == 256:
         print("Part 2: ", sum(amts.values()))

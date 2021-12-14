@@ -3,33 +3,27 @@ from utils import *
 inp = readlines(14)
 
 pol = inp[0]
-rules = [l.split(" -> ") for l in inp[2:]]
-rules = {r: c for (r, c) in rules}
+rules = defaultdict(str, [l.split(" -> ") for l in inp[2:]])
 
 # original part 1 solution is in the commit history
 
 
 @cache
-def count(char, poly, steps):
+def count(poly, steps):
     if steps == 0:
-        return poly.count(char)
-    tot = 0
-    for a, b in zip(poly, poly[1:]):
-        ab = a+b
-        if ab in rules:
-            acb = a+rules[ab]+b
-        else:
-            # this never happens on the given input
-            acb = ab
-        tot += count(char, acb, steps-1)
-        tot -= (b == char)
-    tot += (b == char)
+        return Counter(poly)
+    tot = Counter()
+    for a, b in windows(poly, 2):
+        acb = a+rules[a+b]+b
+        tot += count(acb, steps-1)
+        tot[b] -= 1  # avoid double-counting
+    tot[b] += 1
     return tot
 
 
 def ans(steps):
-    all_chars = set(pol) | set(rules.values())
-    c = [count(ch, pol, steps) for ch in all_chars]
+    c = count(pol, steps)
+    c = list(c.values())
     return max(c) - min(c)
 
 

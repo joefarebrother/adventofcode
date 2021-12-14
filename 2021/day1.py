@@ -4,11 +4,11 @@ inp = ints(readlines(1))
 
 
 def increases(xs):
-    return sum(x < y for x, y in zip(xs, xs[1:]))
+    return sum(x < y for x, y in windows(xs, 2))
 
 
-print(increases(inp))
+print("Part 1:", increases(inp))
 
-sliding = [sum(t) for t in zip(inp, inp[1:], inp[2:])]
+sliding = [sum(t) for t in windows(inp, 3)]
 
-print(increases(sliding))
+print("Part 2:", increases(sliding))

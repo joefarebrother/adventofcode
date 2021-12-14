@@ -1,38 +1,16 @@
-from collections import Counter
 from utils import *
 
 inp = readlines(14)
 
 pol = inp[0]
-origpol = pol
 rules = [l.split(" -> ") for l in inp[2:]]
 rules = {r: c for (r, c) in rules}
 
-
-def step(p):
-    res = ""
-    for a, b in zip(p, p[1:]):
-        ab = a+b
-        if ab in rules:
-            res += a+rules[ab]
-        else:
-            res += a
-    res += b
-    return res
-
-
-for i in range(10):
-    pol = step(pol)
-    # print(pol)
-
-
-c = Counter(pol)
-# print(c)
-print("Part 1:", max(c.values()) - min(c.values()))
+# original part 1 solution is in the commit history
 
 
 @cache
-def ct(char, poly, steps):
+def count(char, poly, steps):
     if steps == 0:
         return poly.count(char)
     tot = 0
@@ -41,14 +19,19 @@ def ct(char, poly, steps):
         if ab in rules:
             acb = a+rules[ab]+b
         else:
+            # this never happens on the given input
             acb = ab
-        tot += ct(char, acb, steps-1)
+        tot += count(char, acb, steps-1)
         tot -= (b == char)
     tot += (b == char)
     return tot
 
 
-all_chars = set(origpol) | set(rules.values())
-c = {ch: ct(ch, origpol, 40) for ch in all_chars}
-# print(c)
-print("Part 2:", max(c.values()) - min(c.values()))
+def ans(steps):
+    all_chars = set(pol) | set(rules.values())
+    c = [count(ch, pol, steps) for ch in all_chars]
+    return max(c) - min(c)
+
+
+print("Part 1:", ans(10))
+print("Part 2:", ans(40))

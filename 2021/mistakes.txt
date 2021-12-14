@@ -54,3 +54,9 @@ Day 12:
 Day 13:
 - Bugs in utils: grid keys / bounding boxes being stored as floats leading to grid.draw breaking
 - line-x rather than 2*line-x
+
+Day 14:
+- Getting no sleep
+- Splitting on "->" rather than " -> "
+- Mistyping b as c
+- Using the same name c for multiple things

@@ -60,3 +60,8 @@ Day 14:
 - Splitting on "->" rather than " -> "
 - Mistyping b as c
 - Using the same name c for multiple things
+
+Day 15:
+- Not wrapping modulo 9
+- Wrapping modulo 10 rather than 9
+- Wrapping modulo 9 incorrectly (range 0-8 rather than 1-9)

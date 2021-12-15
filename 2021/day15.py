@@ -1,8 +1,6 @@
 from utils import *
 
-inp = Grid(15)
-for p, v in inp.items():
-    inp[p] = int(v)
+inp = Grid(15, ints=True)
 
 
 def path(grid):

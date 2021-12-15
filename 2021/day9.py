@@ -1,8 +1,6 @@
 from utils import *
 
-inp = Grid(9, default=9)
-for p in inp:
-    inp[p] = int(inp[p])
+inp = Grid(9, default=9, ints=True)
 
 low = set()
 

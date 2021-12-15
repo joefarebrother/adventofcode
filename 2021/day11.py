@@ -1,8 +1,6 @@
 from utils import *
 
-grid = Grid(11)
-for p in grid:
-    grid[p] = int(grid[p])
+grid = Grid(11, ints=True)
 
 
 def step(grid):
@@ -29,7 +27,7 @@ for i in irange(100):
     c += step(grid)
     if i % 10 == 0 or i < 10:
         print(i)
-        grid.draw(symbols={})
+        grid.draw()
 
 print("Part 1:", c)
 

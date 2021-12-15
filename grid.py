@@ -23,10 +23,11 @@ class Grid(MutableMapping):
         If data is initialised from a dict or another Grid, this should be a positive integer, False, or None. An integer represents an explicit width/height.
         If it's initialised from a list, it should be a boolean or None.
         If it's initialised from a Grid and it's None, the wrapping information of the copied grid is used.
+    - ints: whether to cast the given data to ints
     - keyty: The position type of keys to return from iteration. Can be complex or tuple.
     """
 
-    def __init__(self, grid=None, default=None, y_is_down=None, wrapx=None, wrapy=None, keyty=complex):
+    def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None, keyty=complex):
         if isinstance(grid, str) or isinstance(grid, int):
             grid = readlines(grid)
 
@@ -125,6 +126,10 @@ class Grid(MutableMapping):
             raise TypeError("Unsupported grid type", type(grid), grid)
 
         self._compute_bb()
+
+        if ints:
+            for p in self.data:
+                self.data[p] = int(self.data[p])
 
     def _convert_pos1(self, key):
         """

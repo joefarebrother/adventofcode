@@ -9,6 +9,14 @@ from misc_utils import ints_in
 is_ex = len(sys.argv) > 1 and "test" in sys.argv[1]
 
 
+def printx(*args, **kwargs):
+    """
+    Prints only if running on example data
+    """
+    if is_ex:
+        print(*args, *kwargs)
+
+
 def readlines(filename, argv_override=True) -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.

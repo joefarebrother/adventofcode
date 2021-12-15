@@ -57,7 +57,7 @@ print(target_pos)
 # now pathfind from target: breadth-first
 
 
-maze = FGraph(lambda p: neighbours(p) if if known_tiles[p] != 2 else [])
+maze = FGraph(lambda p: neighbours(p) if known_tiles[p] != 2 else [])
 
 print("part1: ", maze.BFS(target_pos, 0j))
 print("part2: ", maze.BFS(target_pos))

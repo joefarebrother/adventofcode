@@ -46,15 +46,22 @@ def adj1(p_):
     """
     p, ks = p_
     # print(astar.dist, len(astar.pqueue), p)
-    return {(q, ks | {q}): dist for (q, (doors, dist)) in key_dists[p].items() if doors <= ks}
+    return {(q, ks | {q}): dist for (q, (doors, dist)) in key_dists[p].items() if doors <= ks and q not in ks}
 
 
 def end_cond(p):
     return len(p[1]) == len(key_pos)
 
 
+@cache
+def minpath(p, adj):
+    if end_cond(p):
+        return 0
+    return min(d+minpath(p, adj) for p, d in adj(p).items())
+
+
 # part 1:
-print(FGraph(adj1).dijkstra(('@', frozenset()), end_cond))
+print(minpath(('@', frozenset()), adj1))
 
 starts = []
 for x in range(-1, 2):
@@ -79,25 +86,28 @@ def adj2(p_):
     """
     ps, ks = p_
 
-    print(len(ks), gr.dists[p_], len(gr.pqueue))
+    # print(len(ks), gr.dists[p_], len(gr.pqueue))
 
     res = []
     for i, p in enumerate(ps):
         moves = [((q, ks | {q}), dist) for (q, (doors, dist))
-                 in key_dists[p].items() if doors <= ks]
+                 in key_dists[p].items() if doors <= ks and q not in ks]
         res += [((modify_idx(ps, i, q), nks), dist)
                 for ((q, nks), dist) in moves]
 
     return {n: d for (n, d) in res}
 
 
-min_dist = min([key_dists[p][q][1] for p in key_dists for q in key_dists[p]])
+# min_dist = min([key_dists[p][q][1] for p in key_dists for q in key_dists[p]])
 
-gr = FGraph(adj2)
+# gr = FGraph(adj2)
 start = ((0, 1, 2, 3), frozenset())
-for ((_, ks), d) in gr.astar_gen(start, h=lambda p_: min_dist *
-                                 (len(key_pos) - len(p_[1]))):
-    print(len(ks), d, len(gr.pqueue))
-    if len(ks) == len(key_pos):
-        print(d)
-        exit()
+# for ((_, ks), d) in gr.astar_gen(start, h=lambda p_: min_dist *
+#                                  (len(key_pos) - len(p_[1]))):
+#     print(len(ks), d, len(gr.pqueue))
+#     if len(ks) == len(key_pos):
+#         print(d)
+#         exit()
+
+
+print(minpath(start, adj2))

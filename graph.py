@@ -191,9 +191,10 @@ class AbGraph():
         Traverses the graph using the A* algorithm / djikstra's algorithm entil the end is reached or the search space is exhausted.
         end may be a predicate, a value (in which case it's compared to node), or None.
 
-        h is the heiristic function, aproximating distance to the goal.
-        When constant, it's djikstra's.
-        When consistent (i.e. h(x) <= d(x,y) + h(y) - this is an underapproximation) the distances returned are optimal.
+        h is the heuristic function, aproximating distance to the goal.
+        When constant 0 (the default), it's djikstra's.
+        When admisable (never overetimates distance to the goal), returned paths are optimal.
+        When consistent (never overestimates a single step - i.e. h(x) <= h(y) + d(x,y)), it's admisable and the algorithm is optimally efficient.
 
         Returns:
         - (endpoint, d) if end was found at distance d from the start.

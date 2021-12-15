@@ -236,7 +236,7 @@ def dist(p1: Union[Position, int], p2: Union[Position, int] = 0j) -> float:
     """
     if isinstance(p1, int) and (isinstance(p2, int) or p2 == 0j):
         return int(abs(p1-p2))
-    return abs(pos_as(complex, p1), pos_as(complex, p2))
+    return abs(pos_as(complex, p1) - pos_as(complex, p2))
 
 
 def man_dist(p1: Position, p2: Position = 0j, toint=True) -> float:

@@ -1,17 +1,11 @@
 from dataclasses import field
 from utils import *
 
-hexd = {hex(n)[2]: bin(n)[2:].rjust(4, "0") for n in range(16)}
-printx(hexd)
 inp = readlines(16)[0]
-ih = ""
-for d in inp:
-    ih += hexd[d.lower()]
-inp = ih
-printx(inp)
+inp = bin(int(inp, 16))[2:].rjust(len(inp)*4, "0")
 
 
-@ dataclass
+@dataclass
 class Packet:
     version: int
     ty: int
@@ -35,7 +29,6 @@ class Packet:
         """
         ty = self.ty
         sub = [s.eval() for s in self.sub]
-        printx(ty, sub)
         if ty == 0:
             return sum(sub)
         elif ty == 1:
@@ -76,7 +69,6 @@ def parse(off):
         sub = []
         if mode == "0":
             ln = rbin(inp[off+7:off+7+15])
-            printx(mode, off, inp[off+7:off+7+15], ln)
             off += 7+15
             endoff = off+ln
             while off < endoff:
@@ -85,7 +77,6 @@ def parse(off):
                 assert off <= endoff
         else:
             ln = rbin(inp[off+7: off+7+11])
-            printx(mode, off, inp[off+7: off+7+11], ln)
             off += 7+11
             for _ in range(ln):
                 p, off = parse(off)

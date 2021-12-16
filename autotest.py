@@ -70,6 +70,10 @@ tmpreal     stores the output of the solution on the real input
             Can be deleted without consequence except while the solution is running
 """
 
+for arg in sys.argv[1:]:
+    if "help" in arg or "-h" in arg:
+        print(usage)
+        exit(0)
 
 sesh = os.environ["AOC_KEY"]
 if not sesh:
@@ -104,11 +108,6 @@ def touch(fn):
     with open(fn, "a") as f:
         pass
 
-
-for arg in sys.argv[1:]:
-    if "help" in arg or "-h" in arg:
-        print(usage)
-        exit(0)
 
 year = sys.argv[1] if len(sys.argv) >= 3 else None
 day = sys.argv[2] if len(sys.argv) >= 3 else (
@@ -168,9 +167,13 @@ def find_examples(part):
     pagefile = f"{workdir}/page{part}.html"
     outputfile = workdir+"output1-"+part
 
+    might_have_inline_ex = len(real_input) <= 2
+    looked = False
+
     if not os.path.isfile(inputfile):
         print("Trying to find sample input to save in ", inputfile)
         s = get_or_save(dayurl, pagefile)
+        looked = True
 
         eg = tags("code", tags("pre", s), True, True, False)
         if not eg:
@@ -179,8 +182,7 @@ def find_examples(part):
         else:
             eg = eg[0]
             eg = eg.replace("<em>", "").replace("</em>", "")
-            eg = eg.replace("&gt;", ">").replace(
-                "&lt;", "<").replace("&amp;", "&")
+            eg = html_entities(eg)
             writeTo(inputfile, eg)
             print("Assumed input:")
             print(eg)
@@ -189,8 +191,9 @@ def find_examples(part):
         print(read_string(inputfile))
 
     if not os.path.isfile(outputfile):
-        print("Trying to find sample output to save in ", outputfile)
+        print("Trying to find sample output to save in", outputfile)
         s = get_or_save(dayurl, pagefile)
+        looked = True
 
         completed = s.count("Your puzzle answer was")
         if str(completed+1) != part:
@@ -200,22 +203,71 @@ def find_examples(part):
         if part == "2":
             s = s[s.find("--- Part Two ---"):]
 
-        # lists may contain other examples, but not the answer to the current example
-        s = remove_tags("li", s)
+        # lists may contain other examples, but (usually) not the answer to the current example
+        if might_have_inline_ex:
+            s = remove_tags("li", s)
         s = remove_tags("pre", s)
 
         o = tags("em", tags("code", s), exact_end=True)
         if not o:
             print("Could not find example output (no <code><em> tag)")
+            sampleout = "[NONE]"
             writeTo(outputfile, "[NONE]")
-            return
-        sampleout = o[-1]
-        writeTo(outputfile, sampleout)
+        else:
+            sampleout = o[-1]
+            writeTo(outputfile, sampleout)
     else:
         sampleout = read_string(outputfile).strip()
         if sampleout == "[NONE]":
             print("No output specified.")
     print("Assumed output:", sampleout)
+
+    if might_have_inline_ex and looked:
+        # find more inline examples
+        s = get_or_save(dayurl, pagefile)
+        if part == "2":
+            s = s[s.find("--- Part Two ---"):]
+
+        s = remove_tags("pre", s)
+
+        uls = tags("ul", s)
+        if uls:
+            ul = uls[-1]
+            o = tags("em", tags("code", s), exact_end=True)
+            if o and o[-1]+"</em></code>" in ul:
+                # last highlighted answer was in a ul tag; probably in inline example
+                # 2018 day 8 part 2 is a counterexample
+                lis = tags("li", ul)
+                for li in lis:
+                    codes = tags("code", li)
+                    if len(codes) >= 2:
+                        em = tags("em", codes, exact_end=True)
+                        if em:
+                            inp, out = codes[0], em[0]
+                            if "<" not in inp and "<" not in out:
+                                inp = html_entities(inp)
+                                out = html_entities(out)
+                                if len(inp) >= 5:
+                                    add_example(inp, out, part)
+
+
+def add_example(inp, out, part):
+    print(f"Adding inline example: `{inp}` -> `{out}`")
+    files = os.listdir(workdir)
+    n = 2
+    while f"input{n}" in files and read_string(f"{workdir}/input{n}") != inp:
+        n += 1
+
+    inpfile = f"{workdir}/input{n}"
+    outfile = f"{workdir}/output{n}-{part}"
+
+    writeTo(inpfile, inp)
+    writeTo(outfile, out)
+
+
+def html_entities(s):
+    return s.replace("&gt;", ">").replace(
+        "&lt;", "<").replace("&amp;", "&")
 
 
 def tee(cmd, file):
@@ -240,7 +292,7 @@ def run_examples(part):
             inputfile = workdir+f
             outputfile = f"{workdir}/output{idx}-{part}"
             if os.path.isfile(outputfile):
-                if read_string(input_file) == "[NONE]":
+                if read_string(inputfile).strip() == "[NONE]":
                     print(f"Example {idx} skipped: No input found")
                     continue
                 ans, suc = run_example(inputfile, outputfile, idx)
@@ -253,7 +305,7 @@ def run_examples(part):
                     return good, unk, False
             else:
                 print(
-                    f"Example {idx} skipped: no expected output file found (use a file containing [NONE] to run anyway)")
+                    f"Example {idx} skipped: No expected output file found (use a file containing [NONE] to run anyway)")
     return good, unk, True
 
 

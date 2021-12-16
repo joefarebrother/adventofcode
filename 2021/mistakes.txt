@@ -65,3 +65,9 @@ Day 15:
 - Not wrapping modulo 9
 - Wrapping modulo 10 rather than 9
 - Wrapping modulo 9 incorrectly (range 0-8 rather than 1-9)
+
+Day 16:
+- Repeatedly parsing hexidecimal wrong
+-- First using bin(int(inp,16))
+-- then trying to add leading 0s based on len(inp)%4 
+-- then using ljust rather than rjust

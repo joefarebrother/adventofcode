@@ -80,6 +80,13 @@ class AbGraph():
             yield (k if keys_only else end)
             end = self.prev[k]
 
+    def get_path(self, end, keys_only=False):
+        """
+        After a graph search has completed, generates the path it saved from start to the end.
+        If keys_only is True, key is called on the each node of the path.
+        """
+        return reversed(list(self.get_rev_path(end, keys_only)))
+
     def DFS_gen(self, start):
         """
         A generator that yields the nodes reachable from start in a depth first order along eith their distances.

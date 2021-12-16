@@ -1,5 +1,5 @@
 # pylint: disable=unsubscriptable-object # pylint bug in python 3.9
-from typing import Optional, Iterable, NewType, Union
+from typing import Optional, Iterable, Union
 import cmath
 import itertools
 from attrdict import AttrDict
@@ -196,18 +196,18 @@ def pos_as(ty, pos: Position, ints=False):
         pos = 0j
     if ty == type(pos):
         if ints and ty == tuple:
-            return tuple(map(int, pos))
+            return int(pos[0]), int(pos[1])
         return pos
     elif ty == tuple:
         if type(pos) != complex:
             raise TypeError("Expected a position (2-tuple or complex)")
         tup = (pos.real, pos.imag)
-        return tuple(map(int, tup)) if ints else tup
+        return int(tup[0]), int(tup[1]) if ints else tup
     elif ty == complex:
         if type(pos) != tuple or len(pos) != 2:
             raise TypeError("Expected a position (2-tuple or complex)")
         (x, y) = pos
-        return x + y*1j
+        return complex(x, y)
     else:
         raise ValueError("Unsupported position type", type)
 

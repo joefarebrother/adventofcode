@@ -121,15 +121,15 @@ os.makedirs(workdir, exist_ok=True)
 
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
-input_file = f"{curdir}/{year}/{day}.in"
+real_inputfile = f"{curdir}/{year}/{day}.in"
 solution_file = f"{curdir}/{year}/day{day}.py"
 
-touch(input_file)
+touch(real_inputfile)
 touch(solution_file)
 
 wait_for_unlock(day, year)
 
-real_input = get_or_save(dayurl + "/input", input_file).splitlines()
+real_input = get_or_save(dayurl + "/input", real_inputfile).splitlines()
 print_input_stats(real_input)
 print()
 
@@ -160,6 +160,11 @@ def tags(tag, html, exact_start=False, exact_end=False, strip=True):
 def remove_tags(tag, html, exact_start=False, exact_end=False):
     r = f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>(.*?)</{tag}>{'$'*exact_end}"
     return re.sub(r, "", html)
+
+
+def html_entities(s):
+    return s.replace("&gt;", ">").replace(
+        "&lt;", "<").replace("&amp;", "&")
 
 
 def find_examples(part):
@@ -243,7 +248,7 @@ def find_examples(part):
                     if len(codes) >= 2:
                         em = tags("em", codes, exact_end=True)
                         if em:
-                            inp, out = codes[0], em[0]
+                            inp, out = codes[0], em[-1]
                             if "<" not in inp and "<" not in out:
                                 inp = html_entities(inp)
                                 out = html_entities(out)
@@ -263,11 +268,6 @@ def add_example(inp, out, part):
 
     writeTo(inpfile, inp)
     writeTo(outfile, out)
-
-
-def html_entities(s):
-    return s.replace("&gt;", ">").replace(
-        "&lt;", "<").replace("&amp;", "&")
 
 
 def tee(cmd, file):
@@ -346,7 +346,7 @@ def run_real():
 
     print("==== trying real input (no timeout)")
     p = tee(
-        f"python3.9 {solution_file} {input_file}", tmpfile)
+        f"python3.9 {solution_file} {real_inputfile}", tmpfile)
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")

@@ -71,3 +71,8 @@ Day 16:
 -- First using bin(int(inp,16))
 -- then trying to add leading 0s based on len(inp)%4 
 -- then using ljust rather than rjust
+
+Day 17:
+- Not parsing negative numbers correctly
+- Not considering a large enough range for y (ws; first one since using autotest)
+- Not considering the maximum x value

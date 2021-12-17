@@ -202,7 +202,7 @@ def pos_as(ty, pos: Position, ints=False):
         if type(pos) != complex:
             raise TypeError("Expected a position (2-tuple or complex)")
         tup = (pos.real, pos.imag)
-        return int(tup[0]), int(tup[1]) if ints else tup
+        return (int(tup[0]), int(tup[1])) if ints else tup
     elif ty == complex:
         if type(pos) != tuple or len(pos) != 2:
             raise TypeError("Expected a position (2-tuple or complex)")

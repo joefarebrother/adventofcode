@@ -2,7 +2,7 @@ from utils import *
 
 inp = readlines(17)
 
-minx, maxx, miny, maxy = ints_in(inp[0], allow_neg=True)
+minx, maxx, miny, maxy = ints_in(inp[0])
 target = Rectangle((minx, miny), (maxx, maxy))
 
 

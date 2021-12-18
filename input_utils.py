@@ -140,7 +140,7 @@ def print_input_stats(inp):
     if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
         print("Looks like a grid")
 
-    nums = ints_in(" ".join(inp), allow_neg=True)
+    nums = ints_in(" ".join(inp))
     if nums:
         print(f"Min integer: {min(nums)}")
         print(f"Max integer: {max(nums)}")

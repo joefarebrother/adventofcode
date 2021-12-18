@@ -121,9 +121,9 @@ def mint(x, default=None):
         return default
 
 
-def ints_in(x: str, allow_neg=False) -> list[int]:
+def ints_in(x: str) -> list[int]:
     """Finds and parses all integers in the string x"""
-    ex = r'-?\d+' if allow_neg else r'\d+'
+    ex = r'(?:(?<!\d)-)?\d+'
     return ints(re.findall(ex, x))
 
 

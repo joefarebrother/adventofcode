@@ -76,3 +76,8 @@ Day 17:
 - Not parsing negative numbers correctly
 - Not considering a large enough range for y (ws; first one since using autotest)
 - Not considering the maximum x value
+
+Day 18:
+- Having an infinite loop (don't remember the cause or the fix)
+- Missing a break statement 
+- Spending a long time running on the wrong example (which had similar looking output to the right example)

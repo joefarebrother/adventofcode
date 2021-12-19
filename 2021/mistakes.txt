@@ -81,3 +81,7 @@ Day 18:
 - Having an infinite loop (don't remember the cause or the fix)
 - Missing a break statement 
 - Spending a long time running on the wrong example (which had similar looking output to the right example)
+
+Day 19:
+- Many bugs in implenetation of vectors and matricies (maybe should have used numpy...)
+- Forgetting abs in manhatten distance definition (ws)

@@ -5,7 +5,7 @@ inp = groups(19)
 scanners = []
 for gr in inp:
     sc = []
-    for line in gr.splitlines()[1:]:
+    for line in gr[1:]:
         sc.append(ints_in(line))
     scanners.append(sc)
 

@@ -33,12 +33,15 @@ def readall(filename, argv_override=True) -> str:
         return f.read()
 
 
-def groups(filename) -> list[str]:
+def groups(filename, split=True) -> list[str]:
     """
     Splits the contets of the given file into groups separated by two newlines.
     Strips whitespace around each group, such as trailing newlines.
     """
-    return [gr.strip() for gr in readall(filename).split("\n\n")]
+    res = [gr.strip() for gr in readall(filename).split("\n\n")]
+    if split:
+        res = [gr.splitlines() for gr in res]
+    return res
 
 
 def filename_for(f, argv_override=True):

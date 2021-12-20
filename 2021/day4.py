@@ -2,12 +2,12 @@ from utils import *
 
 inp = groups(4)
 
-nums = ints(inp[0].split(","))
+nums = ints(inp[0][0].split(","))
 
 boards = []
 for gr in inp[1:]:
     board = []
-    for line in gr.splitlines():
+    for line in gr:
         row = line.split()
         board.append([[int(x), False] for x in row])
     boards.append(board)

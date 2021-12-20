@@ -48,7 +48,6 @@ r3 = r.inv()
 
 tiles = {}
 for gr in groups("20.in"):
-    gr = gr.split("\n")
     n, gr = gr[0], gr[1:]
     tiles[ints_in(n)[0]] = Grid(gr)
 

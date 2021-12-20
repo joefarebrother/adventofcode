@@ -1,9 +1,9 @@
 from utils import *
 
 enh, img = groups(20)
-enh = enh.replace("\n", "")
+enh = "".join(enh)
 
-img = Grid(img.splitlines())
+img = Grid(img)
 
 
 def step(img):
@@ -25,4 +25,4 @@ for _ in range(50):
     img = step(img)
 
 c = Counter(img.values())
-print("Part 2", c['#'])
+print("Part 2:", c['#'])

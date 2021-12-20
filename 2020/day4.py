@@ -3,7 +3,7 @@ from utils import *
 from itertools import *
 import re
 
-data = groups("input4")
+data = groups("input4", split=False)
 
 
 def parse(gr):

@@ -4,7 +4,7 @@ from utils import *
 rules, ms = groups("19.in")
 
 prules = {}
-for r in rules.split("\n"):
+for r in rules:
     idx, rule = r.split(":")
     prules[int(idx)] = rule.strip()
 
@@ -36,7 +36,7 @@ p = re.compile(to_re(0))
 
 
 t = 0
-for m in ms.split("\n"):
+for m in ms:
     if p.fullmatch(m):
         print(True, m)
         t += 1

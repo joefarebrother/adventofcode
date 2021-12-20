@@ -13,7 +13,7 @@ data = groups("input6")
 ans = 0
 for grp in data:
     all = set("qwertyuiopasdfghjklzxcvbnm")
-    for per in grp.split("\n"):
+    for per in grp:
         qs = set(per)
         all &= qs
     ans += len(all)

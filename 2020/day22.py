@@ -2,8 +2,8 @@
 from utils import *
 
 p1, p2 = groups("22.in")
-p1 = ints(p1.split("\n")[1:])
-p2 = ints(p2.split("\n")[1:])
+p1 = ints(p1[1:])
+p2 = ints(p2[1:])
 
 while p1 and p2:
     c1, c2 = p1.pop(0), p2.pop(0)
@@ -28,8 +28,8 @@ def score(w):
 print(score(w))
 
 p1, p2 = groups("22.in")
-p1 = ints(p1.split("\n")[1:])
-p2 = ints(p2.split("\n")[1:])
+p1 = ints(p1[1:])
+p2 = ints(p2[1:])
 
 
 def play(p1, p2):

@@ -1,3 +1,4 @@
+from typing import Callable
 from geom import Rectangle, bounding_box, is_pos_ty, pos_as
 from input_utils import readlines
 from collections.abc import MutableMapping
@@ -41,6 +42,7 @@ class Grid(MutableMapping):
             wrapx = grid.wrapx if wrapx == None else wrapx
             wrapy = grid.wrapy if wrapy == None else wrapy
             y_is_down = grid.y_is_down if y_is_down == None else y_is_down
+            default = grid.default if default == None else default
             grid = grid.data
 
         wrapx = wrapx if wrapx != None else False
@@ -199,6 +201,15 @@ class Grid(MutableMapping):
         if self.wrapy:
             return self.wrapy
         return self.bounding_box.height()
+
+    def map(self, f: Callable):
+        """
+        Applies f to each element of the grid.
+        """
+        res = Grid(self)
+        for p, v in self.data.items():
+            res[p] = f(v)
+        return res
 
     def draw(self, symbols=None, flipx=False, flipy=False) -> None:
         """

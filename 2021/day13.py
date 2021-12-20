@@ -3,11 +3,11 @@ from utils import *
 coords, folds = groups(13)
 
 grid = Grid()
-for row in coords.splitlines():
+for row in coords:
     x, y = ints_in(row)
     grid[x, y] = 1
 
-folds = [match(r'fold along (.)=(\d+)', f) for f in folds.splitlines()]
+folds = [match(r'fold along (.)=(\d+)', f) for f in folds]
 
 
 def do_fold(axis, line):

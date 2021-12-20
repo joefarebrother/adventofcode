@@ -85,3 +85,8 @@ Day 18:
 Day 19:
 - Many bugs in implenetation of vectors and matricies (maybe should have used numpy...)
 - Forgetting abs in manhatten distance definition (ws)
+
+Day 20:
+- Not considering the pixels outside the border ofthe grid
+- Iterating x and y in the wrong order
+- Not considering that the grid can become entirely lit (ws)

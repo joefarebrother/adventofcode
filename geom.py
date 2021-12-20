@@ -68,6 +68,9 @@ class Rectangle:
             for y in self.yrange():
                 yield pos_as(ty, (x, y))
 
+    def expand_1(self):
+        return Rectangle((self.minx-1, self.miny-1), (self.maxx+1, self.maxy+1))
+
     def __iter__(self):
         return self.points()
 

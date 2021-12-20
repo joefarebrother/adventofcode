@@ -1,4 +1,3 @@
-from typing import Sequence
 from utils import *
 
 inp = groups(19)
@@ -155,12 +154,12 @@ def match_scanners_from(i):
     return new
 
 
-changed = True
-while changed:
-    changed = False
-    for i, sc in enumerate(scanners):
-        if sc.known():
-            changed |= bool(match_scanners_from(i))
+known = {0}
+while known:
+    nknown = set()
+    for i in known:
+        nknown |= match_scanners_from(i)
+    known = nknown
 
 assert all(sc.known() for sc in scanners)
 
@@ -168,10 +167,10 @@ beacons = set()
 for sci in scanners:
     beacons |= set(sci.adjusted_seen())
 
-print(len(beacons))
+print("Part 1", len(beacons))
 
 maxd = 0
 for sci, scj in it.combinations(scanners, 2):
     maxd = max(maxd, sci.off.man_dist(scj.off))
 
-print(maxd)
+print("Part 2", maxd)

@@ -274,7 +274,8 @@ def add_example(inp, out, part):
 
 
 def tee(cmd, file):
-    return os.system(f"bash -c '{cmd} | tee {file}; exit ${{PIPESTATUS[0]}}'")
+    cmd = f"bash -c '{cmd} | tee {file}; exit ${{PIPESTATUS[0]}}'"
+    return os.system(cmd)
 
 
 def run_examples(part):
@@ -298,7 +299,7 @@ def run_examples(part):
                 if read_string(inputfile).strip() == "[NONE]":
                     print(f"Example {idx} skipped: No input found")
                     continue
-                ans, suc = run_example(inputfile, outputfile, idx)
+                ans, suc = run_example(inputfile, outputfile, idx, part)
                 if suc == None:
                     unk.append(ans)
                 elif suc:
@@ -312,26 +313,26 @@ def run_examples(part):
     return good, unk, True
 
 
-def run_example(inputfile, outputfile, idx):
+def run_example(inputfile, outputfile, idx, part):
     """
     Runs a single example.
     Returns (ans, succ) where ans is the answer given, and succ is True if the test passed, False if it didn't, and None if no expected output was found.
     """
     tmpfile = workdir+"tmp"
 
-    print(f"==== Trying example {idx} (10 second timeout)\n")
+    print(f"==== Trying example {idx} (no timeout)\n")
     p = tee(
         f"timeout 10 python3.9 {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
-    answers = read_string(tmpfile).split()
 
-    if len(answers) == 0:
+    ans = answer_in_out(read_string(tmpfile), part)
+
+    if ans == None:
         print(f"=== Example {idx} produced no output")
         return None, False
 
-    ans = answers[-1]
     sampleout = read_string(outputfile).strip()
     if sampleout == "[NONE]":
         return ans, None
@@ -344,7 +345,7 @@ def run_example(inputfile, outputfile, idx):
     return ans, True
 
 
-def run_real():
+def run_real(part):
     tmpfile = workdir+"tmpreal"
 
     print("==== trying real input (no timeout)")
@@ -354,12 +355,30 @@ def run_real():
     if p:
         print("Did not terminate successfully on real input")
         return False
-    answer = read_string(tmpfile).split()
-    if len(answer) < 1:
+    answer = answer_in_out(read_string(tmpfile), part)
+    if answer == None:
         print("No output produced")
         return False
-    answer = answer[-1]
     return answer
+
+
+def answer_in_out(out: list[str], part):
+    out = out.splitlines()
+    print(out)
+    nout = []
+    for o in out:
+        if o.lower().startswith("part"):
+            if o.lower().startswith(f"part {part}"):
+                o = o[len("part 1"):].strip(":").split()
+                if o:
+                    return o[-1]
+        else:
+            nout.append(o)
+    nout = "".join(nout).split()
+    print(nout)
+    if nout:
+        return nout[-1]
+    return None
 
 
 submittime = None
@@ -421,7 +440,7 @@ def doPart(part=None):
                 print(
                     "No examples were verified, so the result will not be submitted without confirmation")
 
-            answer = run_real()
+            answer = run_real(part)
             if not answer:
                 continue
 
@@ -442,7 +461,7 @@ def doPart(part=None):
                 print(repr(answer), "previously submitted and failed. Not submitting")
             else:
                 print("")
-                if (good_answers and not bad_answers) or input(f"Do you want to submit {repr(answer)} (y/n)?") == "y":
+                if (good_answers and not bad_answers) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
                     print("Submitting answer:", repr(answer))
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:

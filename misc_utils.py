@@ -56,6 +56,13 @@ def sign(x) -> int:
     return 0
 
 
+def mod_inc(a: int, b: int) -> int:
+    """
+    Returns a % b but the result is in the range [1,b] rather than [0,b)
+    """
+    return ((a-1) % b)+1
+
+
 def egcd(a: int, b: int) -> Tuple[int, int, int]:
     """
     Performs the extended Euclidian algorithm.

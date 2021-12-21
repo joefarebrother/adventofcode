@@ -70,6 +70,9 @@ tmpreal     stores the output of the solution on the real input
             Can be deleted without consequence except while the solution is running
 """
 
+if __name__ != "__main__":
+    raise Exception("Don't import autotest")
+
 for arg in sys.argv[1:]:
     if "help" in arg or "-h" in arg:
         print(usage)

@@ -11,10 +11,6 @@ def roll():
     return mod_inc(die, 100)
 
 
-def mod_inc(a, b):
-    return ((a-1) % b)+1
-
-
 ps = [ints_in(l)[1] for l in inp]
 scores = [0, 0]
 

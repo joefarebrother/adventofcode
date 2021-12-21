@@ -21,7 +21,7 @@ for p in inp:
         for y in range(5):
             nx = p.real + inp.width()*x
             ny = p.imag + inp.height()*y
-            grid2[nx, ny] = (inp[p]+x+y-1) % 9+1
+            grid2[nx, ny] = mod_inc(inp[p]+x+y, 9)
 
 # grid2.draw(flipy=True)
 

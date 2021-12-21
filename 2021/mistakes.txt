@@ -90,3 +90,7 @@ Day 20:
 - Not considering the pixels outside the border ofthe grid
 - Iterating x and y in the wrong order
 - Not considering that the grid can become entirely lit (ws)
+
+Day 21:
+- Input parsing mistake: taking the first int on each line rather than the last
+- Making a turn by both players rather than stopping when player 1 wins

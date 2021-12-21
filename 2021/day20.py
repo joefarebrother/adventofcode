@@ -18,11 +18,9 @@ def step(img):
 
 
 img2 = step(step(img))
-c = Counter(img2.values())
-print("Part 1:", c['#'])
+print("Part 1:", img2.count('#'))
 
 for _ in range(50):
     img = step(img)
 
-c = Counter(img.values())
-print("Part 2:", c['#'])
+print("Part 2:", img.count('#'))

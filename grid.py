@@ -1,3 +1,4 @@
+from collections import Counter
 from typing import Callable
 from geom import Rectangle, bounding_box, is_pos_ty, pos_as
 from input_utils import readlines
@@ -210,6 +211,23 @@ class Grid(MutableMapping):
         for p, v in self.data.items():
             res[p] = f(v)
         return res
+
+    def count(self, x):
+        """
+        Counts the number of occurences of `x` in the grid.
+        If `x` is he default item, points not in the grid's backing map are ignored.
+        """
+        c = 0
+        for v in self.data.values():
+            if v == x:
+                c += 1
+        return c
+
+    def counter(self):
+        """
+        Returns a `Counter` counting the number of occurances of each element of the grid.
+        """
+        return Counter(self.data.values())
 
     def draw(self, symbols=None, flipx=False, flipy=False) -> None:
         """

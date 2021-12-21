@@ -320,9 +320,9 @@ def run_example(inputfile, outputfile, idx, part):
     """
     tmpfile = workdir+"tmp"
 
-    print(f"==== Trying example {idx} (no timeout)\n")
+    print(f"==== Trying example {idx} (10 second timeout)\n")
     p = tee(
-        f"timeout 10 python3.9 {solution_file} {inputfile}", tmpfile)
+        f"timeout --foreground 10 python3.9 {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False

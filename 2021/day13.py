@@ -31,3 +31,5 @@ for f in folds[1:]:
 
 print("Part 2:")
 grid.draw(flipy=True)
+print("> ", end="")
+print(input())

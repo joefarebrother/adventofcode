@@ -364,7 +364,6 @@ def run_real(part):
 
 def answer_in_out(out: list[str], part):
     out = out.splitlines()
-    print(out)
     nout = []
     for o in out:
         if o.lower().startswith("part"):
@@ -374,8 +373,7 @@ def answer_in_out(out: list[str], part):
                     return o[-1]
         else:
             nout.append(o)
-    nout = "".join(nout).split()
-    print(nout)
+    nout = " ".join(nout).split()
     if nout:
         return nout[-1]
     return None

@@ -94,3 +94,7 @@ Day 20:
 Day 21:
 - Input parsing mistake: taking the first int on each line rather than the last
 - Making a turn by both players rather than stopping when player 1 wins
+
+Day 22:
+- Trying to use the whole input for part 1
+- Not properly testing my autotest changes

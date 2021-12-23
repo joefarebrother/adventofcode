@@ -98,3 +98,8 @@ Day 21:
 Day 22:
 - Trying to use the whole input for part 1
 - Not properly testing my autotest changes
+
+Day 23:
+- Bad heuristic function - overapproximates distance
+- Not keeping track of manually-submitted wrong answer, and not submitting the correct answer because it looked like the wrong answer
+- Considering incorrect hallway to hallway movements 

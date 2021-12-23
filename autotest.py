@@ -143,6 +143,11 @@ if os.path.isfile(wrong_ans_file):
         for line in f:
             bad_answers.add(line.strip())
 
+example_timeout = 10
+timeout_file = workdir + "timeout"
+if os.path.isfile(timeout_file):
+    example_timeout = int(read_string(timeout_file))
+
 
 def add_bad(ans):
     bad_answers.add(ans)
@@ -320,9 +325,9 @@ def run_example(inputfile, outputfile, idx, part):
     """
     tmpfile = workdir+"tmp"
 
-    print(f"==== Trying example {idx} (10 second timeout)\n")
+    print(f"==== Trying example {idx} ({example_timeout} second timeout)\n")
     p = tee(
-        f"timeout --foreground 10 python3.9 {solution_file} {inputfile}", tmpfile)
+        f"timeout --foreground {example_timeout} python3.9 {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False

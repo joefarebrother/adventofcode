@@ -103,3 +103,6 @@ Day 23:
 - Bad heuristic function - overapproximates distance
 - Not keeping track of manually-submitted wrong answer, and not submitting the correct answer because it looked like the wrong answer
 - Considering incorrect hallway to hallway movements 
+
+Day 24:
+- op[1] rather than instr[1] (about an hour of debugging)

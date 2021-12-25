@@ -106,3 +106,6 @@ Day 23:
 
 Day 24:
 - op[1] rather than instr[1] (about an hour of debugging)
+
+Day 25:
+- `x %= self.wrapy` has been in my Grid class for a year

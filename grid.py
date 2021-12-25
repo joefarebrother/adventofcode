@@ -140,7 +140,7 @@ class Grid(MutableMapping):
         if self.wrapx:
             x %= self.wrapx
         if self.wrapy:
-            x %= self.wrapy
+            y %= self.wrapy
         return IVec2(x, y)
 
     def _compute_bb(self):

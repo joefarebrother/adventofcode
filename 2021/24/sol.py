@@ -1,5 +1,6 @@
 from utils import *
 import sys
+import operator as op
 
 m = None
 # if not is_ex and len(sys.argv) == 2:
@@ -10,39 +11,28 @@ inp = inp_readlines()
 
 prog = [l.split() for l in inp]
 
-ops = {"add": (lambda a, b: a+b),
-       "mul": (lambda a, b: a*b),
+ops = {"add": op.add,
+       "mul": op.mul,
+       # op.floordiv not technically correct (but works for given input)
        "div": (lambda a, b: int(a/b)),
-       "mod": (lambda a, b: a % b),
-       "eql": (lambda a, b: int(a == b))}
-
-
-def reg(regs, r):
-    return regs["wxyz".find(r)]
-
-
-def sreg(regs, r, v):
-    return modify_idx(regs, "wxyz".find(r), v)
+       "mod": op.mod,
+       "eql": op.eq}
 
 
 def run(inp):
-    regs = (0, 0, 0, 0)
+    regs = defaultdict(int)
     inp = iter(inp)
 
     for instr in prog:
         op = instr[0]
         if op == "inp":
-            regs = sreg(regs, instr[1], next(inp))
+            regs[instr[1]] = next(inp)
         else:
             op, a, b, = instr
-            b = int(b) if numeric(b) else reg(regs, b)
-            regs = sreg(regs, a, ops[op](reg(regs, a), b))
-    return regs[-1] == 0
+            b = int(b) if numeric(b) else regs[b]
+            regs[a] = ops[op](regs[a], b)
+    return regs["z"] == 0
 
-
-if is_ex:
-    print(69)
-    exit()
 
 if m:
     print(run(m))

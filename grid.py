@@ -26,9 +26,10 @@ class Grid(MutableMapping):
         If it's initialised from a list, it should be a boolean or None.
         If it's initialised from a Grid and it's None, the wrapping information of the copied grid is used.
     - ints: whether to cast the given data to ints
+    - copydata: If False, copies only the configuration of grid, not its data 
     """
 
-    def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None):
+    def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None, copydata=True):
         if isinstance(grid, str) or isinstance(grid, int):
             grid = inp_readlines()
 
@@ -42,7 +43,7 @@ class Grid(MutableMapping):
             wrapy = grid.wrapy if wrapy is None else wrapy
             y_is_down = grid.y_is_down if y_is_down is None else y_is_down
             default = grid.default if default is None else default
-            grid = grid.data
+            grid = grid.data if copydata else {}
 
         wrapx = wrapx if wrapx is not None else False
         wrapy = wrapy if wrapy is not None else False
@@ -172,6 +173,13 @@ class Grid(MutableMapping):
 
     def __len__(self):
         return len(self.data)
+
+    def __eq__(self, other):
+        def _key(g):
+            return (g.data, g.default, g.wrapx, g.wrapy)
+        if isinstance(other, Grid):
+            return _key(self) == _key(other)
+        return NotImplemented
 
     def width(self) -> int:
         """

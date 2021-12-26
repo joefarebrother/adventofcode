@@ -8,10 +8,8 @@ target = Rectangle((minx, miny), (maxx, maxy))
 
 def step(p, v):
     p += v
-    xv, yv = IVec2(v)
-    xv -= sign(xv)
-    yv -= 1
-    return p, complex(xv, yv)
+    v -= sign(v.real)+1j
+    return p, v
 
 
 def hits(v):

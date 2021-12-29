@@ -84,6 +84,7 @@ class AbGraph():
         while (k := self.key(end)) in self.prev:
             yield (k if keys_only else end)
             end = self.prev[k]
+        yield (k if keys_only else end)
 
     def get_path(self, end, keys_only=False):
         """
@@ -162,8 +163,8 @@ class AbGraph():
         While running, self.pqueue is set to the priority queue, and self.dists is set to the distances map.
         These shouldn't be modified.
         """
-        # (d(start, x) + h(x), d(start, x), tiebreak, x, prev)
-        pqueue = [(h(start), 0, 0, start, None)]
+        # (d(start, x) + h(x), d(start, x), tiebreak, x)
+        pqueue = [(h(start), 0, 0, start)]
         self.pqueue = pqueue
 
         dists = {self.key(start): 0}

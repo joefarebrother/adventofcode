@@ -8,15 +8,15 @@ instrs = []
 
 for line in inp:
     on = line.startswith("on")
-    minx, maxx, miny, maxy, minz, maxz = ints_in(line)
+    x0, x1, y0, y1, z0, z1 = ints_in(line)
     instrs.append((on, ints_in(line)))
 
 for on, bnds in instrs:
     if all(abs(b) <= 50 for b in bnds):
-        minx, maxx, miny, maxy, minz, maxz = bnds
-        for x in irange(minx, maxx):
-            for y in irange(miny, maxy):
-                for z in irange(minz, maxz):
+        x0, x1, y0, y1, z0, z1 = bnds
+        for x in irange(x0, x1):
+            for y in irange(y0, y1):
+                for z in irange(z0, z1):
                     g[x, y, z] = on
 
 print("Part 1:", Counter(g.values())[True])
@@ -24,25 +24,25 @@ print("Part 1:", Counter(g.values())[True])
 
 @dataclass
 class Cuboid:
-    minx: int
-    maxx: int
-    miny: int
-    maxy: int
-    minz: int
-    maxz: int
+    x0: int
+    x1: int
+    y0: int
+    y1: int
+    z0: int
+    z1: int
 
     def intersect(self, other):
-        xint = intersect_irange((self.minx, self.maxx),
-                                (other.minx, other.maxx))
-        yint = intersect_irange((self.miny, self.maxy),
-                                (other.miny, other.maxy))
-        zint = intersect_irange((self.minz, self.maxz),
-                                (other.minz, other.maxz))
+        xint = intersect_irange((self.x0, self.x1),
+                                (other.x0, other.x1))
+        yint = intersect_irange((self.y0, self.y1),
+                                (other.y0, other.y1))
+        zint = intersect_irange((self.z0, self.z1),
+                                (other.z0, other.z1))
         if xint and yint and zint:
-            (minx, maxx) = xint
-            (miny, maxy) = yint
-            (minz, maxz) = zint
-            return Cuboid(minx, maxx, miny, maxy, minz, maxz)
+            (x0, x1) = xint
+            (y0, y1) = yint
+            (z0, z1) = zint
+            return Cuboid(x0, x1, y0, y1, z0, z1)
         return None
 
     def difference(self, other):
@@ -52,42 +52,42 @@ class Cuboid:
             return [cur]
 
         # left
-        if cur.minx < other.minx <= cur.maxx:
-            ominx = other.minx
-            res.append(dataclasses.replace(cur, maxx=ominx-1))
-            cur.minx = ominx
+        if cur.x0 < other.x0 <= cur.x1:
+            ox0 = other.x0
+            res.append(dataclasses.replace(cur, x1=ox0-1))
+            cur.x0 = ox0
         # right
-        if cur.minx <= other.maxx < cur.maxx:
-            omaxx = other.maxx
-            res.append(dataclasses.replace(cur, minx=omaxx+1))
-            cur.maxx = omaxx
+        if cur.x0 <= other.x1 < cur.x1:
+            ox1 = other.x1
+            res.append(dataclasses.replace(cur, x0=ox1+1))
+            cur.x1 = ox1
 
         # front
-        if cur.miny < other.miny <= cur.maxy:
-            ominy = other.miny
-            res.append(dataclasses.replace(cur, maxy=ominy-1))
-            cur.miny = ominy
-        # front
-        if cur.miny <= other.maxy < cur.maxy:
-            omaxy = other.maxy
-            res.append(dataclasses.replace(cur, miny=omaxy+1))
-            cur.maxy = omaxy
+        if cur.y0 < other.y0 <= cur.y1:
+            oy0 = other.y0
+            res.append(dataclasses.replace(cur, y1=oy0-1))
+            cur.y0 = oy0
+        # back
+        if cur.y0 <= other.y1 < cur.y1:
+            oy1 = other.y1
+            res.append(dataclasses.replace(cur, y0=oy1+1))
+            cur.y1 = oy1
 
         # top
-        if cur.minz < other.minz <= cur.maxz:
-            ominz = other.minz
-            res.append(dataclasses.replace(cur, maxz=ominz-1))
-            cur.minz = ominz
+        if cur.z0 < other.z0 <= cur.z1:
+            oz0 = other.z0
+            res.append(dataclasses.replace(cur, z1=oz0-1))
+            cur.z0 = oz0
         # bottom
-        if cur.minz <= other.maxz < cur.maxz:
-            omaxz = other.maxz
-            res.append(dataclasses.replace(cur, minz=omaxz+1))
-            cur.maxz = omaxz
+        if cur.z0 <= other.z1 < cur.z1:
+            oz1 = other.z1
+            res.append(dataclasses.replace(cur, z0=oz1+1))
+            cur.z1 = oz1
 
         return res
 
     def volume(self):
-        return (self.maxx-self.minx+1)*(self.maxy-self.miny+1)*(self.maxz-self.minz+1)
+        return (self.x1-self.x0+1)*(self.y1-self.y0+1)*(self.z1-self.z0+1)
 
 
 cubes = []

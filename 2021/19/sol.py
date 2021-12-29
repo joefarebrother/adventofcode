@@ -12,32 +12,38 @@ for gr in inp:
 
 @dataclass
 class Matrix:
-    data: Grid
+    data: list[list]
 
     def __init__(self, data):
-        self.data = Grid(data)
+        assert len(set(len(r) for r in data)) == 1, "Uniform lengths expected"
+        self.data = data
 
     def __getitem__(self, idx):
-        return self.data[idx]
+        row, col = idx
+        return self.data[row][col]
+
+    def width(self):
+        return len(self.data[0])
+
+    def height(self):
+        return len(self.data)
 
     def __matmul__(self, other):
         if isinstance(other, Matrix):
-            dat = self.data
-            odat = other.data
-            sw, sh = dat.width(), dat.height()
-            ow, oh = odat.width(), odat.height()
-            assert sw == oh, (sw, oh)
-            res = Grid()
-            for i in range(sh):
-                for j in range(ow):
+            sw, sh = self.width(), self.height()
+            ow, oh = other.width(), other.height()
+            assert sw == oh, f"Cannot multiply {sh}x{sw} by {oh}x{ow}"
+            res = [[0]*ow for _ in range(sh)]
+            for row in range(sh):
+                for col in range(ow):
                     s = 0
                     for k in range(sw):
-                        s += dat[k, i] * odat[j, k]
-                    res[j, i] = s
+                        s += self[row, k] * other[k, col]
+                    res[row][col] = s
             return Matrix(res)
         if isinstance(other, list):
             res = self @ Matrix([[x] for x in other])
-            return [res[0, i] for i in range(len(other))]
+            return [res[i, 0] for i in range(len(other))]
         if isinstance(other, tuple):
             return tuple(self @ list(other))
         if isinstance(other, Vector):
@@ -113,7 +119,7 @@ class Scanner:
         return self.off is not None and self.rot is not None
 
     def adjusted_seen(self):
-        if not self.known:
+        if not self.known():
             return self.seen
         return [self.off + self.rot@s for s in self.seen]
 

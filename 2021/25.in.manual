@@ -1,0 +1,252 @@
+inp w    ; w = inp[0]
+mul x 0
+add x z 
+mod x 26
+div z 1
+add x 14 ; x = 14,y=z=0
+eql x w
+eql x 0  ; x = 1
+mul y 0
+add y 25 
+mul y x
+add y 1
+mul z y  ; z = 0
+mul y 0
+add y w  
+add y 7  
+mul y x
+add z y  ; z = inp[0]+7
+inp w    ; w = inp[1]
+mul x 0
+add x z
+mod x 26 ; x inp[0]+7 
+div z 1
+add x 12 ; x = inp[0]+19
+eql x w
+eql x 0  ; x = 1
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y  ; z = [inp[0]+7,0].base(26)
+mul y 0
+add y w  
+add y 4
+mul y x  ; z = [inp[0]+7,inp[1]+4]
+add z y
+inp w    ; w = inp[2]
+mul x 0
+add x z
+mod x 26 ; x = inp[1]+4
+div z 1
+add x 11 ; x = inp[1]+15
+eql x w
+eql x 0
+mul y 0
+add y 25 
+mul y x
+add y 1
+mul z y 
+mul y 0
+add y w
+add y 8
+mul y x
+add z y  ; z = [inp[0]+7,inp[1]+4,inp[2]+8]
+inp w    ; w = inp[3]
+mul x 0
+add x z
+mod x 26 ; x = inp[2]+8
+div z 26 ; z = [inp[0]+7,inp[1]+4]
+add x -4 ; x = inp[2]+4 (must == inp[1])
+eql x w  
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1}]
+inp w     ; w = inp[4]
+mul x 0
+add x z
+mod x 26  ; x = {inp[1]+4, inp[3]+1}
+div z 1
+add x 10  ; x = {inp[1]+14, inp[3]+11}
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5]
+inp w   ; w = inp[5]
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10 ; x = inp[4]+16
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 14
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[4]+14]
+inp w    ; w = inp[5]
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 15 ; x = inp[4]+29
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 12
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,inp[5]+12]
+inp w   ; w = inp[6]
+mul x 0
+add x z
+mod x 26
+div z 26 ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14]
+add x -9 ; x = inp[5]+3 (must == inp[6])
+eql x w  
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 10
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,{inp[6]+10}]
+inp w   ; w = inp[7]
+mul x 0
+add x z
+mod x 26
+div z 26 ; z = [[inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5]
+add x -9 ; x = inp[5]+5 (must == inp[7])
+eql x w  
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 5
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,{inp[6]+10}, {inp[7]+5}]
+inp w   ; w = inp[8]
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 12 ; x = inp[5]+26
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,{inp[6]+10}, {inp[7]+5}, inp[8]+7]
+inp w   ; w = inp[9]
+mul x 0
+add x z
+mod x 26
+div z 26 ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,{inp[6]+10}, {inp[7]+5}]
+add x -15 ; x = inp[8]-8 (must == inp[9])
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y ; z = [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5,inp[5]+14,{inp[6]+10}, {inp[7]+5}, {inp[9]+6}]
+inp w   ; w = inp[10]
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -7 ; x = inp[5]+7 (must == inp[10])
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 8
+mul y x
+add z y ; z= [inp[0]+7,inp[1]+4,{inp[3]+1},inp[4]+5, {inp[10]+8}]
+inp w  ; w = inp[11]
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -10 ; x = inp[4]-5 (must == inp[11])
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 4
+mul y x
+add z y [inp[0]+7,inp[1]+4,{inp[3]+1}, {inp[11]+4}]
+inp w  ; w = inp[12]
+mul x 0
+add x z
+mod x 26
+div z 26  
+add x 0 ; x = inp[1]+4 (must == inp[12])
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y z=[inp[0]+7,

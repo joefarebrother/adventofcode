@@ -1,7 +1,6 @@
 from collections import defaultdict, Counter, deque
 import math
 import re
-from attrdict import AttrDict
 from typing import Tuple, Callable, Iterable, Optional
 
 
@@ -17,7 +16,7 @@ def irange(start, stop=None, step=1) -> range:
 
 def is_uniq(xs: Iterable) -> bool:
     """
-    Returns True if xs consits of unique elements
+    Returns True if xs consists of unique elements
     """
     xs = list(xs)
     return len(set(xs)) == len(xs)
@@ -251,3 +250,9 @@ def inv_mapping(d: dict) -> dict:
     Given a mapping {k:v}, returns the mapping {v:k}
     """
     return {v: k for k, v in d.items()}
+
+
+class DotDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__

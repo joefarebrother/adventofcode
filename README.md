@@ -11,7 +11,6 @@ My inputs aren't included.
 
 ## Dependencies
 - Python >= 3.9
-- `pip install attrdict`
 - `sudo apt install inotify-tools` (for the autotester) 
 
 ## Utility scripts

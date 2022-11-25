@@ -15,7 +15,7 @@ def parse(gr):
             res[k] = v
 
     res['cid'] = None
-    return AttrDict(res)
+    return DotDict(res)
 
 
 print(data)

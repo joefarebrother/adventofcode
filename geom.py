@@ -2,8 +2,7 @@
 from typing import Optional, Iterable, Union
 import cmath
 import itertools
-from attrdict import AttrDict
-from misc_utils import irange, bounds
+from misc_utils import irange, bounds, DotDict
 
 Position = Union[complex, tuple]
 
@@ -268,7 +267,7 @@ def angle(p0: Position, p1=None) -> float:
     return ang
 
 
-Dirs = AttrDict()
+Dirs = DotDict()
 Dirs.up = Dirs.U = Dirs.north = Dirs.N = 1j
 Dirs.down = Dirs.D = Dirs.south = Dirs.S = -1j
 Dirs.left = Dirs.L = Dirs.west = Dirs.W = -1+0j
@@ -287,7 +286,7 @@ def _flipy(d):
 
 Dirs.flipy = _flipy(Dirs)
 
-HexDirs = AttrDict()
+HexDirs = DotDict()
 HexDirs.up = HexDirs.U = HexDirs.north = HexDirs.N = 2j
 HexDirs.down = HexDirs.D = HexDirs.south = HexDirs.S = -2j
 HexDirs.left = HexDirs.L = HexDirs.west = HexDirs.W = -2+0j

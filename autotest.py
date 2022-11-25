@@ -1,4 +1,4 @@
-#! /usr/bin/env python3.9
+#! /usr/bin/env python3
 
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
@@ -7,6 +7,8 @@ from datetime import date, datetime
 import os
 import sys
 import re
+import platform
+import math
 from input_utils import get_day_year, wait_for_unlock, print_input_stats, numeric
 from time import sleep
 
@@ -28,7 +30,7 @@ unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone
 Files used:
 day{n}.py   This program assumes that your solution for the part you are
             currently working on is in this file.
-            Run as `python3.9 day{n}.py {input}` where {input} is the name of
+            Run as `python3 day{n}.py {input}` where {input} is the name of
             a file from which day{n}.py is expected to read the input
             for the day's problem
             
@@ -138,9 +140,17 @@ print()
 
 wrong_ans_file = workdir + "wrong_ans"
 bad_answers = set()
+bad_toohigh = None
+bad_toolow = None
 if os.path.isfile(wrong_ans_file):
     with open(wrong_ans_file) as f:
         for line in f:
+            if "[TOO HIGH]" in line:
+                line = line.split()[0]
+                bad_toohigh = min(int(line), bad_toohigh or math.inf)
+            if "[TOO LOW]" in line:
+                line = line.split()[0]
+                bad_toolow = max(int(line), bad_toolow or -math.inf)
             bad_answers.add(line.strip())
 
 example_timeout = 10
@@ -149,10 +159,18 @@ if os.path.isfile(timeout_file):
     example_timeout = int(read_string(timeout_file))
 
 
-def add_bad(ans):
+def add_bad(ans, content):
+    global bad_toohigh, bad_toolow
+    extra = ""
+    if "too high" in content:
+        bad_toohigh = min(int(ans), bad_toohigh or math.inf)
+        extra = " [TOO HIGH]"
+    if "too low" in content:
+        bad_toolow = max(int(ans), bad_toolow or -math.inf)
+        extra = " [TOO LOW]"
     bad_answers.add(ans)
     with open(wrong_ans_file, mode="a") as f:
-        print(ans, file=f)
+        print(ans + extra, file=f)
 
 
 def tags(tag, html, exact_start=False, exact_end=False, strip=True):
@@ -327,7 +345,7 @@ def run_example(inputfile, outputfile, idx, part):
 
     print(f"==== Trying example {idx} ({example_timeout} second timeout)\n")
     p = tee(
-        f"timeout --foreground {example_timeout} python3.9 {solution_file} {inputfile}", tmpfile)
+        f"timeout --foreground {example_timeout} python3 {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
@@ -355,7 +373,7 @@ def run_real(part):
 
     print("==== trying real input (no timeout)")
     p = tee(
-        f"python3.9 {solution_file} {real_inputfile}", tmpfile)
+        f"python3 {solution_file} {real_inputfile}", tmpfile)
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
@@ -411,6 +429,23 @@ def submit(part, answer):
     return resp, content
 
 
+def wait_for_changes(file):
+    plat = platform.system()
+    if plat == "Linux":
+        if os.system(f"inotifywait -q -e modify {file}"):
+            print("\ninotifywait inturrupted (or errored)")
+            exit(1)
+    elif plat == "Darwin":  # mac
+        tmpfile = workdir + "fswatchtmp"
+        errcode = os.system(f"fswatch -1 {file} > {tmpfile}")
+        if errcode or not read_string(tmpfile):
+            print("\nfswatch inturrupted (or errored)")
+            exit(1)
+    else:
+        print(f"Why are you using {plat}?")
+        exit(1)
+
+
 def doPart(part=None):
     global bad_submittime
     if part is None:
@@ -428,9 +463,7 @@ def doPart(part=None):
     ns = 0
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
-            if os.system(f"inotifywait -q -e modify {solution_file}"):
-                print("\ninotifywait inturrupted (or errored)")
-                exit(1)
+            wait_for_changes(solution_file)
         ns = os.stat(solution_file).st_mtime_ns
 
         print()
@@ -452,7 +485,7 @@ def doPart(part=None):
             print("Real answer: ", answer)
 
             # do some checks on answer
-            if(len(answer) < 3):
+            if (len(answer) < 3):
                 print(repr(answer), "looks too small. Not submitting")
             elif answer in good_answers + unknown_answers:
                 print(repr(answer),
@@ -461,7 +494,13 @@ def doPart(part=None):
                 print(
                     repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
             elif answer in bad_answers:
-                print(repr(answer), "previously submitted and failed. Not submitting")
+                print(repr(answer), "previously submitted and failed. Not submitting.")
+            elif bad_toohigh and int(answer) >= bad_toohigh:
+                print(repr(answer),
+                      f"is too high; as {bad_toohigh} was. Not submitting.")
+            elif bad_toolow and int(answer) <= bad_toolow:
+                print(repr(answer),
+                      f"is too low; as {bad_toolow} was. Not submitting.")
             else:
                 print("")
                 if (good_answers and not bad_answers) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
@@ -471,7 +510,7 @@ def doPart(part=None):
                         bad_submittime = None
                         break
                     elif "That's not the right answer" in content:
-                        add_bad(answer)
+                        add_bad(answer, content)
                         bad_submittime = submittime
                     else:
                         print(

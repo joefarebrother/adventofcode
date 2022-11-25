@@ -1,4 +1,4 @@
-inp = open("1.in").read().strip()
+inp = open("2017/1.in").read().strip()
 inp += inp[0]
 
 s = 0

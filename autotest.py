@@ -348,7 +348,7 @@ def run_example(inputfile, outputfile, idx, part):
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
 
-    ans, _ = answer_in_out(read_string(tmpfile), part)
+    ans = answer_in_out(read_string(tmpfile), part)
 
     if ans == None:
         print(f"=== Example {idx} produced no output")
@@ -375,12 +375,12 @@ def run_real(part):
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
-        return False
+        return False, None
     real_output = read_string(tmpfile)
     answer = answer_in_out(real_output, part)
     if answer == None:
         print("No output produced")
-        return False
+        return False, None
     if part == "2":
         p1answer = answer_in_out(real_output, "1")
         if p1answer != answer:
@@ -436,13 +436,13 @@ def wait_for_changes(file):
     plat = platform.system()
     if plat == "Linux":
         if os.system(f"inotifywait -q -e modify {file}"):
-            print("\ninotifywait inturrupted (or errored)")
+            print("\ninotifywait interrupted (or errored)")
             exit(1)
     elif plat == "Darwin":  # mac
         tmpfile = workdir + "fswatchtmp"
         errcode = os.system(f"fswatch -1 {file} > {tmpfile}")
         if errcode or not read_string(tmpfile):
-            print("\nfswatch inturrupted (or errored)")
+            print("\nfswatch interrupted (or errored)")
             exit(1)
     else:
         print(f"Why are you using {plat}?")
@@ -473,7 +473,7 @@ def doPart(part=None):
     s = get_page(part)
     completed = s.count("Your puzzle answer was")
     if not part:
-        part = str(min(completed+1, 2))
+        part = str(min(completed+1, 2 if day < 25 else 1))
     no_submit = False
     if int(part) >= completed:
         no_submit = True
@@ -521,7 +521,7 @@ def doPart(part=None):
                 correct_answer = correct_answers[int(part)-1]
                 if answer == correct_answer:
                     print("Correct answer.")
-                    exit(int(part1wrong))
+                    exit(int(p1wrong))
                 else:
                     print(f"Incorrect answer. Expecting {correct_answer}")
                     exit(1)

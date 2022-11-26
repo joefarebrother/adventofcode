@@ -2,9 +2,9 @@ from utils import *
 import sys
 
 m = None
-if not is_ex and len(sys.argv) == 2:
-    m = sys.argv[1]
-    sys.argv = [sys.argv[0]]
+# if not is_ex and len(sys.argv) == 2:
+#     m = sys.argv[1]
+#     sys.argv = [sys.argv[0]]
 
 inp = readlines(24)
 

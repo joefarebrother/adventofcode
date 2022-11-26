@@ -140,8 +140,9 @@ class AbGraph():
 
         while len(queue) > 0:
             node, d, prev = queue.popleft()
-            self.prev[self.key(node)] = prev
-            yield (node, d)
+            if self.key(node) not in self.prev:
+                self.prev[self.key(node)] = prev
+                yield (node, d)
 
             for next in self[node]:
                 k = self.key(next)

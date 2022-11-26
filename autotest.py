@@ -348,7 +348,7 @@ def run_example(inputfile, outputfile, idx, part):
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
 
-    ans = answer_in_out(read_string(tmpfile), part)
+    ans, _ = answer_in_out(read_string(tmpfile), part)
 
     if ans == None:
         print(f"=== Example {idx} produced no output")
@@ -376,11 +376,16 @@ def run_real(part):
     if p:
         print("Did not terminate successfully on real input")
         return False
-    answer = answer_in_out(read_string(tmpfile), part)
+    real_output = read_string(tmpfile)
+    answer = answer_in_out(real_output, part)
     if answer == None:
         print("No output produced")
         return False
-    return answer
+    if part == "2":
+        p1answer = answer_in_out(real_output, "1")
+        if p1answer != answer:
+            return answer, p1answer
+    return answer, None
 
 
 def answer_in_out(out: list[str], part):
@@ -476,11 +481,10 @@ def doPart(part=None):
         for p in tags("p", s):
             if p.startswith("Your puzzle answer was"):
                 correct_answers.append(tags("code", p)[0])
-        correct_answer = correct_answers[int(part)-1]
 
     find_examples(part, s)
 
-    print("Real input stats:")
+    print("\nReal input stats:")
     print_input_stats(real_input)
 
     ns = 0
@@ -499,9 +503,14 @@ def doPart(part=None):
                 print(
                     "No examples were verified, so the result will not be submitted without confirmation")
 
-            answer = run_real(part)
+            answer, p1answer = run_real(part)
             if not answer:
                 continue
+            p1wrong = False
+            if part == "2" and p1answer and p1answer != correct_answers[0]:
+                print(
+                    f"Warning: Part 1 answer regressed (expecting {correct_answers[0]}, got {p1answer})")
+                p1wrong = True
 
             print("Verified example answers: ", good_answers)
             print("Unverified example answers: ", unknown_answers)
@@ -509,9 +518,10 @@ def doPart(part=None):
 
             if no_submit:
                 print("\nNot submitting, as already completed.")
+                correct_answer = correct_answers[int(part)-1]
                 if answer == correct_answer:
                     print("Correct answer.")
-                    exit(0)
+                    exit(int(part1wrong))
                 else:
                     print(f"Incorrect answer. Expecting {correct_answer}")
                     exit(1)
@@ -535,7 +545,7 @@ def doPart(part=None):
                       f"is too low; as {bad_toolow} was. Not submitting.")
             else:
                 print("")
-                if (good_answers and not bad_answers) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
+                if (good_answers and not bad_answers and not p1wrong) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
                     print("Submitting answer:", repr(answer))
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:

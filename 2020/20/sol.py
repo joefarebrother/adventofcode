@@ -47,7 +47,7 @@ r2 = r*r
 r3 = r.inv()
 
 tiles = {}
-for gr in inp_groups():
+for gr in inp_groups()[:-1]:
     n, gr = gr[0], gr[1:]
     tiles[ints_in(n)[0]] = Grid(gr)
 
@@ -84,7 +84,7 @@ print(fst)
 def compat(t1, or1, t2, or2, ed):
     # ed is the direction of tile t2 as seen from t1.
     # we divide by it (rotate in the opposite direction) to inspect the correct edge
-    return right_edge(tiles[t1], or1*D8(1/ed)) == left_edge(tiles[t2], or2*(D8(1/ed)))[::-1]
+    return right_edge(tiles[t1], or1*D8(1/ed, False)) == left_edge(tiles[t2], or2*(D8(1/ed, False)))[::-1]
 
 
 def fits(tile, pos, ori):
@@ -186,7 +186,7 @@ for jy in jigsaw.bounding_box.yrange():
         imy += 1
 
 img.draw()
-monster = Grid("seamonster")
+monster = Grid(list(open("2020/20/seamonster")))
 monster.draw()
 
 

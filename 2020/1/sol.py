@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from itertools import *
 from utils import *
-data = ints(list(open("input1")))
+data = ints(inp_readlines())
 
 # not my original solution; that's in the commit history
 
@@ -9,7 +9,7 @@ data = ints(list(open("input1")))
 def f(n):
     for xs in combinations(data, n):
         if sum(xs) == 2020:
-            print(math.prod(xs), xs)
+            print(xs, math.prod(xs))
 
 
 f(2)

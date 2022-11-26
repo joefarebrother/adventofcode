@@ -312,7 +312,7 @@ def run_examples(part):
         m = re.fullmatch(r'test(\d+).in', f)
         if f:
             try:
-                idx = int(m.groups(1))
+                idx = int(m.groups(1)[0])
             except:
                 continue
             inputfile = workdir+f
@@ -476,7 +476,7 @@ def doPart(part=None):
     if not part:
         part = str(min(completed+1, 2 if day < 25 else 1))
     no_submit = False
-    if int(part) >= completed:
+    if int(part) <= completed:
         no_submit = True
         correct_answers = []
         for p in tags("p", s):

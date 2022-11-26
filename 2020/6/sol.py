@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-data = groups("input6")
+data = inp_groups()
 
 # ans = 0
 # for i in data:
@@ -18,3 +18,4 @@ for grp in data:
         all &= qs
     ans += len(all)
     print(ans, all)
+print(ans)

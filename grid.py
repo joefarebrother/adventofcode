@@ -251,7 +251,7 @@ class Grid(MutableMapping):
                 symbols = {0: ' ', 1: '█', "0": " ",
                            "1": '█', ".": " ", "#": '█'}
             elif len(v) == 1:
-                symbols = {v[0]: '█'}
+                symbols = {list(v)[0]: '█'}
             else:
                 symbols = {}
 

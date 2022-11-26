@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-seats = readlines("input5")
+seats = inp_readlines()
 
 
 def parse(seat: str):

@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-nums = ints_in(open("15.in").read())
+nums = ints_in(inp_readall())
 
 timestamps = defaultdict(lambda: t)
 t = 1

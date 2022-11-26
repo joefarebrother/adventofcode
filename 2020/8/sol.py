@@ -41,4 +41,5 @@ for (i, (instr, num)) in enumerate(sprog):
     (end, res) = run(nprog)
     print(end, res, i)
     if end:
+        print(res)
         break

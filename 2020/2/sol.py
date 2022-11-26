@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-data = readlines("input2")
+data = inp_readlines()
 
 
 def parse(line):

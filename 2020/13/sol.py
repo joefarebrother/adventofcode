@@ -17,7 +17,7 @@ for b in busses:
         best, bestb = earl, b
         print(b, earl)
 
-print(bestb, (best-time), bestb*(best-time))
+print("Part 1:", bestb, (best-time), bestb*(best-time))
 
 #busses_r = "7,13,x,x,59,x,31,19"
 
@@ -27,6 +27,6 @@ print(mods)
 
 
 res = crt(mods)
-print(res)
+print("Part 2:", res)
 
 print([(res % p, p, i) for (p, i) in mods])

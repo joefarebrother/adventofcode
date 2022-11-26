@@ -14,3 +14,4 @@ for i in nums[1:]:  # skip leading 0 added on earlier
     ways[i] = ways[i-1]+ways[i-2]+ways[i-3]
 
 print(ways)
+print(ways[max(ways.keys())])

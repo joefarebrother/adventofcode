@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-raw = [g.split("\n") for g in inp_groups()]
+raw = inp_groups()
 
 
 @dataclass(init=False, unsafe_hash=True)

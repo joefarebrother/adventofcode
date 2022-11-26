@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-rules = readlines("input7")
+rules = inp_readlines()
 
 bags = defaultdict(dict)
 

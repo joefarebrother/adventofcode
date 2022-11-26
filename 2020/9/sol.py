@@ -21,5 +21,5 @@ for (i, num) in enumerate(nums):
 
 for (lo, hi) in itertools.combinations(range(len(nums)+1), 2):
     rng = nums[lo:hi]
-    if sum(rng) == invalid:
+    if sum(rng) == invalid and min(rng) != max(rng):
         print(min(rng), max(rng), "p2:", min(rng)+max(rng))

@@ -11,6 +11,7 @@ My inputs aren't included.
 
 ## Dependencies
 - Python >= 3.9
+- `pip install -e .` 
 - Linux specific for autotester:
 -- `sudo apt install inotify-tools` 
 - Mac specific for autotester:
@@ -22,3 +23,4 @@ My inputs aren't included.
 - `aocfetch [day] [year]` - Downloads your input. Requires env var `AOC_KEY` to be set to your session cookie, which can be found via the network tools of your browser.
 - `submit part ans [day] [year]` - Submits an answer. Also requires `AOC_KEY`.
 - `autotest.py [year/day] [day]` - Automatically runs solution file against example data, then submits the output for the real data when the test passes. See `--help` for more info.
+- `test_all.py year` - Automatically tuns `autotest.py` on every day for a given year

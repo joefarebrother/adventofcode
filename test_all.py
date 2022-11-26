@@ -7,7 +7,7 @@ import re
 
 def print_usage():
     print("""
-Usage: ./test_all.py {year}
+Usage: ./test_all.py year
 Tests all days in the given year using autotest.py.
 """)
 

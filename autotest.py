@@ -121,13 +121,13 @@ day, year = get_day_year(day, year)
 
 
 curdir = os.path.dirname(sys.argv[0])
-workdir = os.path.normpath(f"{curdir}/test/{year}/{day}")+"/"
+workdir = os.path.normpath(f"{curdir}/{year}/{day}")+"/"
 os.makedirs(workdir, exist_ok=True)
 
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
-real_inputfile = f"{curdir}/{year}/{day}.in"
-solution_file = f"{curdir}/{year}/day{day}.py"
+real_inputfile = f"{workdir}/real.in"
+solution_file = f"{workdir}/sol.py"
 
 touch(real_inputfile)
 touch(solution_file)
@@ -193,33 +193,33 @@ def html_entities(s):
 
 
 def find_examples(part, s):
-    inputfile = workdir+"input1"
-    outputfile = workdir+"output1-"+part
+    test1_inputfile = f"{workdir}/test1.in"
+    test1_outputfile = f"{workdir}/test1-part{part}.out"
 
     might_have_inline_ex = len(real_input) <= 2
     looked = False
 
-    if not os.path.isfile(inputfile):
-        print("Trying to find sample input to save in ", inputfile)
+    if not os.path.isfile(test1_inputfile):
+        print("Trying to find sample input to save in ", test1_inputfile)
         looked = True
 
         eg = tags("code", tags("pre", s), True, True, False)
         if not eg:
             print("Could not find example (No <pre><code> tags)")
-            writeTo(inputfile, "[NONE]")
+            writeTo(test1_inputfile, "[NONE]")
         else:
             eg = eg[0]
             eg = eg.replace("<em>", "").replace("</em>", "")
             eg = html_entities(eg)
-            writeTo(inputfile, eg)
+            writeTo(test1_inputfile, eg)
             print("Assumed input:")
             print(eg)
     else:
         print("Assumed input:")
-        print(read_string(inputfile))
+        print(read_string(test1_inputfile))
 
-    if not os.path.isfile(outputfile):
-        print("Trying to find sample output to save in", outputfile)
+    if not os.path.isfile(test1_outputfile):
+        print("Trying to find sample output to save in", test1_outputfile)
         looked = True
 
         find_res = s.find("--- Part Two ---")
@@ -238,12 +238,12 @@ def find_examples(part, s):
         if not o:
             print("Could not find example output (no <code><em> tag)")
             sampleout = "[NONE]"
-            writeTo(outputfile, "[NONE]")
+            writeTo(test1_outputfile, "[NONE]")
         else:
             sampleout = o[-1]
-            writeTo(outputfile, sampleout)
+            writeTo(test1_outputfile, sampleout)
     else:
-        sampleout = read_string(outputfile).strip()
+        sampleout = read_string(test1_outputfile).strip()
         if sampleout == "[NONE]":
             print("No output specified.")
     print("Assumed output:", sampleout)
@@ -284,11 +284,11 @@ def add_example(inp, out, part):
     print(f"Adding inline example: `{inp}` -> `{out}`")
     files = os.listdir(workdir)
     n = 2
-    while f"input{n}" in files and read_string(f"{workdir}/input{n}") != inp:
+    while f"test{n}.in" in files and read_string(f"{workdir}/test{n}.in") != inp:
         n += 1
 
-    inpfile = f"{workdir}/input{n}"
-    outfile = f"{workdir}/output{n}-{part}"
+    inpfile = f"{workdir}/test{n}.in"
+    outfile = f"{workdir}/test{n}-part{part}.out"
 
     writeTo(inpfile, inp)
     writeTo(outfile, out)
@@ -309,13 +309,14 @@ def run_examples(part):
     unk = []
 
     for f in sorted(os.listdir(workdir)):
-        if f.startswith("input"):
+        m = re.fullmatch(r'test(\d+).in')
+        if f:
             try:
-                idx = int(f[len("input"):])
+                idx = int(m.groups(1))
             except:
                 continue
             inputfile = workdir+f
-            outputfile = f"{workdir}/output{idx}-{part}"
+            outputfile = f"{workdir}/test{idx}-part{part}.out"
             if os.path.isfile(outputfile):
                 if read_string(inputfile).strip() == "[NONE]":
                     print(f"Example {idx} skipped: No input found")

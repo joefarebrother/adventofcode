@@ -17,39 +17,37 @@ def printx(*args, **kwargs):
         print(*args, *kwargs)
 
 
-def readlines(filename, argv_override=True) -> list[str]:
+def inp_readlines() -> list[str]:
     """
     Returns the list of lines in the given file. Strips the trailing newline on each.
     """
-    with open(filename_for(filename, argv_override)) as f:
+    with open(input_filename()) as f:
         return [l[:-1] if l[-1] == '\n' else l for l in f]
 
 
-def readall(filename, argv_override=True) -> str:
+def inp_readall() -> str:
     """
     Returns the contents of the given file as a string.
     """
-    with open(filename_for(filename, argv_override)) as f:
+    with open(input_filename()) as f:
         return f.read()
 
 
-def groups(filename, split=True) -> list[str]:
+def inp_groups(split=True) -> list[str]:
     """
-    Splits the contets of the given file into groups separated by two newlines.
+    Splits the contents of the given file into groups separated by two newlines.
     Strips whitespace around each group, such as trailing newlines.
     """
-    res = [gr.strip() for gr in readall(filename).split("\n\n")]
+    res = [gr.strip() for gr in inp_readall().split("\n\n")]
     if split:
         res = [gr.splitlines() for gr in res]
     return res
 
 
-def filename_for(f, argv_override=True):
+def input_filename(argv_override=True):
     """
-    Gets the filename of the input file specified by f.
-    If f is a string, raturns that relative to the directory the solution is in (i.e. sys.argv[0])
-    If f is an int n, returns {n}.in relative to there
-    If argv_override is true, an sys.argv[1] exists, that is returned instead and f is ignored.
+    Gets the filename of the input file.
+    If argv_override is true, an sys.argv[1] exists, that is returned instead.
     """
     if argv_override and len(sys.argv) > 1:
         return sys.argv[1]
@@ -57,12 +55,12 @@ def filename_for(f, argv_override=True):
     if isinstance(f, str):
         return os.path.join(curdir, f)
     else:
-        return f"{curdir}/{f}.in"
+        return f"{curdir}/real.in"
 
 
 def get_day_year(day=None, year=None):
     """
-    If day or year are none and it's december, set them according to the corrent date and return them.
+    If day or year are none and it's december, set them according to the current date and return them.
     """
     now = datetime.now()
 
@@ -88,8 +86,8 @@ def wait_for_unlock(day, year):
 
 def numeric(s, len_limit=False):
     if len(s) > 1 and (len(s) <= 16 or not len_limit) and s[0] == "0":
-        # aoc numbers are pretty much always below 2^53 (16 digits) to avoid precision errors with ;anguages like JS that only offer floats.
-        # So anything longer than that should be treated as a string of digits for the pirpose of determining whether to auto-cast input.
+        # aoc numbers are pretty much always below 2^53 (16 digits) to avoid precision errors with languages like JS that only offer floats.
+        # So anything longer than that should be treated as a string of digits for the purpose of determining whether to auto-cast input.
         return False
     try:
         int(s)

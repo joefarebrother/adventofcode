@@ -24,7 +24,7 @@ environment variable $AOC_KEY set to the value of your session cookie.
 
 If part is given, only run for the given part.
 
-If called with the current day as input (which is the default if year and day are ommited), before the puzzle 
+If called with the current day as input (which is the default if year and day are ommited), before the puzzle
 unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone is GMT.
 
 Files used:
@@ -33,7 +33,7 @@ day{n}.py   This program assumes that your solution for the part you are
             Run as `python3 day{n}.py {input}` where {input} is the name of
             a file from which day{n}.py is expected to read the input
             for the day's problem
-            
+
 {n}.in      Your personal input (https://adventofcode.com/{year}/day/{day}/input)
 
 The following files are all stored in test/{year}/{day}
@@ -42,20 +42,20 @@ input1      The automatically extracted sample input
             It may be wrong, and if so you must manually edit it and restart this
             program if you want it to work correctly.
             If no appropriate sample input is found, the program will still run but will require confrmation before submitting results.
-            
+
 output1-1   The automatically extracted sample output for part 1
             By default, this is the last highlighed thing at the end of a code tag.
             It may be wrong, and if so you must manually edit it and restart this
             program if you want it to work correctly.
             If no appropriate sample output is found, the program will still run but will require confrmation before submitting results.
-            
+
 output1-2   The automatically extracted sample output for part 2
 
-input{n}    Input file for additional examples. 
+input{n}    Input file for additional examples.
             Will not be created automatically, but will be run if created manually.
-output{n}-1 Output file for additional examples for part 1. 
+output{n}-1 Output file for additional examples for part 1.
             Will not be created automatically, but will be run if created manually.
-            If the contents are [NONE], the example will be run but the output will not be verified. 
+            If the contents are [NONE], the example will be run but the output will not be verified.
             An answer with no verified example outputs will not be submitted without confirmation.
 output{n}-2 Output file for additional examples for part 2.
 
@@ -64,10 +64,10 @@ page2.html  the page when solving part 2
 wrong_ans   a text file containing a list of answers which have been rejected
             Hopefully avoids repeatedly submitting wrong answers
             Does not distinguish between part 1 and part 2
-            
+
 tmp         stores the output of the solution on sample input
             Can be deleted without consequence except while the solution is running
-            
+
 tmpreal     stores the output of the solution on the real input
             Can be deleted without consequence except while the solution is running
 """
@@ -192,12 +192,13 @@ def html_entities(s):
         "&lt;", "<").replace("&amp;", "&")
 
 
-def find_examples(part, s):
+def find_examples(part, orig_s):
     test1_inputfile = f"{workdir}/test1.in"
     test1_outputfile = f"{workdir}/test1-part{part}.out"
 
     might_have_inline_ex = len(real_input) <= 2
     looked = False
+    s = orig_s
 
     if not os.path.isfile(test1_inputfile):
         print("Trying to find sample input to save in ", test1_inputfile)
@@ -234,7 +235,8 @@ def find_examples(part, s):
             s = remove_tags("li", s)
         s = remove_tags("pre", s)
 
-        o = tags("em", tags("code", s), exact_end=True)
+        o = tags("em", tags("code", s), exact_end=True) + \
+            tags("code", tags("em", s), exact_end=True)
         if not o:
             print("Could not find example output (no <code><em> tag)")
             sampleout = "[NONE]"
@@ -249,6 +251,7 @@ def find_examples(part, s):
     print("Assumed output:", sampleout)
 
     if might_have_inline_ex and looked:
+        s = orig_s
         # find more inline examples
         find_res = s.find("--- Part Two ---")
         if find_res > -1:
@@ -262,15 +265,17 @@ def find_examples(part, s):
         uls = tags("ul", s)
         if uls:
             ul = uls[-1]
-            o = tags("em", tags("code", s), exact_end=True)
-            if o and o[-1]+"</em></code>" in ul:
+            o = tags("em", tags("code", s), exact_end=True) + \
+                tags("code", tags("em", s), exact_end=True)
+            if o and (o[-1]+"</em></code>" in ul or o[-1]+"</code></em>" in ul):
                 # last highlighted answer was in a ul tag; probably in inline example
                 # 2018 day 8 part 2 is a counterexample
                 lis = tags("li", ul)
                 for li in lis:
                     codes = tags("code", li)
                     if len(codes) >= 2:
-                        em = tags("em", codes, exact_end=True)
+                        em = tags("em", codes, exact_end=True) + \
+                            tags("code", tags("em", li), exact_end=True)
                         if em:
                             inp, out = codes[0], em[-1]
                             if "<" not in inp and "<" not in out:

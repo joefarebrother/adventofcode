@@ -2,22 +2,25 @@
 from utils import *
 import math
 
-time, busses_r = inp_readlines()
-print(time)
-time = int(time)
-busses = ints_in(busses_r)
-print(busses)
+inp = inp_readlines()
+if len(inp) == 2:
+    time, busses_r = inp
+    print(time)
+    time = int(time)
+    busses = ints_in(busses_r)
+    print(busses)
 
-best = 1000000000000000
-bestb = None
+    best = 1000000000000000
+    bestb = None
 
-for b in busses:
-    earl = math.ceil(time / b) * b
-    if earl < best:
-        best, bestb = earl, b
-        print(b, earl)
+    for b in busses:
+        earl = math.ceil(time / b) * b
+        if earl < best:
+            best, bestb = earl, b
+            print(b, earl)
 
-print("Part 1:", bestb, (best-time), bestb*(best-time))
+    print("Part 1:", bestb, (best-time), bestb*(best-time))
+busses_r = inp[-1]
 
 #busses_r = "7,13,x,x,59,x,31,19"
 

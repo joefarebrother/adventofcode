@@ -135,7 +135,6 @@ touch(solution_file)
 wait_for_unlock(day, year)
 
 real_input = get_or_save(dayurl + "/input", real_inputfile).splitlines()
-print_input_stats(real_input)
 print()
 
 wrong_ans_file = workdir + "wrong_ans"
@@ -193,9 +192,8 @@ def html_entities(s):
         "&lt;", "<").replace("&amp;", "&")
 
 
-def find_examples(part):
+def find_examples(part, s):
     inputfile = workdir+"input1"
-    pagefile = f"{workdir}/page{part}.html"
     outputfile = workdir+"output1-"+part
 
     might_have_inline_ex = len(real_input) <= 2
@@ -203,7 +201,6 @@ def find_examples(part):
 
     if not os.path.isfile(inputfile):
         print("Trying to find sample input to save in ", inputfile)
-        s = get_or_save(dayurl, pagefile)
         looked = True
 
         eg = tags("code", tags("pre", s), True, True, False)
@@ -223,16 +220,14 @@ def find_examples(part):
 
     if not os.path.isfile(outputfile):
         print("Trying to find sample output to save in", outputfile)
-        s = get_or_save(dayurl, pagefile)
         looked = True
 
-        completed = s.count("Your puzzle answer was")
-        if str(completed+1) != part:
-            raise Exception(
-                f"the given part ({part}) cannot be done when {completed} are completed")
-
-        if part == "2":
-            s = s[s.find("--- Part Two ---"):]
+        find_res = s.find("--- Part Two ---")
+        if find_res > -1:
+            if part == "1":
+                s = s[:find_res]
+            else:
+                s = s[find_res:]
 
         # lists may contain other examples, but (usually) not the answer to the current example
         if might_have_inline_ex:
@@ -255,9 +250,12 @@ def find_examples(part):
 
     if might_have_inline_ex and looked:
         # find more inline examples
-        s = get_or_save(dayurl, pagefile)
-        if part == "2":
-            s = s[s.find("--- Part Two ---"):]
+        find_res = s.find("--- Part Two ---")
+        if find_res > -1:
+            if part == "1":
+                s = s[:find_res]
+            else:
+                s = s[find_res:]
 
         s = remove_tags("pre", s)
 
@@ -446,19 +444,44 @@ def wait_for_changes(file):
         exit(1)
 
 
+def get_page(part):
+    final_file = workdir+"pagefinal.html"
+    if os.path.isfile(final_file):
+        s = read_string(final_file)
+    else:
+        part_file = f"{workdir}/page{part}.html" if part else None
+        s = get_or_save(dayurl, part_file)
+    completed = s.count("Your puzzle answer was")
+    if completed == 2:
+        writeTo(final_file, s)
+    if completed == 1:
+        writeTo(workdir+"page2.html", s)
+    if completed == 0:
+        writeTo(workdir+"page1.html", s)
+        if part == "2":
+            raise Exception("Con't do part 2 without having completed part 1")
+    return s
+
+
 def doPart(part=None):
     global bad_submittime
-    if part is None:
-        s = get_or_save(dayurl, None)
-        completed = s.count("Your puzzle answer was")
-        if completed > 1:
-            raise Exception("You've already done enough parts")
-        part = str(completed+1)
-        writeTo(f"{workdir}/page{part}.html", s)
-    else:
-        part = str(part)
+    s = get_page(part)
+    completed = s.count("Your puzzle answer was")
+    if not part:
+        part = str(min(completed+1, 2))
+    no_submit = False
+    if int(part) >= completed:
+        no_submit = True
+        correct_answers = []
+        for p in tags("p", s):
+            if p.startswith("Your puzzle answer was"):
+                correct_answers.append(tags("code", p)[0])
+        correct_answer = correct_answers[int(part)-1]
 
-    find_examples(part)
+    find_examples(part, s)
+
+    print("Real input stats:")
+    print_input_stats(real_input)
 
     ns = 0
     while True:
@@ -483,6 +506,15 @@ def doPart(part=None):
             print("Verified example answers: ", good_answers)
             print("Unverified example answers: ", unknown_answers)
             print("Real answer: ", answer)
+
+            if no_submit:
+                print("\nNot submitting, as already completed.")
+                if answer == correct_answer:
+                    print("Correct answer.")
+                    exit(0)
+                else:
+                    print(f"Incorrect answer. Expecting {correct_answer}")
+                    exit(1)
 
             # do some checks on answer
             if (len(answer) < 3):

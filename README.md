@@ -11,7 +11,12 @@ My inputs aren't included.
 
 ## Dependencies
 - Python >= 3.9
-- `sudo apt install inotify-tools` (Linux) / `brew install fswatch` (Mac) (for the autotester) 
+- Linux specific for autotester:
+-- `sudo apt install inotify-tools` 
+- Mac specific for autotester:
+-- `brew install fswatch` 
+-- `brew instale coreutils` 
+-- `alias timout=gtimeout` 
 
 ## Utility scripts
 - `aocfetch [day] [year]` - Downloads your input. Requires env var `AOC_KEY` to be set to your session cookie, which can be found via the network tools of your browser.

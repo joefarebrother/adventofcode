@@ -1,6 +1,6 @@
 from utils import *
 
-inp = ints(readlines(7)[0].split(","))
+inp = ints(inp_readlines()[0].split(","))
 
 
 def tri(n):
@@ -8,11 +8,11 @@ def tri(n):
 
 
 def fuel_to1(x):
-    return(sum(dist(x, i) for i in inp))
+    return (sum(dist(x, i) for i in inp))
 
 
 def fuel_to2(x):
-    return(sum(tri(dist(x, i)) for i in inp))
+    return (sum(tri(dist(x, i)) for i in inp))
 
 
 print("Part 1: ", min(map(fuel_to1, inp)))

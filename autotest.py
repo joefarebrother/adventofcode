@@ -309,7 +309,7 @@ def run_examples(part):
     unk = []
 
     for f in sorted(os.listdir(workdir)):
-        m = re.fullmatch(r'test(\d+).in')
+        m = re.fullmatch(r'test(\d+).in', f)
         if f:
             try:
                 idx = int(m.groups(1))

@@ -1,6 +1,6 @@
 from utils import *
 
-inp = ints(readlines(1))
+inp = ints(inp_readlines())
 
 
 def increases(xs):

@@ -6,7 +6,7 @@ m = None
 #     m = sys.argv[1]
 #     sys.argv = [sys.argv[0]]
 
-inp = readlines(24)
+inp = inp_readlines()
 
 prog = [l.split() for l in inp]
 

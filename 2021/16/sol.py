@@ -1,7 +1,7 @@
 from dataclasses import field
 from utils import *
 
-inp = readlines(16)[0]
+inp = inp_readlines()[0]
 inp = bin(int(inp, 16))[2:].rjust(len(inp)*4, "0")
 
 

@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(21)
+inp = inp_readlines()
 
 die = 0
 

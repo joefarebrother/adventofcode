@@ -2,7 +2,7 @@
 from utils import *
 import math
 
-time, busses_r = readlines("13.in")
+time, busses_r = inp_readlines()
 print(time)
 time = int(time)
 busses = ints_in(busses_r)

@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(17)
+inp = inp_readlines()
 
 minx, maxx, miny, maxy = ints_in(inp[0])
 target = Rectangle((minx, miny), (maxx, maxy))

@@ -1,6 +1,6 @@
 from utils import *
 
-inp = ints(readlines(6)[0].split(","))
+inp = ints(inp_readlines()[0].split(","))
 
 amts = Counter(inp)
 

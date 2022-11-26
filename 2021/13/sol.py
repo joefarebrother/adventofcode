@@ -1,6 +1,6 @@
 from utils import *
 
-coords, folds = groups(13)
+coords, folds = inp_groups()
 
 grid = Grid()
 for row in coords:

@@ -3,7 +3,7 @@ from utils import *
 
 food = []
 als = set()
-for f in readlines("21.in"):
+for f in inp_readlines():
     f, al = f.split(" (contains ")
     al = tuple(al[:-1].split(", "))
     ing = f.split(" ")

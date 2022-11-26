@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-instrs = readlines("12.in")
+instrs = inp_readlines()
 
 # Original version is in the commit history
 

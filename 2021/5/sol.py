@@ -1,6 +1,6 @@
 from utils import *
 
-inp = [ints_in(l) for l in readlines(5)]
+inp = [ints_in(l) for l in inp_readlines()]
 
 straight_lines = []
 diags = []

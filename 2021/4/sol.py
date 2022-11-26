@@ -1,6 +1,6 @@
 from utils import *
 
-inp = groups(4)
+inp = inp_groups()
 
 nums = ints(inp[0][0].split(","))
 

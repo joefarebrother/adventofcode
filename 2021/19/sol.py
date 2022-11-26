@@ -1,6 +1,6 @@
 from utils import *
 
-inp = groups(19)
+inp = inp_groups()
 
 scanners = []
 for gr in inp:

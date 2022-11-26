@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(3)
+inp = inp_readlines()
 
 
 def most_common(pos, xs):  # 1 on a tie

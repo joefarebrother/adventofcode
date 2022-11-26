@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(12)
+inp = inp_readlines()
 
 gr = defaultdict(list)
 

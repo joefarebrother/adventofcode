@@ -1,7 +1,7 @@
 from utils import *
 import dataclasses
 
-inp = readlines(22)
+inp = inp_readlines()
 
 g = defaultdict(bool)
 instrs = []

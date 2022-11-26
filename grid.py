@@ -1,7 +1,7 @@
 from collections import Counter
 from typing import Callable
 from geom import Rectangle, bounding_box, is_pos_ty, pos_as
-from input_utils import readlines
+from input_utils import inp_readlines
 from collections.abc import MutableMapping
 
 
@@ -31,7 +31,7 @@ class Grid(MutableMapping):
 
     def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None, keyty=complex):
         if isinstance(grid, str) or isinstance(grid, int):
-            grid = readlines(grid)
+            grid = inp_readlines()
 
         if grid == None:
             grid = {}

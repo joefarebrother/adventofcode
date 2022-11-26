@@ -1,6 +1,6 @@
 from utils import *
 
-enh, img = groups(20)
+enh, img = inp_groups()
 enh = "".join(enh)
 
 img = Grid(img)

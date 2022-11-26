@@ -7,7 +7,7 @@ maskm = 0
 mask = None
 mtab = str.maketrans("X01", "100")
 
-inp = [l.split(" = ") for l in readlines("14.in")]
+inp = [l.split(" = ") for l in inp_readlines()]
 
 for (loc, val) in inp:
     if loc == "mask":

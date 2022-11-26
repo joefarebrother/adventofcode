@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-lines = readlines("18.in")
+lines = inp_readlines()
 
 
 # class Tree:

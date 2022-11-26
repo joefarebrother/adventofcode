@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-keys = ints(readlines("25.in"))
+keys = ints(inp_readlines())
 #keys = [5764801, 17807724]
 
 # transform(sub): subject ^ loop_size % 20201227

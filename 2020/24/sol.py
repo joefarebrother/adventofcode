@@ -39,7 +39,7 @@ def parse(line):
 
 black = ApproxSet()
 
-for l in readlines("24.in"):
+for l in inp_readlines():
     ds = parse(l)
     pos = 0j
     for d in ds:

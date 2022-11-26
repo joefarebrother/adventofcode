@@ -6,7 +6,7 @@ def parse(l):
     return match(r'([a-z]{3}) ([+-]\d*)', l)
 
 
-sprog = [parse(l) for l in readlines("8.in")]
+sprog = [parse(l) for l in inp_readlines()]
 
 
 def run(prog):

@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-p1, p2 = groups("22.in")
+p1, p2 = inp_groups()
 p1 = ints(p1[1:])
 p2 = ints(p2[1:])
 
@@ -27,7 +27,7 @@ def score(w):
 
 print(score(w))
 
-p1, p2 = groups("22.in")
+p1, p2 = inp_groups()
 p1 = ints(p1[1:])
 p2 = ints(p2[1:])
 

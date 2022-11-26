@@ -2,7 +2,7 @@
 from utils import *
 import itertools
 
-nums = ints(readlines("9.in"))
+nums = ints(inp_readlines())
 print(nums)
 
 invalid = None

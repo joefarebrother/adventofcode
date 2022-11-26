@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-rules, ms = groups("19.in")
+rules, ms = inp_groups()
 
 prules = {}
 for r in rules:

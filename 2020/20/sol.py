@@ -39,15 +39,15 @@ r = D8(1j, False)
 f = D8(1, True)
 e = D8(1, False)
 assert (r*r*r*r == e)
-assert(f*f == e)
-assert(f*r*f == r.inv())
+assert (f*f == e)
+assert (f*r*f == r.inv())
 d8 = [D8(rot, flip)
       for (rot, flip) in it.product(neighbours(0), [False, True])]
 r2 = r*r
 r3 = r.inv()
 
 tiles = {}
-for gr in groups("20.in"):
+for gr in inp_groups():
     n, gr = gr[0], gr[1:]
     tiles[ints_in(n)[0]] = Grid(gr)
 

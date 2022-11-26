@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(8)
+inp = inp_readlines()
 
 """
   0:      1:      2:      3:      4:

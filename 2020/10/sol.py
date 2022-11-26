@@ -1,7 +1,7 @@
 # pylint: disable=unused-wildcard-import
 from utils import *
 
-nums = [0] + sorted(ints(readlines("10.in")))
+nums = [0] + sorted(ints(inp_readlines()))
 
 diffs = [nums[i+1] - nums[i] for i in range(len(nums)-1)] + [3]
 print(diffs)

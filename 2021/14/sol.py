@@ -1,6 +1,6 @@
 from utils import *
 
-inp = readlines(14)
+inp = inp_readlines()
 
 pol = inp[0]
 rules = defaultdict(str, [l.split(" -> ") for l in inp[2:]])

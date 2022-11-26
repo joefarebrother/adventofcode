@@ -1,6 +1,6 @@
 from utils import *
 
-oginp = readlines(18)
+oginp = inp_readlines()
 inp = [eval(i) for i in oginp]
 
 

@@ -25,14 +25,13 @@ except:
 manual_input = [(2021, 13)]
 
 curdir = os.path.dirname(sys.argv[0])
-files = os.listdir(f"{curdir}/{year}")
 
 success = 0
 fail = []
 for day in range(1, 26):
     if (year, day) in manual_input:
         continue
-    if f"day{day}.py" in files:
+    if os.path.exists(f"{curdir}/{year}/{day}/sol.py"):
         print(f"\n======== Testing year {year} day {day} ========\n")
         if (os.system(f"{curdir}/autotest.py {year} {day}")):
             fail.append(day)

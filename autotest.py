@@ -401,8 +401,9 @@ def answer_in_out(out: list[str], part):
                 o = o[len("part 1"):].strip(":").split()
                 if o:
                     return o[-1]
-        else:
-            nout.append(o)
+            if o.lower().startswith("part 2") and part == "1":
+                return None
+        nout.append(o)
     nout = " ".join(nout).split()
     if nout:
         return nout[-1]

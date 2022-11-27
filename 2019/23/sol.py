@@ -32,17 +32,12 @@ def inpfun(m):
 
 nat = [0, 0]
 
-have_p1 = False
-
 
 def outfun(m, v):
     global nat, have_p1
     m.out += [v]
     if len(m.out) == 3:
         if m.out[0] == 255:
-            if not have_p1:
-                print("part 1", end="")
-                have_p1 = True
             print(m.out[2])
             nat = m.out[1:]
         else:

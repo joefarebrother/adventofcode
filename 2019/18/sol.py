@@ -24,7 +24,7 @@ def get_dists_from(spos):
         if c != '#':
             return [(q, doors) for q in neighbours(p)]
     gr = FGraph(adj, key=lambda p_: p_[0])
-    for ((p, doors), dist) in gr.BFS_gen((spos, frozenset())):
+    for ((p, doors), dist) in gr.BFS((spos, frozenset())):
         c = grid[p]
         if c.islower():
             res[c] = (doors, dist)

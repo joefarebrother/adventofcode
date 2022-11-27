@@ -55,7 +55,7 @@ def adj1(p):
         return res
 
 
-print(FGraph(adj1).BFS(start, end))
+print("Part 1:", FGraph(adj1).BFS(start).dist(end))
 
 
 def adj2(p_):
@@ -70,5 +70,5 @@ def adj2(p_):
         return res
 
 
-print(FGraph(adj2).dist1().astar(
-    (start, 0), (end, 0), h=lambda p_: p_[1]*1000)[1])
+print("Part 2:", FGraph(adj2).dist1().astar(
+    (start, 0), h=lambda p_: p_[1]*1000).dist((end, 0)))

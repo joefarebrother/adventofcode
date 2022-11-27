@@ -19,7 +19,7 @@ def adj(p):
 
 ct = []
 for l in low:
-    ct.append(sum(1 for _ in FGraph(adj).BFS_gen(l)))
+    ct.append(sum(1 for _ in FGraph(adj).BFS(l)))
 
 big = sorted(ct, reverse=True)[:3]
 print("Part 2: ", big, math.prod(big))

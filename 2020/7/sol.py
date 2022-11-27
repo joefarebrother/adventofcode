@@ -12,10 +12,10 @@ for line in rules:
             (num, col) = match(r'(\d*) ([a-z ]*) bags?', ch, exact=False)
             bags[root][col] = num
 
-cols = set(DGraph(bags).reverse().DFS_gen("shiny gold"))
+cols = set(DGraph(bags).reverse().DFS("shiny gold"))
 
 print(cols)
-print(len(cols)-1)
+print("Part 1:", len(cols)-1)
 
 
 def nest(col):
@@ -25,4 +25,4 @@ def nest(col):
     return tot
 
 
-print(nest("shiny gold")-1)
+print("Part 2:", nest("shiny gold")-1)

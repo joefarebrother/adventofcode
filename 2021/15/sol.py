@@ -9,7 +9,7 @@ def path(grid):
     start = 0
     end = (grid.width()-1) + (grid.height()-1)*1j
 
-    return FGraph(adj).dijkstra(start, end)[1]
+    return FGraph(adj).dijkstra(start).dist(end)
 
 
 print("Part 1:", path(inp))

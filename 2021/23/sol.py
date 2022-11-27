@@ -139,7 +139,7 @@ def h(occ):
     return res
 
 
-end, d = gr.astar(frozenset(occupied.items()), end_cond, h)
+end, d = gr.astar(frozenset(occupied.items()), h).find(end_cond)
 # end, d = gr.DAG_search(frozenset(occupied.items()), end_cond)
 print("====")
 for occ in gr.get_path(end):

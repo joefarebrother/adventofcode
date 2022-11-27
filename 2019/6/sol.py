@@ -23,8 +23,8 @@ def path(start, end):
     return d if found else 100000000000
 
 
-print(sum(counts.values()))  # part 1
+print("Part 1:", sum(counts.values()))  # part 1
 
-_, minorb = graph.sym().BFS("YOU", "SAN")
+minorb = graph.sym().BFS("YOU").dist("SAN")
 
-print(minorb-2)
+print("Part 2:", minorb-2)

@@ -47,7 +47,7 @@ class MGraph(AbGraph):  # floodfill
                 mach.send_input([0, 2, 1, 4, 3][i])
 
 
-MGraph().DFS(0j)
+MGraph().DFS(0j).exhaust()
 
 
 draw(0j)
@@ -59,5 +59,5 @@ print(target_pos)
 
 maze = FGraph(lambda p: neighbours(p) if known_tiles[p] != 2 else [])
 
-print("part 1: ", maze.BFS(target_pos, 0j)[1])
-print("part 2: ", maze.BFS(target_pos)[1])
+print("part 1: ", maze.BFS(target_pos).dist(0j))
+print("part 2: ", maze.BFS(target_pos).exhaust().max_dist)

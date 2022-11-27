@@ -11,7 +11,7 @@ class AbGraph():
     An abstract class for implementing various graph search operations.
 
     During such traversals, self.prev is a dict to help reconstruct path info.
-    Each generator yields (n, d) for node n at distance d from the start.
+    Traversals yield (n, d) for node n at distance d from the start.
     """
 
     def __init__(self):
@@ -89,9 +89,10 @@ class AbGraph():
         """
         return reversed(list(self.get_rev_path(end, keys_only)))
 
-    def DFS_gen(self, start):
+    def DFS(self, start):
         """
-        A generator that yields the nodes reachable from start in a depth first order along eith their distances.
+        Traverses the graph in a depth first order.
+        Distances are ignored and treated as 1.
         """
         self.prev = {}
 
@@ -103,33 +104,26 @@ class AbGraph():
                 for next in self[node]:
                     yield from trav(next, d+1, node)
 
-        yield from trav(start, 0, None)
-
-    def DFS(self, start, end=None):
-        """
-        Traverses the graph in a depth first order until end is found or the search space is exhausted.
-
-        Returns (endpoint, d) if an endpoint was found d steps from the start, and (None, d) if it wasn't and d is the maximum depth.
-        """
-        return _consume(self.DFS_gen(start), end)
+        return GraphSearchResult(self, trav(start, 0, None))
 
     def topsort(self, start) -> list:
         """
         Returns the nodes reachable from start in a topologically sorted order.
         """
-        return [n for (n, d) in self.DFS_gen(start)]
+        return [n for (n, d) in self.DFS(start)]
 
     def leaves(self, start):
         """
         Computes the leaves (nodes with no adjacent nodes) reachable from the start.
         """
-        for (node, _) in self.DFS_gen(start):
+        for (node, _) in self.DFS(start):
             if not self.adj(node):
                 yield node
 
-    def BFS_gen(self, start):
+    def BFS(self, start):
         """
-        A generator that yields nodes reachable from start in a breadth first order along.
+        Traverses the graph in a breadth-first order.
+        Distances are ignored and treated as 1.
 
         While running, self.queue is set to the queue. Shouldn't be modified - just for debugging purposes.
         """
@@ -138,36 +132,28 @@ class AbGraph():
         self.queue = queue
         self.prev = {}
 
-        while len(queue) > 0:
-            node, d, prev = queue.popleft()
-            if self.key(node) not in self.prev:
-                self.prev[self.key(node)] = prev
-                yield (node, d)
+        def go():
+            while len(queue) > 0:
+                node, d, prev = queue.popleft()
+                if self.key(node) not in self.prev:
+                    self.prev[self.key(node)] = prev
+                    yield (node, d)
 
-            for next in self[node]:
-                k = self.key(next)
-                if k not in self.prev:
-                    queue.append((next, d+1, node))
+                for next in self[node]:
+                    k = self.key(next)
+                    if k not in self.prev:
+                        queue.append((next, d+1, node))
 
-    def BFS(self, start, end=None):
+        return GraphSearchResult(self, go())
+
+    def astar(self, start, h=lambda _: 0, incon_cb=lambda x, y: None):
         """
-        Traverses the graph in a breadth first order until end is reached or until the search space is exhausted.
-        end may be a predicate, a value (in which case it's compared to node), or None.
+        Traverses the graph using A*/Dijkstra's algorithm.
 
-        Returns
-         (endpoint, d) if and endpoint end is found and d is the distance to it,
-         (None, d) if the endpoint wasn't found and d is the maximum distance encountered.
-        """
-        return _consume(self.BFS_gen(start), end)
-
-    def astar_gen(self, start, h=lambda _: 0, incon_cb=lambda x, y: None):
-        """
-        A generator that traverses the graph sing the A* algorithm / dijkstra's algorithm.
-
-        h is the heuristic function, aproximating distance to the goal.
-        When constant, it's djikstra's.
-        Should be admisable (doesn't overapproximate total distance to the goal) in order to return optimal distances.
-        When consistent (i.e. h(x) <= d(x,y) + h(y)), it's admisable.
+        h is the heuristic function, approximating distance to the goal.
+        When constant, it's dijkstra's.
+        Should be admissable (doesn't overapproximate total distance to the goal) in order to return optimal distances.
+        When consistent (i.e. h(x) <= d(x,y) + h(y)), it's admissable, and the algorithm is optimally efficient.
         Calls incon_cb the first time it detects that the heuristic is inconsistent.
 
         While running, self.pqueue is set to the priority queue, and self.dists is set to the distances map.
@@ -176,53 +162,38 @@ class AbGraph():
         # (d(start, x) + h(x), d(start, x), tiebreak, x, prev)
         pqueue = [(h(start), 0, 0, start, None)]
         self.pqueue = pqueue
-        i = 0
+
         dists = {self.key(start): 0}
         self.dists = dists
         self.prev = {}
-        warned = False
-        while len(pqueue) > 0:
-            _, d, _, node, prev = heappop(pqueue)
-            if dists[self.key(node)] < d:
-                continue
 
-            self.prev[self.key(node)] = prev
-            yield (node, d)
-
-            for next, nd in self[node].items():
-                k = self.key(next)
-                if k in dists and dists[k] <= d+nd:
+        def go():
+            i = 0
+            warned = False
+            while len(pqueue) > 0:
+                _, d, _, node, prev = heappop(pqueue)
+                if dists[self.key(node)] < d or self.key(node) in self.prev:
                     continue
-                if not warned:
-                    hx = h(node)
-                    hy = h(next)
-                    if hx > nd + hy:
-                        warned = True
-                        print("Warning: heuristic not consistent: x=",
-                              node, " y=", next, "d=", nd, "hx-hy=", hx-hy, "hx=", hx, "hy=", hy)
-                        incon_cb(node, next)
-                dists[k] = d+nd
-                i += 1
-                heappush(pqueue, (d+nd+h(next), d+nd, i, next, node))
 
-    dijkstra_gen = astar_gen
+                self.prev[self.key(node)] = prev
+                yield (node, d)
 
-    def astar(self, start, end, h=lambda _: 0, incon_cb=lambda x, y: None):
-        """
-        Traverses the graph using the A* algorithm / djikstra's algorithm entil the end is reached or the search space is exhausted.
-        end may be a predicate, a value (in which case it's compared to node), or None.
-
-        h is the heuristic function, aproximating distance to the goal.
-        When constant 0 (the default), it's djikstra's.
-        When admisable (never overetimates distance to the goal), returned paths are optimal.
-        When consistent (never overestimates a single step - i.e. h(x) <= h(y) + d(x,y)), it's admisable and the algorithm is optimally efficient.
-        Calls incon_cb the first time it detects that the heuristic is inconsistent.
-
-        Returns:
-        - (endpoint, d) if end was found at distance d from the start.
-        - (None, dists) if end was not found, and dist is the distances map.
-        """
-        return _consume(self.astar_gen(start, h, incon_cb), end, lambda: self.dists)
+                for next, nd in self[node].items():
+                    k = self.key(next)
+                    if k in dists and dists[k] <= d+nd:
+                        continue
+                    if not warned:
+                        hx = h(node)
+                        hy = h(next)
+                        if hx > nd + hy:
+                            warned = True
+                            print("Warning: heuristic not consistent: x=",
+                                  node, " y=", next, "d=", nd, "hx-hy=", hx-hy, "hx=", hx, "hy=", hy)
+                            incon_cb(node, next)
+                    dists[k] = d+nd
+                    i += 1
+                    heappush(pqueue, (d+nd+h(next), d+nd, i, next, node))
+        return GraphSearchResult(self, go())
 
     dijkstra = astar
 
@@ -266,13 +237,40 @@ class AbGraph():
         return (None, None)
 
 
-def _consume(gen, end, onfail=None):
-    maxd = 0
-    for n, d in gen:
-        if _is_end(end, n):
-            return (n, d)
-        maxd = max(d, maxd)
-    return (None, onfail() if onfail else maxd)
+class GraphSearchResult:
+    def __init__(self, graph, it):
+        self.graph = graph
+        self.it = it
+
+    def __iter__(self):
+        return self.it
+
+    def exhaust(self):
+        """Exhausts the full search space."""
+        for _, d in self:
+            self.max_dist = d
+        return self
+
+    def find(self, end_cond):
+        """
+        Finds the given end point. This can be a value that's compared for equality, or a function.
+        Returns (n,d) where n is the node reached and d is the distance; or (None, math.inf) if no end was reached.
+        """
+        for n, d in self:
+            if _is_end(end_cond, n):
+                return (n, d)
+        return (None, math.inf)
+
+    def dist(self, end_cond):
+        """
+        Returns the distance to the given end point, or math.inf if it could not be found.
+        """
+        return self.find(end_cond)[1]
+
+    def all_dists(self):
+        """Exhausts the search space and returns the full distances map"""
+        self.exhaust()
+        return self.graph.dists
 
 
 def _is_end(end, node):
@@ -286,7 +284,7 @@ def _is_end(end, node):
 
 class FGraph(AbGraph):
     """
-    Graph constructed with its asjancency function.
+    Graph constructed with its adjacency function.
     """
 
     def __init__(self, adj: Callable, key=None):

@@ -15,8 +15,8 @@ from time import sleep
 usage = """
 Python script for advent of code which downloads the problem description,
 attempts to extract sample input and corresponding output,
-then runs day{n}.py (where n is the day) on the sample input whenever day{n}.py is modified until
-day{n}.py gives the sample output. When it does, day{n}.py gets run on the real input
+then runs sol.py on the sample input whenever sol.py is modified until
+sol.py gives the sample output. When it does, sol gets run on the real input
 and if that succeeds, the last printed word gets submitted automatically.
 
 Call as `autotest.py {year} {day} [{part}]`, `autotest.py {day}`, or `autotest.py`; with the
@@ -27,41 +27,33 @@ If part is given, only run for the given part.
 If called with the current day as input (which is the default if year and day are ommited), before the puzzle
 unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone is GMT.
 
-Files used:
-day{n}.py   This program assumes that your solution for the part you are
+Files used, all under {year}/{day}:
+sol.py      This program assumes that your solution for the part you are
             currently working on is in this file.
-            Run as `python3 day{n}.py {input}` where {input} is the name of
-            a file from which day{n}.py is expected to read the input
+            Run as `python3 sol.py {input}` where {input} is the name of
+            a file from which sol.py is expected to read the input
             for the day's problem
 
-{n}.in      Your personal input (https://adventofcode.com/{year}/day/{day}/input)
+real.in      Your personal input (https://adventofcode.com/{year}/day/{day}/input)
 
-The following files are all stored in test/{year}/{day}
-input1      The automatically extracted sample input
+test{n}.in  The automatically extracted sample input
             By default this is the first non-inline code block.
             It may be wrong, and if so you must manually edit it and restart this
             program if you want it to work correctly.
-            If no appropriate sample input is found, the program will still run but will require confrmation before submitting results.
+            If no appropriate sample input is found, the program will still run but will require confirmation before submitting results.
+            Input 1 is generated automatically; subsequent inputs may be generated if they come from inline examples.
+            Test input files can also be created manually and will be run.
 
-output1-1   The automatically extracted sample output for part 1
-            By default, this is the last highlighed thing at the end of a code tag.
-            It may be wrong, and if so you must manually edit it and restart this
-            program if you want it to work correctly.
-            If no appropriate sample output is found, the program will still run but will require confrmation before submitting results.
+test{n}-part{p}.out   The automatically extracted sample output for the given part
+                      By default, this is the last highlighted thing at the end of a code tag.
+                      It may be wrong, and if so you must manually edit it and restart this
+                      program if you want it to work correctly.
+                      If no appropriate sample output is found, this file will contain [NONE], 
+                      and the program will still run but will require confirmation before submitting results.
 
-output1-2   The automatically extracted sample output for part 2
-
-input{n}    Input file for additional examples.
-            Will not be created automatically, but will be run if created manually.
-output{n}-1 Output file for additional examples for part 1.
-            Will not be created automatically, but will be run if created manually.
-            If the contents are [NONE], the example will be run but the output will not be verified.
-            An answer with no verified example outputs will not be submitted without confirmation.
-output{n}-2 Output file for additional examples for part 2.
-
-page1.html  the page when solving part 1
-page2.html  the page when solving part 2
-wrong_ans   a text file containing a list of answers which have been rejected
+page{p}.html    the page when solving part {p}
+pagefinal.html  the page afrer both parts have been solved.
+wrong_ans   a text file containing a list of answers which have been rejected, as well as whether they were too high or low.
             Hopefully avoids repeatedly submitting wrong answers
             Does not distinguish between part 1 and part 2
 

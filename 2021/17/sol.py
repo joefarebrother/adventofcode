@@ -8,7 +8,7 @@ target = Rectangle((minx, miny), (maxx, maxy))
 
 def step(p, v):
     p += v
-    xv, yv = pos_as(tuple, v)
+    xv, yv = IVec2(v)
     xv -= sign(xv)
     yv -= 1
     return p, complex(xv, yv)

@@ -4,21 +4,156 @@ import cmath
 import itertools
 from misc_utils import irange, bounds, DotDict
 
-Position = Union[complex, tuple]
+
+class IVec2:
+    """
+    A 2d vector of integers. 
+    Can be used like a complex number or a tuple.
+    """
+
+    __slots__ = "x", "y"
+    _cache = {}
+
+    def __new__(cls, x, y=None):
+        if isinstance(x, cls):
+            return x
+        if (x, y) in cls._cache:
+            return cls._cache[x, y]
+        if y is None:
+            if type(x) in (int, float, complex):
+                x = complex(x)
+                ix, iy = x.real, x.imag
+            else:
+                ix, iy = x
+        else:
+            ix, iy = x, y
+        s = super(IVec2, cls).__new__(cls)
+        s.x = int(ix)
+        s.y = int(iy)
+        cls._cache[x, y] = s
+        return s
+
+    @property
+    def real(self) -> int:
+        return self.x
+
+    @property
+    def imag(self) -> int:
+        return self.y
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+    def __eq__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return (self.x, self.y) == (other.x, other.y)
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
+
+    def __getitem__(self, idx):
+        if idx == 0:
+            return self.x
+        if idx == 1:
+            return self.y
+        return NotImplemented
+
+    def __repr__(self):
+        return f"IVec2({self.x}, {self.y})"
+
+    def __complex__(self):
+        return self.x + 1j*self.y
+
+    def __add__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(self.x+other.x, self.y+other.y)
+
+    def __sub__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(self.x-other.x, self.y-other.y)
+
+    __radd__ = __add__
+
+    def __rsub__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(other.x-self.x, other.y-self.y)
+
+    def __mul__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(complex(self)*complex(other))
+
+    __rmul__ = __mul__
+
+    def __truediv__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(complex(self)/complex(other))
+
+    def __rtruediv__(self, other):
+        try:
+            other = IVec2(other)
+        except:
+            return NotImplemented
+        return IVec2(complex(other)/complex(self))
+
+    def conjugate(self):
+        return IVec2(self.x, -self.y)
+
+    def abs(self) -> float:
+        """Returns the Euclidean distance to the origin."""
+        return abs(complex(self))
+
+    __abs__ = abs
+
+    def man_abs(self) -> int:
+        """Returns the Manhattan distance to the origin"""
+        return abs(self.x)+abs(self.y)
+
+    def angle(self) -> float:
+        """Returns the angle as seen from the origin, in the range [0,tau). This is anticlockwise in the y-is-up convention."""
+        ang = cmath.phase(complex(self))
+        if ang < 0:
+            ang += cmath.tau
+        return ang
+
+    def neighbours(self):
+        """Returns the 4 orthogonal neighbours of self"""
+        return [self+1j**dir for dir in range(4)]
+
+    def neighbours8(self):
+        """Returns the 8 neighbours of self"""
+        return [self+d for d in Rectangle(-1-1j, 1+1j) if d != 0j]
 
 
 class Rectangle:
     """
-    A rectangle.
+    A rectangle with integer coordinates.
 
     Rectangle(*ps) is the bounding box of the given points. These points are inclusive.
-    If ints is True, all coordinates will be converted to ints.
     Rectangle() represents an empty rectangle.
 
     Supports addition of points and other rectangles.
     """
 
-    def __init__(self, *ps: Position, ints=True):
+    def __init__(self, *ps, ints=True):
         if len(ps) == 0:
             self.minx, self.maxx, self.miny, self.maxy = None, None, None, None
         else:
@@ -26,7 +161,7 @@ class Rectangle:
                 # internal optimisation
                 (_, self.minx, self.miny, self.maxx, self.maxy) = ps
             else:
-                ps = [pos_as(tuple, p, ints) for p in ps]
+                ps = [IVec2(p) for p in ps]
                 xs = [x for (x, y) in ps]
                 ys = [y for (x, y) in ps]
 
@@ -51,21 +186,19 @@ class Rectangle:
     def xrange(self) -> range:
         """
         Returns the range of x-positions this rectangle spans.
-        Only valid if the coordinates are integers.
         """
         return irange(self.minx, self.maxx) if self else range(0)
 
     def yrange(self) -> range:
         """
         Returns the range of y-positions this rectangle spans.
-        Only valid if the coordinates are integers.
         """
         return irange(self.miny, self.maxy) if self else range(0)
 
-    def points(self, ty=complex):
+    def points(self):
         for x in self.xrange():
             for y in self.yrange():
-                yield pos_as(ty, (x, y))
+                yield IVec2(x, y)
 
     def expand_1(self):
         return Rectangle((self.minx-1, self.miny-1), (self.maxx+1, self.maxy+1))
@@ -74,53 +207,54 @@ class Rectangle:
         return self.points()
 
     def __contains__(self, other):
-        if is_pos(other):
+        try:
             if not self:
                 return False
-            (x, y) = pos_as(tuple, other)
+            (x, y) = IVec2(other)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
-        return NotImplemented
+        except:
+            return NotImplemented
 
     def __le__(self, other):
         if not isinstance(other, Rectangle):
             return NotImplemented
         return all([p in other for p in self.opposite_corners()])
 
-    def corners(self, ty=complex) -> list[Position]:
+    def corners(self) -> list[IVec2]:
         """
-        Returns the 4 corners of this rectangle, as positions of the given type. Order unspecified.
+        Returns the 4 corners of this rectangle. Order unspecified.
         """
         if not self:
             return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
-        corners = [(minx, miny), (minx, maxy), (maxx, maxy), (maxx, miny)]
-        return [pos_as(ty, p) for p in corners]
+        return [IVec2(minx, miny), IVec2(minx, maxy), IVec2(maxx, maxy), IVec2(maxx, miny)]
 
-    def opposite_corners(self, ty=complex) -> list[Position]:
+    def opposite_corners(self) -> list[IVec2]:
         """
         Returns the 2 opposite corners with the min/max x/y positions.
         """
         if not self:
             return []
         minx, miny, maxx, maxy = self.minx, self.miny, self.maxx, self.maxy
-        corners = [(minx, miny), (maxx, maxy)]
-        return [pos_as(ty, p) for p in corners]
+        return [IVec2(minx, miny), IVec2(maxx, maxy)]
 
     def __add__(self, other):
         if isinstance(other, Rectangle):
             (p0, p1) = other.opposite_corners()
             return (self + p0) + p1
-        elif is_pos(other):
+        else:
+            try:
+                other = IVec2(other)
+            except:
+                return NotImplemented
             if other in self:
                 return self
-            return bounding_box(self.opposite_corners(tuple) + [other])
-        else:
-            return NotImplemented
+            return bounding_box(self.opposite_corners() + [other])
 
     __radd__ = __add__
 
     def __repr__(self):
-        return f"Rectangle{tuple(self.opposite_corners(tuple))}"
+        return f"Rectangle{tuple(self.opposite_corners())}"
 
     def __eq__(self, other):
         if not isinstance(other, Rectangle):
@@ -152,7 +286,6 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
     """
     Computes the intersection of the two given inclusive ranges, represented as tuples.
     Returns None if the intersection is empty.
-    Actual range objects aren't used because they can't contain floats.
     """
     (l1, h1) = r1
     (l2, h2) = r2
@@ -164,114 +297,62 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
         return None
 
 
-def bounding_box(points: Iterable[Position]) -> Rectangle:
+def bounding_box(points: Iterable) -> Rectangle:
     """
     Computes the bounding box of the given points.
     """
     return Rectangle(*points)
 
 
-def is_pos(pos) -> bool:
+def neighbours(p) -> list[IVec2]:
     """
-    Checks whether pos is a 2D position. Can be a complex number or a 2-tuple.
+    Returns the 4 orthogonal neighbours of p.
     """
-    if isinstance(pos, complex):
-        return True
-    if isinstance(pos, tuple):
-        return len(pos) == 2
-    return False
+    return IVec2(p).neighbours()
 
 
-def is_pos_ty(ty) -> bool:
-    """
-    Checks whether ty is a type that can represent a 2d position, i.e. complex or tuple.
-    """
-    return ty in [complex, tuple]
-
-
-def pos_as(ty, pos: Position, ints=False):
-    """
-    Converts the given position to the given type. Supported types are complex and tuple.
-    ints determines whther to cast complex coords to ints.
-    """
-    if pos == 0:
-        pos = 0j
-    if ty == type(pos):
-        if ints and ty == tuple:
-            return int(pos[0]), int(pos[1])
-        return pos
-    elif ty == tuple:
-        if type(pos) != complex:
-            raise TypeError("Expected a position (2-tuple or complex)")
-        tup = (pos.real, pos.imag)
-        return (int(tup[0]), int(tup[1])) if ints else tup
-    elif ty == complex:
-        if type(pos) != tuple or len(pos) != 2:
-            raise TypeError("Expected a position (2-tuple or complex)")
-        (x, y) = pos
-        return complex(x, y)
-    else:
-        raise ValueError("Unsupported position type", type)
-
-
-def neighbours(p: Position) -> list[complex]:
-    """
-    Returns the 4 orthoganal neighbours of p.
-    """
-    if p == 0:
-        p = 0j
-    p = pos_as(complex, p)
-    return [p+1j**dir for dir in range(4)]
-
-
-def neighbours8(p: Position) -> list[complex]:
+def neighbours8(p) -> list[IVec2]:
     """
     Returns the 8 neighbors of p. 
     """
-    z = pos_as(complex, p)
-    return [z+d for d in Rectangle(-1-1j, 1+1j) if d != 0j]
+    return IVec2(p).neighbours8()
 
 
-def dist(p1: Union[Position, int], p2: Union[Position, int] = 0j) -> float:
+def dist(p1, p2=0) -> float:
     """
-    Returns the Euclidian distance between the two specified points or ints.
+    Returns the Euclidean distance between the two specified points.
+    Returns an integer if both inputs are integers.
     """
-    if isinstance(p1, int) and (isinstance(p2, int) or p2 == 0j):
-        return int(abs(p1-p2))
-    return abs(pos_as(complex, p1) - pos_as(complex, p2))
+    if type(p1) == int and type(p2) == int:
+        return abs(p1-p2)
+    return abs(IVec2(p1)-p2)
 
 
-def man_dist(p1: Position, p2: Position = 0j, toint=True) -> float:
+def man_dist(p1, p2=0) -> int:
     """
-    Returns the manhatten distance between the two specified points.
-    Converts to an integer if toint is set.
+    Returns the Manhattan distance between the two specified points.
     """
-    diff = pos_as(complex, p1) - pos_as(complex, p2)
-    dist = abs(diff.real) + abs(diff.imag)
-    return int(dist) if toint else dist
+    return (IVec2(p1)-p2).man_abs()
 
 
-def angle(p0: Position, p1=None) -> float:
+def angle(p0, p1=None) -> float:
     """
     angle(p0) returns the angle of p as seen from the origin. 
     angle(p0, p1) returns the angle of p1 as seen from p0.
     Returns a float in [0,tau); which is anticlockwise in the y-is-up convention and clockwise in the y-is-down convention.
     """
     if p1 == None:
-        p = pos_as(complex, p1)
+        p = IVec2(p0)
     else:
-        p = pos_as(complex, p1) - pos_as(complex, p0)
-    ang = cmath.phase(p)  # range [-pi, pi]
-    if ang < 0:
-        ang += cmath.tau
-    return ang
+        p = IVec2(p1) - IVec2(p0)
+    return p.angle()
 
 
 Dirs = DotDict()
-Dirs.up = Dirs.U = Dirs.north = Dirs.N = 1j
-Dirs.down = Dirs.D = Dirs.south = Dirs.S = -1j
-Dirs.left = Dirs.L = Dirs.west = Dirs.W = -1+0j
-Dirs.right = Dirs.R = Dirs.east = Dirs.E = 1+0j
+Dirs.up = Dirs.U = Dirs.north = Dirs.N = IVec2(1j)
+Dirs.down = Dirs.D = Dirs.south = Dirs.S = IVec2(-1j)
+Dirs.left = Dirs.L = Dirs.west = Dirs.W = IVec2(-1+0j)
+Dirs.right = Dirs.R = Dirs.east = Dirs.E = IVec2(1+0j)
 
 Dirs.tL = 1j
 Dirs.tR = -1j
@@ -287,13 +368,13 @@ def _flipy(d):
 Dirs.flipy = _flipy(Dirs)
 
 HexDirs = DotDict()
-HexDirs.up = HexDirs.U = HexDirs.north = HexDirs.N = 2j
-HexDirs.down = HexDirs.D = HexDirs.south = HexDirs.S = -2j
-HexDirs.left = HexDirs.L = HexDirs.west = HexDirs.W = -2+0j
-HexDirs.right = HexDirs.R = HexDirs.east = HexDirs.E = 2+0j
-HexDirs.upleft = HexDirs.UL = HexDirs.northwest = HexDirs.NW = -1+1j
-HexDirs.upright = HexDirs.UR = HexDirs.norteast = HexDirs.NE = 1+1j
-HexDirs.downleft = HexDirs.DL = HexDirs.southwest = HexDirs.SW = -1-1j
-HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = +1+1j
+HexDirs.up = HexDirs.U = HexDirs.north = HexDirs.N = IVec2(2j)
+HexDirs.down = HexDirs.D = HexDirs.south = HexDirs.S = IVec2(-2j)
+HexDirs.left = HexDirs.L = HexDirs.west = HexDirs.W = IVec2(-2+0j)
+HexDirs.right = HexDirs.R = HexDirs.east = HexDirs.E = IVec2(2+0j)
+HexDirs.upleft = HexDirs.UL = HexDirs.northwest = HexDirs.NW = IVec2(-1+1j)
+HexDirs.upright = HexDirs.UR = HexDirs.norteast = HexDirs.NE = IVec2(1+1j)
+HexDirs.downleft = HexDirs.DL = HexDirs.southwest = HexDirs.SW = IVec2(-1-1j)
+HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = IVec2(+1+1j)
 
 HexDirs.flipy = _flipy(HexDirs)

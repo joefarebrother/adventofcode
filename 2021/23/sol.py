@@ -7,7 +7,7 @@ extra = Grid("""  #D#C#B#A#
 
 ng = Grid(y_is_down=True)
 for p in g:
-    x, y = pos_as(tuple, p)
+    x, y = p
     if y < 3:
         ng[p] = g[p]
     else:
@@ -19,18 +19,19 @@ for p in g:
 g = ng
 g.draw()
 
-rooms = {l: [x+y*1j for y in [2, 3, 4, 5]]
+rooms = {l: [IVec2(x, y) for y in [2, 3, 4, 5]]
          for x in [3, 5, 7, 9] for l in ["___A_B_C_D"[x]]}
-hallway = [x+1j for x in irange(1, g.width()-2) if x not in [3, 5, 7, 9]]
+hallway = [IVec2(x, 1)
+           for x in irange(1, g.width()-2) if x not in [3, 5, 7, 9]]
 energy = {l: 10**i for i, l in enumerate("ABCD")}
 
 occupied = {p: l for p, l in g.items() if l in "ABCD"}
 
 
 def path(occ, start, end):
-    ps = ({start.real+y*1j for y in irange(1, int(start.imag))} | {end.real+y*1j for y in irange(
-        1, int(end.imag))} | {x+1j for x in irange(*ints(bounds((start.real, end.real))))}) - {start}
-    if all(p not in occ for p in ps):
+    ps = ({(start.x, y) for y in irange(1, start.y)} | {(end.x, y) for y in irange(
+        1, end.y)} | {(x, 1) for x in irange(*bounds((start.x, end.x)))}) - {start}
+    if all(IVec2(p) not in occ for p in ps):
         return len(ps)
 
 

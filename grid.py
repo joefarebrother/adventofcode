@@ -1,6 +1,6 @@
 from collections import Counter
 from typing import Callable
-from geom import Rectangle, bounding_box, is_pos_ty, pos_as
+from geom import Rectangle, bounding_box, IVec2
 from input_utils import inp_readlines
 from collections.abc import MutableMapping
 
@@ -13,7 +13,7 @@ class Grid(MutableMapping):
     - grid: Determines the initial data.
         Can be a another Grid, a list (of rows which are lists or strings), or a dict (with keys being positions)
         Data is copies and isn't aliased.
-        Can also be a string, which will be treated as a filenane, where the lines will be rows; or an integer, which uses the input file for that day.
+        If it's a string or integer, use the current input file. (TODO: update this)
     - default: Default value for empty cells. 
         Should be immutable else it may lead to bugs as the same reference would be used for each. 
     - y_is_down: Whether a higher y index is to be interpreted as down.
@@ -21,15 +21,14 @@ class Grid(MutableMapping):
         If it's set to False when its a list, the the top-left corner will still be (0,0), so it will be negative for subsequent rows.
         Otherwise, it only matters for printing.
     - wrapx, wrapy: Determines whether to wrap in the given direction, making the grid into a cylinder or torus.
-        Grid indicies must be in the range [0, width/height)
+        Grid indices must be in the range [0, width/height)
         If data is initialised from a dict or another Grid, this should be a positive integer, False, or None. An integer represents an explicit width/height.
         If it's initialised from a list, it should be a boolean or None.
         If it's initialised from a Grid and it's None, the wrapping information of the copied grid is used.
     - ints: whether to cast the given data to ints
-    - keyty: The position type of keys to return from iteration. Can be complex or tuple.
     """
 
-    def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None, keyty=complex):
+    def __init__(self, grid=None, default=None, y_is_down=None, ints=False, wrapx=None, wrapy=None):
         if isinstance(grid, str) or isinstance(grid, int):
             grid = inp_readlines()
 
@@ -37,7 +36,6 @@ class Grid(MutableMapping):
             grid = {}
 
         self.bounding_box = None
-        self.keyty(keyty)
 
         if isinstance(grid, Grid):
             wrapx = grid.wrapx if wrapx == None else wrapx
@@ -100,7 +98,7 @@ class Grid(MutableMapping):
                 if isinstance(row, str):
                     row = list(row)
                 for (x, cell) in enumerate(row):
-                    self.data[x, y] = cell
+                    self.data[IVec2(x, y)] = cell
 
         elif isinstance(grid, dict):
             if y_is_down == None:
@@ -116,14 +114,14 @@ class Grid(MutableMapping):
             keys = grid.keys()
             for key in keys:
                 elt = grid[key]
-                (x, y) = pos_as(tuple, key, True)
+                (x, y) = IVec2(key)
                 if wrapx and x not in range(0, wrapx):
                     raise KeyError(
                         "x index must by in range [0,wrapx)", x, wrapx)
                 if wrapy and y not in range(0, wrapy):
                     raise KeyError(
                         "y index must by in range [0,wrapy)", y, wrapy)
-                self.data[x, y] = elt
+                self.data[IVec2(x, y)] = elt
 
         else:
             raise TypeError("Unsupported grid type", type(grid), grid)
@@ -136,25 +134,14 @@ class Grid(MutableMapping):
 
     def _convert_pos1(self, key):
         """
-        Converts the given external key to the type used internally; (x,y) tuples.
-        Takes wrapping into account.
+        Converts the given external key to IVec2, 
         """
-        (x, y) = pos_as(tuple, key, True)
+        (x, y) = IVec2(key)
         if self.wrapx:
             x %= self.wrapx
         if self.wrapy:
             x %= self.wrapy
-        return (x, y)
-
-    def keyty(self, ty):
-        """
-        Sets the position type of keys to return when iterating, and then returns self.
-        type should be complex or tuple.
-        """
-        if not is_pos_ty(ty):
-            raise ValueError("Invalid position type", ty)
-        self._keyty = ty
-        return self
+        return IVec2(x, y)
 
     def _compute_bb(self):
         """
@@ -177,8 +164,7 @@ class Grid(MutableMapping):
         self._compute_bb()
 
     def __iter__(self):
-        for key in self.data:
-            yield pos_as(self._keyty, key)
+        return iter(self.data.keys())
 
     def __contains__(self, key):
         key = self._convert_pos1(key)
@@ -214,7 +200,7 @@ class Grid(MutableMapping):
 
     def count(self, x):
         """
-        Counts the number of occurences of `x` in the grid.
+        Counts the number of occurrences of `x` in the grid.
         If `x` is he default item, points not in the grid's backing map are ignored.
         """
         c = 0
@@ -225,7 +211,7 @@ class Grid(MutableMapping):
 
     def counter(self):
         """
-        Returns a `Counter` counting the number of occurances of each element of the grid.
+        Returns a `Counter` counting the number of occurrences of each element of the grid.
         """
         return Counter(self.data.values())
 

@@ -12,7 +12,7 @@ def step(img):
         px = ""
         for y in irange(-1, 1):
             for x in irange(-1, 1):
-                px += ("1" if img[p+x+y*1j] == "#" else "0")
+                px += ("1" if img[p+IVec2(x, y)] == "#" else "0")
         nimg[p] = enh[int(px, 2)]
     return nimg
 
@@ -20,7 +20,8 @@ def step(img):
 img2 = step(step(img))
 print("Part 1:", img2.count('#'))
 
-for _ in range(50):
+for i in range(50):
+    print(i, len(img), flush=True)
     img = step(img)
 
 print("Part 2:", img.count('#'))

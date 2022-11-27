@@ -15,7 +15,7 @@ class D8:
         return NotImplemented
 
     def __rmul__(self, other):
-        if isinstance(other, complex):
+        if isinstance(other, complex) or isinstance(other, IVec2):
             c = other*self.rot
             return c.conjugate() if self.flip else c
         return NotImplemented

@@ -52,10 +52,7 @@ def input_filename(argv_override=True):
     if argv_override and len(sys.argv) > 1:
         return sys.argv[1]
     curdir = os.path.dirname(sys.argv[0])
-    if isinstance(f, str):
-        return os.path.join(curdir, f)
-    else:
-        return f"{curdir}/real.in"
+    return f"{curdir}/real.in"
 
 
 def get_day_year(day=None, year=None):

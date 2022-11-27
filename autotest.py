@@ -87,7 +87,7 @@ if not sesh:
 headers = {"Cookie": "session="+sesh}
 
 
-def writeTo(file, content):
+def write_to(file, content):
     with open(file, mode="w") as f:
         f.write(content)
 
@@ -103,7 +103,7 @@ def get_or_save(url, file):
         r1 = r.urlopen(r.Request(url, headers=headers))
         s = "".join(l.decode() for l in r1)
         if file is not None:
-            writeTo(file, s)
+            write_to(file, s)
     else:
         s = read_string(file)
     return s
@@ -207,12 +207,12 @@ def find_examples(part, orig_s):
         eg = tags("code", tags("pre", s), True, True, False)
         if not eg:
             print("Could not find example (No <pre><code> tags)")
-            writeTo(test1_inputfile, "[NONE]")
+            write_to(test1_inputfile, "[NONE]")
         else:
             eg = eg[0]
             eg = eg.replace("<em>", "").replace("</em>", "")
             eg = html_entities(eg)
-            writeTo(test1_inputfile, eg)
+            write_to(test1_inputfile, eg)
             print("Assumed input:")
             print(eg)
     else:
@@ -240,10 +240,10 @@ def find_examples(part, orig_s):
         if not o:
             print("Could not find example output (no <code><em> tag)")
             sampleout = "[NONE]"
-            writeTo(test1_outputfile, "[NONE]")
+            write_to(test1_outputfile, "[NONE]")
         else:
             sampleout = o[-1]
-            writeTo(test1_outputfile, sampleout)
+            write_to(test1_outputfile, sampleout)
     else:
         sampleout = read_string(test1_outputfile).strip()
         if sampleout == "[NONE]":
@@ -295,8 +295,8 @@ def add_example(inp, out, part):
     inpfile = f"{workdir}/test{n}.in"
     outfile = f"{workdir}/test{n}-part{part}.out"
 
-    writeTo(inpfile, inp)
-    writeTo(outfile, out)
+    write_to(inpfile, inp)
+    write_to(outfile, out)
 
 
 def tee(cmd, file):
@@ -464,17 +464,17 @@ def get_page(part):
         s = get_or_save(dayurl, part_file)
     completed = s.count("Your puzzle answer was")
     if completed == 2:
-        writeTo(final_file, s)
+        write_to(final_file, s)
     if completed == 1:
-        writeTo(workdir+"page2.html", s)
+        write_to(workdir+"page2.html", s)
     if completed == 0:
-        writeTo(workdir+"page1.html", s)
+        write_to(workdir+"page1.html", s)
         if part == "2":
             raise Exception("Con't do part 2 without having completed part 1")
     return s
 
 
-def doPart(part=None):
+def do_part(part=None):
     global bad_submittime
     s = get_page(part)
     completed = s.count("Your puzzle answer was")
@@ -568,7 +568,7 @@ def doPart(part=None):
 
 
 if len(sys.argv) >= 4:
-    doPart(sys.argv[3])
+    do_part(sys.argv[3])
 else:
-    if doPart() == "1":
-        doPart("2")
+    if do_part() == "1":
+        do_part("2")

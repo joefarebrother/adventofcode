@@ -373,7 +373,7 @@ HexDirs.down = HexDirs.D = HexDirs.south = HexDirs.S = IVec2(-2j)
 HexDirs.left = HexDirs.L = HexDirs.west = HexDirs.W = IVec2(-2+0j)
 HexDirs.right = HexDirs.R = HexDirs.east = HexDirs.E = IVec2(2+0j)
 HexDirs.upleft = HexDirs.UL = HexDirs.northwest = HexDirs.NW = IVec2(-1+1j)
-HexDirs.upright = HexDirs.UR = HexDirs.norteast = HexDirs.NE = IVec2(1+1j)
+HexDirs.upright = HexDirs.UR = HexDirs.northeast = HexDirs.NE = IVec2(1+1j)
 HexDirs.downleft = HexDirs.DL = HexDirs.southwest = HexDirs.SW = IVec2(-1-1j)
 HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = IVec2(+1+1j)
 

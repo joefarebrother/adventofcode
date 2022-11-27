@@ -5,7 +5,7 @@ from input_utils import input_filename
 """
 Intcode virtual machine
 
-Breif Intcode spec, see aoc 2019 for further details:
+Brief Intcode spec, see aoc 2019 for further details:
 
 A program is a list of integers.
 There are 10 opcodes:
@@ -20,7 +20,7 @@ There are 10 opcodes:
 9 b: adjust the relative base
 99: halt
 
-a = output operand (output is written to this adress); b = input operand.
+a = output operand (output is written to this address); b = input operand.
 There are 3 addressing modes, determined by the upper digits of the opcode:
 0: direct
 1: immediate (not used for writes)
@@ -92,7 +92,7 @@ class Machine:
     The fields self.inp, self.out, and self.np_ptr determine the state of the I/O buffers while the machine is running.
 
     Arguments:
-    - prog: The progrm, which is copied internally. (so it's safe to use one program to initialise multiple machines).
+    - prog: The program, which is copied internally. (so it's safe to use one program to initialise multiple machines).
         If it's a string, it's treated as a filename to load the program from.
     - inp: If it's a list or string, set the input buffer accordingly. 
         The internal buffer will alias inp if it's a list.
@@ -230,11 +230,11 @@ class Machine:
             raise "Unexpected input type!"
 
     def read(self, off):
-        """Reads the off'th operand of the current opcode, taking the adressing mode into account."""
+        """Reads the off'th operand of the current opcode, taking the addressing mode into account."""
         return self.prog[self.addr(off)]
 
     def addr(self, off):
-        """The adress to read from or write to to handle the off'th operand of the current opcode"""
+        """The address to read from or write to to handle the off'th operand of the current opcode"""
         prog, pos = self.prog, self.pc
         mode = getmode(prog[pos], off)
         if mode == 1:
@@ -245,7 +245,7 @@ class Machine:
             return prog[pos+off]
 
     def arith_op(self, f):
-        """Common implementation of the binary arithmatic opcodes"""
+        """Common implementation of the binary arithmetic opcodes"""
         prog, _ = self.prog, self.pc
         prog[self.addr(3)] = f(self.read(1), self.read(2))
 
@@ -274,5 +274,5 @@ class Machine:
 
 
 def getmode(instr, off):
-    """Coputes the adressing mode for the off'th parameter of instr"""
+    """Computes the addressing mode for the off'th parameter of instr"""
     return instr//(10**(off+1)) % 10

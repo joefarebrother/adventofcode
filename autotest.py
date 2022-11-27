@@ -24,7 +24,7 @@ environment variable $AOC_KEY set to the value of your session cookie.
 
 If part is given, only run for the given part.
 
-If called with the current day as input (which is the default if year and day are ommited), before the puzzle
+If called with the current day as input (which is the default if year and day are omitted), before the puzzle
 unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone is GMT.
 
 Files used, all under {year}/{day}:
@@ -52,7 +52,7 @@ test{n}-part{p}.out   The automatically extracted sample output for the given pa
                       and the program will still run but will require confirmation before submitting results.
 
 page{p}.html    the page when solving part {p}
-pagefinal.html  the page afrer both parts have been solved.
+pagefinal.html  the page after both parts have been solved.
 wrong_ans       a text file containing a list of answers which have been rejected, as well as whether they were too high or low.
                 Hopefully avoids repeatedly submitting wrong answers
                 Does not distinguish between part 1 and part 2
@@ -146,11 +146,6 @@ if os.path.isfile(wrong_ans_file):
                 bad_toolow = max(int(line), bad_toolow or -math.inf)
             bad_answers.add(line.strip())
 
-example_timeout = 10
-timeout_file = workdir + "timeout"
-if os.path.isfile(timeout_file):
-    example_timeout = int(read_string(timeout_file))
-
 
 def add_bad(ans, content):
     global bad_toohigh, bad_toolow
@@ -236,16 +231,16 @@ def find_examples(part, orig_s):
             tags("code", tags("em", s), exact_end=True)
         if not o:
             print("Could not find example output (no <code><em> tag)")
-            sampleout = "[NONE]"
+            sample_out = "[NONE]"
             write_to(test1_outputfile, "[NONE]")
         else:
-            sampleout = o[-1]
-            write_to(test1_outputfile, sampleout)
+            sample_out = o[-1]
+            write_to(test1_outputfile, sample_out)
     else:
-        sampleout = read_string(test1_outputfile).strip()
-        if sampleout == "[NONE]":
+        sample_out = read_string(test1_outputfile).strip()
+        if sample_out == "[NONE]":
             print("No output specified.")
-    print("Assumed output:", sampleout)
+    print("Assumed output:", sample_out)
 
     if might_have_inline_ex and looked:
         s = orig_s
@@ -307,6 +302,11 @@ def run_examples(part):
     Returns (ans, extra_ans, all_passed)
     """
 
+    timeout = 10
+    timeout_file = workdir + "timeout"
+    if os.path.isfile(timeout_file):
+        timeout = int(read_string(timeout_file))
+
     good = []
     unk = []
 
@@ -323,7 +323,8 @@ def run_examples(part):
                 if read_string(inputfile).strip() == "[NONE]":
                     print(f"Example {idx} skipped: No input found")
                     continue
-                ans, suc = run_example(inputfile, outputfile, idx, part)
+                ans, suc = run_example(
+                    inputfile, outputfile, idx, part, timeout)
                 if suc == None:
                     unk.append(ans)
                 elif suc:
@@ -337,16 +338,16 @@ def run_examples(part):
     return good, unk, True
 
 
-def run_example(inputfile, outputfile, idx, part):
+def run_example(inputfile, outputfile, idx, part, timeout):
     """
     Runs a single example.
     Returns (ans, succ) where ans is the answer given, and succ is True if the test passed, False if it didn't, and None if no expected output was found.
     """
     tmpfile = workdir+"tmp"
 
-    print(f"==== Trying example {idx} ({example_timeout} second timeout)\n")
+    print(f"==== Trying example {idx} ({timeout} second timeout)\n")
     p = tee(
-        f"timeout --foreground {example_timeout} python3 -u {solution_file} {inputfile}", tmpfile)
+        f"timeout --foreground {timeout} python3 -u {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
@@ -357,13 +358,13 @@ def run_example(inputfile, outputfile, idx, part):
         print(f"=== Example {idx} produced no output")
         return None, False
 
-    sampleout = read_string(outputfile).strip()
-    if sampleout == "[NONE]":
+    sample_out = read_string(outputfile).strip()
+    if sample_out == "[NONE]":
         return ans, None
 
-    if ans != sampleout:
+    if ans != sample_out:
         print(
-            f"=== Example {idx} failed: Expected {sampleout}, got {ans}")
+            f"=== Example {idx} failed: Expected {sample_out}, got {ans}")
         return ans, False
 
     return ans, True
@@ -408,16 +409,16 @@ def answer_in_out(out: list[str], part):
     return None
 
 
-submittime = None
-bad_submittime = None
+submit_time = None
+bad_submit_time = None
 
 
 def submit(part, answer):
-    global submittime, bad_submittime
+    global submit_time, bad_submit_time
     url = f"https://adventofcode.com/{year}/day/{day}/answer"
     print(f"Submitting", repr(answer), "to url", repr(url))
-    if bad_submittime != None:
-        timeout = (datetime.now() - bad_submittime).total_seconds()
+    if bad_submit_time != None:
+        timeout = (datetime.now() - bad_submit_time).total_seconds()
         if timeout < 60:
             print(f"Waiting {timeout} seconds")
             sleep(61-timeout)
@@ -426,8 +427,8 @@ def submit(part, answer):
     resp = r.urlopen(r.Request(url, data=bytes(
         f"level={part}&answer={answer}", "utf8"), headers=headers))
 
-    submittime = datetime.now()
-    print("time", submittime)
+    submit_time = datetime.now()
+    print("time", submit_time)
     print("response:")
     resp = "".join(l.decode() for l in resp)
     content = tags("article", resp)[0]
@@ -472,7 +473,7 @@ def get_page(part):
 
 
 def do_part(part=None):
-    global bad_submittime
+    global bad_submit_time
     s = get_page(part)
     completed = s.count("Your puzzle answer was")
     if not part:
@@ -553,11 +554,11 @@ def do_part(part=None):
                     print("Submitting answer:", repr(answer))
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
-                        bad_submittime = None
+                        bad_submit_time = None
                         break
                     elif "That's not the right answer" in content:
                         add_bad(answer, content)
-                        bad_submittime = submittime
+                        bad_submit_time = submit_time
                     else:
                         print(
                             "\nDid not recognise success or incorrect, may be timeout or blank input or already completed")

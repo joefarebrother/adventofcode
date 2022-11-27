@@ -64,7 +64,7 @@ def mod_inc(a: int, b: int) -> int:
 
 def egcd(a: int, b: int) -> Tuple[int, int, int]:
     """
-    Performs the extended Euclidian algorithm.
+    Performs the extended Euclidean algorithm.
     Returns (g, x, y) such that x*a + y*b = g, and g = gcd(a, b).
     """
     if a == 0:
@@ -200,16 +200,16 @@ def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):
     if not f(lo):
         return lo
 
-    if(hi == None):
+    if (hi == None):
         hi = lo*2 if lo > 0 else 32
-        while(f(hi)):
+        while (f(hi)):
             (lo, hi) = (hi, lo*2)
 
     # Invariant: lo <= target < hi; i.e. f(lo) and not f(hi)
     # This invariant is not completely checked at the start; since f might be undefined on hi.
     # However, it still holds if we assume f "would be" false beyond its range.
 
-    while(hi - lo > 1):
+    while (hi - lo > 1):
         mid = (lo+hi)//2
         if f(mid):
             lo = mid

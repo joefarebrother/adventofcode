@@ -40,3 +40,4 @@ for day in range(1, 26):
 
 print("\n\n==========================================\n\n")
 print(f"{success} days passed; {fail} failed")
+exit(len(fail))

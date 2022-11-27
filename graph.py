@@ -28,7 +28,7 @@ class AbGraph():
     def key(self, node):
         """
         Should return a key used to identify the node. Two nodes are considered equal to search functions if they
-        Can be used to propegate additional information in the node.
+        Can be used to propagate additional information in the node.
         """
         return node
 
@@ -37,7 +37,7 @@ class AbGraph():
 
     def dist1(self):
         """
-        Returns a graph with the same adjacncy function except that assigns a distance of 1 to each node.
+        Returns a graph with the same adjacency function except that assigns a distance of 1 to each node.
         """
         class D1Gr(AbGraph):
             def __init__(self, inner):
@@ -335,6 +335,6 @@ class DGraph(AbGraph):
 
     def sym(self):
         """
-        Computes the symetric graph (with each arrow being replaced by an arrow in both directions)
+        Computes the symmetric graph (with each arrow being replaced by an arrow in both directions)
         """
         return self | self.reverse()

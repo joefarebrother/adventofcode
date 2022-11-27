@@ -1,5 +1,5 @@
 import intcode
-from utils2020 import *
+from utils import *
 
 outbuf = []
 tiles = Grid({}, y_is_down=True)
@@ -26,17 +26,10 @@ def infun(m):
     return sign(ballx-paddlex)
 
 
-m = intcode.Machine("input13", infun, outfun)
+m = intcode.Machine(None, infun, outfun)
 
 m.prog[0] = 2
 
 m.run()
 
 print(tiles[(-1, 0)])
-
-count = 0
-for i in tiles:
-    if tiles[i] == 2:
-        count += 1
-
-print(count)

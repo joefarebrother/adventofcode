@@ -1,7 +1,7 @@
 from intcode import *
 from utils import *
 
-mach = Machine("input21", ascii_input, ascii_output)
+mach = Machine(None, ascii_input, ascii_output)
 
 mach.run()
 

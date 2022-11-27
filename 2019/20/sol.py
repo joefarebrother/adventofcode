@@ -1,4 +1,4 @@
-from utils2020 import *
+from utils import *
 from collections import deque
 
 grid = Grid("input20")
@@ -71,4 +71,4 @@ def adj2(p_):
 
 
 print(FGraph(adj2).dist1().astar(
-    (start, 0), (end, 0), h=lambda p_: p_[1]*1000))
+    (start, 0), (end, 0), h=lambda p_: p_[1]*1000)[1])

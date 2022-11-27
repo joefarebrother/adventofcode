@@ -1,6 +1,6 @@
-from utils2020 import bin_search
+from utils import bin_search, inp_readlines
 import re
-inp = open("input14").readlines()
+inp = inp_readlines()
 
 react = {}
 

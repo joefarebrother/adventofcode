@@ -1,5 +1,5 @@
 import intcode
-from utils2020 import Grid
+from utils import Grid
 
 painted = Grid({0j: 1})  # change to {0j: 0} for part 1
 z = 0j
@@ -26,9 +26,11 @@ def outfun(m, val):
         outbuf = []
 
 
-mach = intcode.Machine("input11", infun, outfun)
+mach = intcode.Machine(None, infun, outfun)
 
 
 mach.run()
 
 painted.draw()
+
+print(input())

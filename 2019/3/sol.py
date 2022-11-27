@@ -1,4 +1,4 @@
-from utils2020 import Rectangle
+from utils import Rectangle, inp_readlines
 
 
 def process(line):
@@ -52,7 +52,7 @@ def intersect(w1, w2):
 
 wires = []
 
-for line in open('input3').readlines():
+for line in inp_readlines():
     wires.append(process(line))
 
 bestIntDist = None

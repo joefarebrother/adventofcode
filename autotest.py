@@ -9,7 +9,7 @@ import sys
 import re
 import platform
 import math
-from input_utils import get_day_year, wait_for_unlock, print_input_stats, numeric
+from utils import get_day_year, wait_for_unlock, print_input_stats, numeric
 from time import sleep
 
 usage = """
@@ -53,9 +53,11 @@ test{n}-part{p}.out   The automatically extracted sample output for the given pa
 
 page{p}.html    the page when solving part {p}
 pagefinal.html  the page afrer both parts have been solved.
-wrong_ans   a text file containing a list of answers which have been rejected, as well as whether they were too high or low.
-            Hopefully avoids repeatedly submitting wrong answers
-            Does not distinguish between part 1 and part 2
+wrong_ans       a text file containing a list of answers which have been rejected, as well as whether they were too high or low.
+                Hopefully avoids repeatedly submitting wrong answers
+                Does not distinguish between part 1 and part 2
+
+timeout     Overrides the default example timeout of 10 seconds
 
 tmp         stores the output of the solution on sample input
             Can be deleted without consequence except while the solution is running
@@ -185,6 +187,9 @@ def html_entities(s):
 
 
 def find_examples(part, orig_s):
+    if year == 2019 and "intcode" in read_string(solution_file):
+        return
+
     test1_inputfile = f"{workdir}/test1.in"
     test1_outputfile = f"{workdir}/test1-part{part}.out"
 
@@ -341,7 +346,7 @@ def run_example(inputfile, outputfile, idx, part):
 
     print(f"==== Trying example {idx} ({example_timeout} second timeout)\n")
     p = tee(
-        f"timeout --foreground {example_timeout} python3 {solution_file} {inputfile}", tmpfile)
+        f"timeout --foreground {example_timeout} python3 -u {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
@@ -369,7 +374,7 @@ def run_real(part):
 
     print("==== trying real input (no timeout)")
     p = tee(
-        f"python3 {solution_file} {real_inputfile}", tmpfile)
+        f"python3 -u {solution_file} {real_inputfile}", tmpfile)
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
@@ -518,7 +523,8 @@ def do_part(part=None):
                 print("\nNot submitting, as already completed.")
                 correct_answer = correct_answers[int(part)-1]
                 if answer == correct_answer:
-                    print("Correct answer.")
+                    print("Correct answer." +
+                          (" But, part 1 was wrong." if p1wrong else ""))
                     exit(int(p1wrong))
                 else:
                     print(f"Incorrect answer. Expecting {correct_answer}")

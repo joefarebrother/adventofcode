@@ -1,5 +1,5 @@
 from intcode import Machine
-from utils2020 import *
+from utils import *
 
 grid = [[]]
 
@@ -12,7 +12,7 @@ def outfun(m, v):
         grid[-1].append(chr(v))
 
 
-mach = Machine("input17", out=outfun)
+mach = Machine(None, out=outfun)
 
 mach.run()
 grid = grid[:-2]
@@ -37,7 +37,7 @@ print([ord(c) for c in instrs])
 
 "8,L,8,R,8,R,4,R,8,8,L,8,R,8,R,4,R,"
 
-mach = Machine("input17", inp=instrs, out=outfun)
+mach = Machine(None, inp=instrs, out=outfun)
 mach.prog[0] = 2
 
 mach.run()
@@ -124,9 +124,10 @@ for Aend in range(1, len(cmd)):
                             print(instr)
                             instrs = mapl(ord, instr)
 
-                            mach = Machine("input17", inp=instrs, out=outfun)
+                            mach = Machine(None, inp=instrs, out=outfun)
                             mach.prog[0] = 2
 
                             mach.run()
+                            print()
                             print(ord(grid[-1][-1]))
                             exit()

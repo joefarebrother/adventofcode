@@ -1,4 +1,4 @@
-from utils2020 import *
+from utils import *
 from intcode import Machine
 from time import sleep
 import sys
@@ -20,8 +20,8 @@ def draw(pos):
     known_tiles[pos] = old
 
 
-#mach = Machine("input15", inpfun, outfun)
-mach = Machine("input15", [])
+#mach = Machine(None, inpfun, outfun)
+mach = Machine(None, [])
 
 
 class MGraph(AbGraph):  # floodfill
@@ -38,12 +38,12 @@ class MGraph(AbGraph):  # floodfill
                 known_tiles[npos] = 2
             elif out == 1:
                 known_tiles[npos] = 1
-                yield(npos)
+                yield (npos)
                 mach.send_input([0, 2, 1, 4, 3][i])
             elif out == 2:
                 known_tiles[npos] = 3
                 target_pos = npos
-                yield(npos)
+                yield (npos)
                 mach.send_input([0, 2, 1, 4, 3][i])
 
 
@@ -59,5 +59,5 @@ print(target_pos)
 
 maze = FGraph(lambda p: neighbours(p) if known_tiles[p] != 2 else [])
 
-print("part1: ", maze.BFS(target_pos, 0j))
-print("part2: ", maze.BFS(target_pos))
+print("part 1: ", maze.BFS(target_pos, 0j)[1])
+print("part 2: ", maze.BFS(target_pos)[1])

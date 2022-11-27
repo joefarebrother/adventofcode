@@ -1,7 +1,7 @@
 from intcode import *
 from utils import *
 
-Machine("input25", ascii_input, ascii_output).run()
+Machine(None, ascii_input, ascii_output).run()
 
 
 '''
@@ -746,5 +746,3 @@ Santa notices your small droid, looks puzzled for a moment, realizes what has ha
 "Oh, hello! You should be able to get in by typing 84410376 on the keypad at the main airlock."
 
 '''
-
-

@@ -1,4 +1,5 @@
-inp = open("input16").read()[:-1]
+from utils import inp_readall
+inp = inp_readall()[:-1]
 #inp = list('03036732577212944063491565474664')
 
 offset = int(''.join(inp[:7]))

@@ -1,4 +1,6 @@
 from collections import defaultdict
+from input_utils import input_filename
+# TODO: Find a way to have this be in the 2019 folder
 
 """
 Intcode virtual machine
@@ -26,11 +28,14 @@ There are 3 addressing modes, determined by the upper digits of the opcode:
 """
 
 
-def load_program(file):
+def load_program(file=None):
     """
     Loads an intcode program from a file.
     """
-    return list(map(int, open(file).read().split(",")))
+    if file is None:
+        file = input_filename()
+    with open(file) as f:
+        return list(map(int, f.read().split(",")))
 
 
 # The lengths of each opcode.
@@ -100,8 +105,8 @@ class Machine:
     - name: The name of the machine, printed in debug logs and stored in the name field.
     """
 
-    def __init__(self, prog, inp=None, out=None, name=None):
-        if type(prog) == str:
+    def __init__(self, prog=None, inp=None, out=None, name=None):
+        if type(prog) == str or prog is None:
             prog = load_program(prog)
         self.inplen = len(prog)
         self.prog = defaultdict(int)

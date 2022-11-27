@@ -1,9 +1,9 @@
-from utils2020 import DGraph
+from utils import DGraph, inp_readlines
 from collections import defaultdict
 
 graph_ = defaultdict(list)
 
-for line in open("input6").readlines():
+for line in inp_readlines():
     start, end = line.strip().split(")")
     graph_[start].append(end)
 

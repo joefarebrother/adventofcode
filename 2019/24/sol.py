@@ -1,4 +1,4 @@
-from utils2020 import *
+from utils import *
 
 grid = Grid("input24")
 start_grid = grid
@@ -94,11 +94,11 @@ def count_rnbhd(rgrid, level, p):
     return count
 
 
-for i in range(200):
+for i in range(10 if is_ex else 200):
     print("step", i)
-    for level, grid in rgrid.items():
-        print("depth", level)
-        grid.draw()
+    # for level, grid in rgrid.items():
+    #     print("depth", level)
+    #     grid.draw()
     rgrid = rec_update(rgrid)
     count = 0
     for l, g in rgrid.items():

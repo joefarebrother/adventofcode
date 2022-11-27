@@ -1,4 +1,4 @@
-from utils2020 import *
+from utils import *
 
 grid = Grid("input18")
 

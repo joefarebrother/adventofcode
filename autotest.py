@@ -42,7 +42,7 @@ test{n}.in  The automatically extracted sample input
             program if you want it to work correctly.
             If no appropriate sample input is found, the program will still run but will require confirmation before submitting results.
             Input 1 is generated automatically; subsequent inputs may be generated if they come from inline examples.
-            Test input files can also be created manually and will be run.
+            Test input files can also be created manually and will be run. An empty example file or one that contains [NONE] will not be run.
 
 test{n}-part{p}.out   The automatically extracted sample output for the given part
                       By default, this is the last highlighted thing at the end of a code tag.
@@ -50,6 +50,8 @@ test{n}-part{p}.out   The automatically extracted sample output for the given pa
                       program if you want it to work correctly.
                       If no appropriate sample output is found, this file will contain [NONE], 
                       and the program will still run but will require confirmation before submitting results.
+                      An output file that doesn't exist or is empty will cause that example to be skipped; whereas one that contains [NONE] 
+                      will cause the example to be run but its result won't be verified.
 
 page{p}.html    the page when solving part {p}
 pagefinal.html  the page after both parts have been solved.
@@ -322,9 +324,11 @@ def run_examples(part):
             inputfile = workdir+f
             outputfile = f"{workdir}/test{idx}-part{part}.out"
             if os.path.isfile(outputfile):
-                if read_string(inputfile).strip() == "[NONE]":
+                if read_string(inputfile).strip() in ["[NONE]", ""]:
                     print(f"Example {idx} skipped: No input found")
                     continue
+                if read_string(outputfile).strip() == "":
+                    print(f"Example {idx} skipped: Output file empty")
                 ans, suc = run_example(
                     inputfile, outputfile, idx, part, timeout)
                 if suc == None:
@@ -481,6 +485,8 @@ def do_part(part=None):
     completed = s.count("Your puzzle answer was")
     if not part:
         part = str(min(completed+1, 2 if day < 25 else 1))
+        print("\nReal input stats:")
+        print_input_stats(real_input)
     no_submit = False
     if int(part) <= completed:
         no_submit = True
@@ -490,9 +496,6 @@ def do_part(part=None):
                 correct_answers.append(tags("code", p)[0])
 
     find_examples(part, s)
-
-    print("\nReal input stats:")
-    print_input_stats(real_input)
 
     ns = 0
     if dont_run_first:

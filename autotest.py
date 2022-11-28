@@ -125,16 +125,6 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 real_inputfile = f"{workdir}/real.in"
 solution_file = f"{workdir}/sol.py"
 
-dont_run_first = os.path.isfile(solution_file)
-
-touch(real_inputfile)
-touch(solution_file)
-
-wait_for_unlock(day, year)
-
-real_input = get_or_save(dayurl + "/input", real_inputfile).splitlines()
-print()
-
 wrong_ans_file = workdir + "wrong_ans"
 bad_answers = set()
 bad_toohigh = None
@@ -315,8 +305,8 @@ def run_examples(part):
     unk = []
 
     for f in sorted(os.listdir(workdir)):
-        m = re.fullmatch(r'test(\d+).in', f)
-        if f:
+        m = re.fullmatch(r'test(\d+)\.in', f)
+        if m:
             try:
                 idx = int(m.groups(1)[0])
             except:
@@ -406,13 +396,13 @@ def answer_in_out(out: list[str], part):
             if o.lower().startswith(f"part {part}"):
                 o = o[len("part 1"):].strip(":").split()
                 if o:
-                    return o[-1]
+                    return o[-1].strip("()[]{}")
             if o.lower().startswith("part 2") and part == "1":
                 return None
         nout.append(o)
     nout = " ".join(nout).split()
     if nout:
-        return nout[-1]
+        return nout[-1].strip("()[]{}")
     return None
 
 
@@ -480,7 +470,7 @@ def get_page(part):
 
 
 def do_part(part=None):
-    global bad_submit_time, dont_run_first
+    global bad_submit_time, should_wait
     s = get_page(part)
     completed = s.count("Your puzzle answer was")
     if not part:
@@ -498,14 +488,14 @@ def do_part(part=None):
     find_examples(part, s)
 
     ns = 0
-    if dont_run_first:
+    if should_wait:
         wait_for_changes(solution_file)
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
             wait_for_changes(solution_file)
         ns = os.stat(solution_file).st_mtime_ns
 
-        dont_run_first = False
+        should_wait = False
 
         print()
 
@@ -542,7 +532,7 @@ def do_part(part=None):
                     exit(1)
 
             # do some checks on answer
-            if (len(answer) < 3):
+            if len(answer) < 3:
                 print(repr(answer), "looks too small. Not submitting")
             elif answer in good_answers + unknown_answers:
                 print(repr(answer),
@@ -565,7 +555,7 @@ def do_part(part=None):
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
                         bad_submit_time = None
-                        dont_run_first = True
+                        should_wait = True
                         if day == 25 and part == "1":
                             submit(part="2", answer="0")
                             exit(0)
@@ -579,6 +569,16 @@ def do_part(part=None):
 
     return part
 
+
+should_wait = not os.path.isfile(solution_file)
+
+touch(real_inputfile)
+touch(solution_file)
+
+wait_for_unlock(day, year)
+
+real_input = get_or_save(dayurl + "/input", real_inputfile).splitlines()
+print()
 
 if len(sys.argv) >= 4:
     do_part(sys.argv[3])

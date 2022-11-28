@@ -8,5 +8,5 @@ def run(inp):
     return intcode.Machine(prog, inp).run()
 
 
-print("Part 1:", run([1])[0])
-print("Part 2:", run([2])[0])
+print("Part 1:", run([1]))
+print("Part 2:", run([2]))

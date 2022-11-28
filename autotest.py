@@ -270,9 +270,13 @@ def find_examples(part, orig_s):
                                 if len(inp) >= 5:
                                     add_example(inp, out, part)
 
+    if looked:
+        add_example("", "", part)
+
 
 def add_example(inp, out, part):
-    print(f"Adding inline example: `{inp}` -> `{out}`")
+    if inp and out:
+        print(f"Adding inline example: `{inp}` -> `{out}`")
     files = os.listdir(workdir)
     n = 2
     while f"test{n}.in" in files and read_string(f"{workdir}/test{n}.in") != inp:
@@ -313,8 +317,10 @@ def run_examples(part):
                 continue
             inputfile = workdir+f
             outputfile = f"{workdir}/test{idx}-part{part}.out"
+            if not read_string(inputfile).strip():
+                continue
             if os.path.isfile(outputfile):
-                if read_string(inputfile).strip() in ["[NONE]", ""]:
+                if read_string(inputfile).strip() in "[NONE]":
                     print(f"Example {idx} skipped: No input found")
                     continue
                 if read_string(outputfile).strip() == "":
@@ -475,8 +481,6 @@ def do_part(part=None):
     completed = s.count("Your puzzle answer was")
     if not part:
         part = str(min(completed+1, 2 if day < 25 else 1))
-        print("\nReal input stats:")
-        print_input_stats(real_input)
     no_submit = False
     if int(part) <= completed:
         no_submit = True
@@ -578,6 +582,8 @@ touch(solution_file)
 wait_for_unlock(day, year)
 
 real_input = get_or_save(dayurl + "/input", real_inputfile).splitlines()
+print("\nReal input stats:")
+print_input_stats(real_input)
 print()
 
 if len(sys.argv) >= 4:

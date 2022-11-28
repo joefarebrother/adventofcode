@@ -123,6 +123,8 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 real_inputfile = f"{workdir}/real.in"
 solution_file = f"{workdir}/sol.py"
 
+dont_run_first = os.path.isfile(solution_file)
+
 touch(real_inputfile)
 touch(solution_file)
 
@@ -474,7 +476,7 @@ def get_page(part):
 
 
 def do_part(part=None):
-    global bad_submit_time
+    global bad_submit_time, dont_run_first
     s = get_page(part)
     completed = s.count("Your puzzle answer was")
     if not part:
@@ -493,10 +495,14 @@ def do_part(part=None):
     print_input_stats(real_input)
 
     ns = 0
+    if dont_run_first:
+        wait_for_changes(solution_file)
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
             wait_for_changes(solution_file)
         ns = os.stat(solution_file).st_mtime_ns
+
+        dont_run_first = False
 
         print()
 
@@ -556,6 +562,10 @@ def do_part(part=None):
                     resp, content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
                         bad_submit_time = None
+                        dont_run_first = True
+                        if day == 25 and part == "1":
+                            submit(part="2", answer="0")
+                            exit(0)
                         break
                     elif "That's not the right answer" in content:
                         add_bad(answer, content)

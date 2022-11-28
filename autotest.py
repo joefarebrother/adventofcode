@@ -19,10 +19,11 @@ then runs sol.py on the sample input whenever sol.py is modified until
 sol.py gives the sample output. When it does, sol gets run on the real input
 and if that succeeds, the last printed word gets submitted automatically.
 
-Call as `autotest.py {year} {day} [{part}]`, `autotest.py {day}`, or `autotest.py`; with the
+Call as `autotest.py {year} {day} [{part}] [{sol}]`, `autotest.py {day}`, or `autotest.py`; with the
 environment variable $AOC_KEY set to the value of your session cookie.
 
 If part is given, only run for the given part.
+If sol is given, use that as the solution file rather than sol.py.
 
 If called with the current day as input (which is the default if year and day are omitted), before the puzzle
 unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone is GMT.
@@ -115,6 +116,17 @@ day = sys.argv[2] if len(sys.argv) >= 3 else (
     sys.argv[1] if len(sys.argv) >= 2 else None)
 day, year = get_day_year(day, year)
 
+part_arg = None
+alt_sol = "sol"
+if len(sys.argv) >= 4:
+    if len(sys.argv) >= 5:
+        part_arg, alt_sol = sys.argv[3:5]
+    else:
+        try:
+            part_arg = str(int(sys.argv[3]))
+        except:
+            alt_sol = sys.argv[3]
+
 
 curdir = os.path.dirname(sys.argv[0])
 workdir = os.path.normpath(f"{curdir}/{year}/{day}")+"/"
@@ -123,7 +135,7 @@ os.makedirs(workdir, exist_ok=True)
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 real_inputfile = f"{workdir}/real.in"
-solution_file = f"{workdir}/sol.py"
+solution_file = f"{workdir}/{alt_sol}.py"
 
 wrong_ans_file = workdir + "wrong_ans"
 bad_answers = set()
@@ -405,7 +417,8 @@ def answer_in_out(out: list[str], part):
                     return o[-1].strip("()[]{}")
             if o.lower().startswith("part 2") and part == "1":
                 return None
-        nout.append(o)
+        else:
+            nout.append(o)
     nout = " ".join(nout).split()
     if nout:
         return nout[-1].strip("()[]{}")
@@ -586,8 +599,8 @@ print("\nReal input stats:")
 print_input_stats(real_input)
 print()
 
-if len(sys.argv) >= 4:
-    do_part(sys.argv[3])
+if part_arg:
+    do_part(part_arg)
 else:
     if do_part() == "1":
         do_part("2")

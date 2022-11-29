@@ -30,6 +30,23 @@ def count_o(grid):
     return list(grid.values()).count("#")
 
 
+def seat_in_dir(p, dir):
+    while p in grid:
+        p += dir
+        if grid[p] != ".":
+            return p
+    return None
+
+
+visible = defaultdict(list)
+for p in grid:
+    if grid[p] != ".":
+        for dir in neighbours8(0):
+            q = seat_in_dir(p, dir)
+            if q:
+                visible[p].append(q)
+
+
 def evolve2(grid):
     ngrid = Grid(grid)
     for (k, v) in grid.items():
@@ -45,10 +62,7 @@ def evolve2(grid):
 
 
 def count_seen(k, grid):
-    count = 0
-    for dp in neighbours8(0):
-        count += int(can_see_in_dir(grid, k, dp))
-    return count
+    return [grid[p] for p in visible[k]].count("#")
 
 
 def can_see_in_dir(grid, k, dp):

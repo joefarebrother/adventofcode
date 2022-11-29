@@ -196,8 +196,9 @@ class Rectangle:
         return irange(self.miny, self.maxy) if self else range(0)
 
     def points(self):
-        for x in self.xrange():
-            for y in self.yrange():
+        """Yields the points of this rectangle, from left to right then increasing Y values."""
+        for y in self.yrange():
+            for x in self.xrange():
                 yield IVec2(x, y)
 
     def expand_1(self):

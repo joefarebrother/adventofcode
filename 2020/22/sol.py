@@ -25,7 +25,7 @@ def score(w):
     return t
 
 
-print(score(w))
+print("Part 1: ", score(w))
 
 p1, p2 = inp_groups()
 p1 = ints(p1[1:])
@@ -59,4 +59,4 @@ def play(p1, p2):
 
 
 (_, w) = play(tuple(p1), tuple(p2))
-print(score(w))
+print("Part 2: ", score(w))

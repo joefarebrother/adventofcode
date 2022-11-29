@@ -187,6 +187,13 @@ def html_entities(s):
         "&lt;", "<").replace("&amp;", "&")
 
 
+def summarize(s):
+    s = re.sub(r'\d', '0', s)
+    s = re.sub(r'[a-z]', 'a', s)
+    s = re.sub(r'[A-Z]', 'A', s)
+    return set(s)
+
+
 def find_examples(part, orig_s):
     if year == 2019 and "intcode" in read_string(solution_file):
         return
@@ -202,20 +209,25 @@ def find_examples(part, orig_s):
         print("Trying to find sample input to save in ", test1_inputfile)
         looked = True
 
-        eg = tags("code", tags("pre", s), True, True, False)
-        if not eg:
+        egs = tags("code", tags("pre", s), True, True, False)
+        if not egs:
             print("Could not find example (No <pre><code> tags)")
             write_to(test1_inputfile, "[NONE]")
         else:
-            eg = eg[0]
-            eg = eg.replace("<em>", "").replace("</em>", "")
-            eg = html_entities(eg)
-            write_to(test1_inputfile, eg)
-            print("Assumed input:")
-            print(eg)
-    else:
-        print("Assumed input:")
-        print(read_string(test1_inputfile))
+            summarized_real = summarize("\n".join(real_input)+"\n")
+            for i, eg in enumerate(egs):
+                eg = eg.replace("<em>", "").replace("</em>", "")
+                eg = html_entities(eg)
+                if summarize(eg) <= summarized_real:
+                    write_to(test1_inputfile, eg)
+                    print("Assumed input:")
+                    print(eg)
+                    break
+                else:
+                    print(
+                        f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
+            else:
+                print("Could not find example (No code block matches input)")
 
     if not os.path.isfile(test1_outputfile):
         print("Trying to find sample output to save in", test1_outputfile)

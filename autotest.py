@@ -167,9 +167,31 @@ def add_bad(ans, content):
         print(ans + extra, file=f)
 
 
+def anything_but(s):
+    """
+    Constructs a regular expression that matches anything except for the given substring.
+    Assumes s does not contain any special regex characters.
+    """
+    parts = []
+    for i in range(len(s)):
+        sofar = s[:i]
+        bad = s[i]
+        parts.append(f"{sofar}[^{bad}]")
+    end = f".{{,{len(s)-1}}}" if len(s) > 1 else ""
+    return f"(?:(?:{'|'.join(parts)})*{end})"
+
+
+def tag_regex(tag, exact_start=False, exact_end=False):
+    """
+    Constructs a regular expression that matches the contents of html elements of the given tag.
+    exact_start/exact_end determine whether the start/end should be anchored.
+    """
+    return f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>({anything_but('</'+tag+'>')})</{tag}>{'$'*exact_end}"
+
+
 def tags(tag, html, exact_start=False, exact_end=False, strip=True):
     # insert stackoverflow post about parsing html with regex here
-    r = f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>(.*?)</{tag}>{'$'*exact_end}"
+    r = tag_regex(tag, exact_start, exact_end)
     if isinstance(html, str):
         res = re.findall(r, html)
     else:
@@ -178,7 +200,7 @@ def tags(tag, html, exact_start=False, exact_end=False, strip=True):
 
 
 def remove_tags(tag, html, exact_start=False, exact_end=False):
-    r = f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>(.*?)</{tag}>{'$'*exact_end}"
+    r = tag_regex(tag, exact_start, exact_end)
     return re.sub(r, "", html)
 
 
@@ -509,10 +531,11 @@ def do_part(part=None):
     no_submit = False
     if int(part) <= completed:
         no_submit = True
-        correct_answers = []
-        for p in tags("p", s):
-            if p.startswith("Your puzzle answer was"):
-                correct_answers.append(tags("code", p)[0])
+
+    correct_answers = []
+    for p in tags("p", s):
+        if p.startswith("Your puzzle answer was"):
+            correct_answers.append(tags("code", p)[0])
 
     find_examples(part, s)
 

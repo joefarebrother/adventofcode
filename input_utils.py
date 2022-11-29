@@ -2,7 +2,6 @@ import os
 import sys
 from datetime import datetime
 from time import sleep
-import urllib.request as r
 
 from misc_utils import ints_in
 

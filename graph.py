@@ -152,8 +152,8 @@ class AbGraph():
 
         h is the heuristic function, approximating distance to the goal.
         When constant, it's dijkstra's.
-        Should be admissable (doesn't overapproximate total distance to the goal) in order to return optimal distances.
-        When consistent (i.e. h(x) <= d(x,y) + h(y)), it's admissable, and the algorithm is optimally efficient.
+        Should be admissible (doesn't overapproximate total distance to the goal) in order to return optimal distances.
+        When consistent (i.e. h(x) <= d(x,y) + h(y)), it's admissible, and the algorithm is optimally efficient.
         Calls incon_cb the first time it detects that the heuristic is inconsistent.
 
         While running, self.pqueue is set to the priority queue, and self.dists is set to the distances map.

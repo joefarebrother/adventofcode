@@ -37,22 +37,19 @@ sol.py      This program assumes that your solution for the part you are
 
 real.in      Your personal input (https://adventofcode.com/{year}/day/{day}/input)
 
-test{n}.in  The automatically extracted sample input
-            By default this is the first non-inline code block.
-            It may be wrong, and if so you must manually edit it and restart this
-            program if you want it to work correctly.
-            If no appropriate sample input is found, the program will still run but will require confirmation before submitting results.
-            Input 1 is generated automatically; subsequent inputs may be generated if they come from inline examples.
-            Test input files can also be created manually and will be run. An empty example file or one that contains [NONE] will not be run.
+test{n}.in  The input to test case {n}. 
+            Test 1 is automatically extracted as the first code block that matches the real input, 
+            and other inline tests may be extracted.
+            Further tests can also be created manually.
+            An empty file will be treated essentially as though it does not exist. 
+            An input of [NONE] (written if no test was found) won't be run.
+            A pair of empty input and output files are created automatically for convenience.
 
-test{n}-part{p}.out   The automatically extracted sample output for the given part
-                      By default, this is the last highlighted thing at the end of a code tag.
-                      It may be wrong, and if so you must manually edit it and restart this
-                      program if you want it to work correctly.
-                      If no appropriate sample output is found, this file will contain [NONE], 
-                      and the program will still run but will require confirmation before submitting results.
-                      An output file that doesn't exist or is empty will cause that example to be skipped; whereas one that contains [NONE] 
-                      will cause the example to be run but its result won't be verified.
+test{n}-part{p}.out   The expected output for test case {n}, part {p}.
+                      The output to test case 1 is automatically extracted as the last emphasised code element.
+                      An empty or non-existent output file will prevent the test case from being run at all for the given part.
+                      An output of [NONE] will have its test case run but its output not be verified.
+
 
 page{p}.html    the page when solving part {p}
 pagefinal.html  the page after both parts have been solved.

@@ -78,7 +78,8 @@ sesh = os.environ["AOC_KEY"]
 if not sesh:
     raise Exception("Environment variable AOC_KEY not set")
 
-headers = {"Cookie": "session="+sesh}
+headers = {"Cookie": "session="+sesh,
+           "User-Agent": "https://github.com/joefarebrother/adventofcode/blob/master/autotest.py by joseph.farebrother@gmail.com"}
 
 
 def write_to(file, content):

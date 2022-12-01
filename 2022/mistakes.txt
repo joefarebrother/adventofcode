@@ -1,0 +1,3 @@
+Day 1:
+- Forgetting that i renamed groups to inp_groups
+- Sorting in the wrong order

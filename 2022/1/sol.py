@@ -1,9 +1,8 @@
 from utils import *
 
 inp = inp_groups()
+cals = [sum(ints(gr)) for gr in inp]
+cals = sorted(cals, reverse=True)
 
-print(max(sum(ints(gr)) for gr in inp))
-
-x = [sum(ints(gr)) for gr in inp]
-x = sorted(x)[::-1]
-print(sum(x[:3]))
+print("Part 1:", cals[0])
+print("Part 2:", sum(cals[:3]))

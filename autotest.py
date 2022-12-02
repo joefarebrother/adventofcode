@@ -100,10 +100,9 @@ ratelimit_time = None
 
 def ratelimit():
     global ratelimit_time
-    if ratelimit_time == None or ratelimit_time < datetime.now():
-        return
-    diff = ratelimit_time-datetime.now()
-    sleep(diff.total_seconds())
+    if not (ratelimit_time == None or ratelimit_time < datetime.now()):
+        diff = ratelimit_time-datetime.now()
+        sleep(diff.total_seconds())
     ratelimit_time = datetime.now()+timedelta(seconds=1)
 
 

@@ -13,7 +13,8 @@ tot = 0
 for fst, snd in inp:
     fst = " ABC".find(fst)
     snd = " XYZ".find(snd)
-    score = [3, 6, 0][result(fst, snd)]+snd
+    res = result(fst, snd)
+    score = [3, 6, 0][res]+snd
     tot += score
 
 print("Part 1:", tot)
@@ -21,7 +22,7 @@ print("Part 1:", tot)
 tot = 0
 for fst, res in inp:
     fst = " ABC".find(fst)
-    res = "YXZ".find(res)
+    res = "YZX".find(res)
     snd = mod_inc(fst+res, 3)
     assert res == result(fst, snd)
     score = [3, 6, 0][res]+snd

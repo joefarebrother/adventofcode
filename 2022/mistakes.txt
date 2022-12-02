@@ -1,3 +1,7 @@
 Day 1:
 - Forgetting that i renamed groups to inp_groups
 - Sorting in the wrong order
+
+Day 2:
+- Getting the permutations of the results table wrong several times, leading to 4 wrong submissions
+- Misreading the question on which results XYZ mean

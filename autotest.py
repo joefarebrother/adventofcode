@@ -2,7 +2,7 @@
 
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
-import urllib.request as r
+import urllib.request as req
 from datetime import date, datetime
 import os
 import sys
@@ -95,7 +95,7 @@ def read_string(file):
 def get_or_save(url, file):
     if file is None or not os.path.isfile(file) or read_string(file).strip() == "":
         print("requesting url", repr(url))
-        r1 = r.urlopen(r.Request(url, headers=headers))
+        r1 = req.urlopen(req.Request(url, headers=headers))
         s = "".join(l.decode() for l in r1)
         if file is not None:
             write_to(file, s)
@@ -472,7 +472,7 @@ def submit(part, answer):
             sleep(61-timeout)
             print("Done")
 
-    resp = r.urlopen(r.Request(url, data=bytes(
+    resp = req.urlopen(req.Request(url, data=bytes(
         f"level={part}&answer={answer}", "utf8"), headers=headers))
 
     submit_time = datetime.now()

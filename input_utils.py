@@ -38,6 +38,8 @@ def inp_groups(split=True) -> list[str]:
     Strips whitespace around each group, such as trailing newlines.
     """
     res = [gr.strip() for gr in inp_readall().split("\n\n")]
+    if not res[-1]:
+        res = res[:-1]
     if split:
         res = [gr.splitlines() for gr in res]
     return res

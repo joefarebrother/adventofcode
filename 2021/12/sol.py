@@ -13,7 +13,7 @@ for line in inp:
 def paths(pt, part, visited=None):
     if pt == "end":
         return 1
-    if visited == None:
+    if visited is None:
         visited = [pt]
     c = 0
     for b in gr[pt]:

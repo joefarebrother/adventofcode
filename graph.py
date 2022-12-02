@@ -1,4 +1,3 @@
-from functools import cache
 from heapq import heappush, heappop
 from typing import Callable
 from collections import deque, defaultdict
@@ -17,8 +16,10 @@ class AbGraph():
     def __init__(self):
         self.prev = {}
         self.dists = {}
+        self.queue = None
+        self.pqueue = None
 
-    def adj(self, node):
+    def adj(self, _node):
         """
         Given a node, should return an iterator of its adjacent nodes.
         If this is an weighted graph (i.e. you're using dijkstra/astar) then it should be a dict of adjacent nodes to distances.
@@ -42,6 +43,7 @@ class AbGraph():
         class D1Gr(AbGraph):
             def __init__(self, inner):
                 self._inner = inner
+                super().__init__()
 
             def adj(self, node):
                 return {n: 1 for n in (self._inner.adj(node) or [])}
@@ -56,6 +58,7 @@ class AbGraph():
             def __init__(self, g1, g2):
                 self._g1 = g1
                 self._g2 = g2
+                super().__init__()
 
             def adj(self, node):
                 a1 = self._g1.adj(node)
@@ -101,8 +104,8 @@ class AbGraph():
             if k not in self.prev:
                 self.prev[k] = prev
                 yield node, d
-                for next in self[node]:
-                    yield from trav(next, d+1, node)
+                for nxt in self[node]:
+                    yield from trav(nxt, d+1, node)
 
         return GraphSearchResult(self, trav(start, 0, None))
 
@@ -139,10 +142,10 @@ class AbGraph():
                     self.prev[self.key(node)] = prev
                     yield (node, d)
 
-                for next in self[node]:
-                    k = self.key(next)
+                for nxt in self[node]:
+                    k = self.key(nxt)
                     if k not in self.prev:
-                        queue.append((next, d+1, node))
+                        queue.append((nxt, d+1, node))
 
         return GraphSearchResult(self, go())
 
@@ -178,21 +181,21 @@ class AbGraph():
                 self.prev[self.key(node)] = prev
                 yield (node, d)
 
-                for next, nd in self[node].items():
-                    k = self.key(next)
+                for nxt, nd in self[node].items():
+                    k = self.key(nxt)
                     if k in dists and dists[k] <= d+nd:
                         continue
                     if not warned:
                         hx = h(node)
-                        hy = h(next)
+                        hy = h(nxt)
                         if hx > nd + hy:
                             warned = True
                             print("Warning: heuristic not consistent: x=",
-                                  node, " y=", next, "d=", nd, "hx-hy=", hx-hy, "hx=", hx, "hy=", hy)
-                            incon_cb(node, next)
+                                  node, " y=", nxt, "d=", nd, "hx-hy=", hx-hy, "hx=", hx, "hy=", hy)
+                            incon_cb(node, nxt)
                     dists[k] = d+nd
                     i += 1
-                    heappush(pqueue, (d+nd+h(next), d+nd, i, next, node))
+                    heappush(pqueue, (d+nd+h(nxt), d+nd, i, nxt, node))
         return GraphSearchResult(self, go())
 
     dijkstra = astar
@@ -221,8 +224,8 @@ class AbGraph():
             cache[k] = sent
             mind = math.inf
             minp = None
-            for next, d in self[s].items():
-                nd, np = go(next)
+            for nxt, d in self[s].items():
+                nd, np = go(nxt)
                 nd += d
                 if nd < mind:
                     mind = nd
@@ -241,14 +244,17 @@ class GraphSearchResult:
     def __init__(self, graph, it):
         self.graph = graph
         self.it = it
+        self.max_dist = 0
 
     def __iter__(self):
-        return self.it
+        for (n, d) in self.it:
+            self.max_dist = max(self.max_dist, d)
+            yield (n, d)
 
     def exhaust(self):
         """Exhausts the full search space."""
-        for _, d in self:
-            self.max_dist = d
+        for _ in self:
+            pass
         return self
 
     def find(self, end_cond):
@@ -274,7 +280,7 @@ class GraphSearchResult:
 
 
 def _is_end(end, node):
-    if end == None:
+    if end is None:
         return False
     elif callable(end):
         return end(node)
@@ -296,7 +302,7 @@ class FGraph(AbGraph):
         return self._adj(node) or {}
 
     def key(self, node):
-        if self._key != None:
+        if self._key is not None:
             return self._key(node)
         return node
 
@@ -315,7 +321,7 @@ class DGraph(AbGraph):
         return self._adj[node] if node in self._adj else {}
 
     def key(self, node):
-        if self._key != None:
+        if self._key is not None:
             return self._key(node)
         return node
 

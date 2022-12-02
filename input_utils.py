@@ -1,8 +1,5 @@
 import os
 import sys
-from datetime import datetime
-from time import sleep
-
 from misc_utils import ints_in
 
 is_ex = len(sys.argv) > 1 and "test" in sys.argv[1]
@@ -61,7 +58,7 @@ def numeric(s, len_limit=False):
         # aoc numbers are pretty much always below 2^53 (16 digits) to avoid precision errors with languages like JS that only offer floats.
         # So anything longer than that should be treated as a string of digits for the purpose of determining whether to auto-cast input.
         return False
-    if s and s[0] == "0":
+    if len(s) > 1 and s[0] == "0":
         return False
     try:
         int(s)
@@ -85,7 +82,7 @@ def print_input_stats(inp):
         print("Looks like a grid")
 
     nums = ints_in(" ".join(inp))
-    nums = [n for n in nums if len(str(num)) <= 16]
+    nums = [n for n in nums if len(str(n)) <= 16]
     if nums:
         print(f"Min integer: {min(nums)}")
         print(f"Max integer: {max(nums)}")

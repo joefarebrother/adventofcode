@@ -115,11 +115,11 @@ class Machine:
         self.inp = inp if type(inp) == list else [ord(
             c) for c in inp] if type(inp) == str else []
         self.inpfun = default_inpfun if type(inp) == list or type(
-            inp) == str or inp == None else inp
+            inp) == str or inp is None else inp
         self.out = out if type(out) == list else []
-        self.outfun = default_outfun if out == None or type(
+        self.outfun = default_outfun if out is None or type(
             out) == list else out
-        self.name = name if name != None else ""
+        self.name = name if name is not None else ""
         self.pc = 0
         self.inp_ptr = 0
         self.waiting = False

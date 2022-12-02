@@ -1,6 +1,6 @@
 from collections import Counter
 from typing import Callable
-from geom import Rectangle, bounding_box, IVec2
+from geom import bounding_box, IVec2
 from input_utils import inp_readlines
 from collections.abc import MutableMapping
 
@@ -32,20 +32,20 @@ class Grid(MutableMapping):
         if isinstance(grid, str) or isinstance(grid, int):
             grid = inp_readlines()
 
-        if grid == None:
+        if grid is None:
             grid = {}
 
         self.bounding_box = None
 
         if isinstance(grid, Grid):
-            wrapx = grid.wrapx if wrapx == None else wrapx
-            wrapy = grid.wrapy if wrapy == None else wrapy
-            y_is_down = grid.y_is_down if y_is_down == None else y_is_down
-            default = grid.default if default == None else default
+            wrapx = grid.wrapx if wrapx is None else wrapx
+            wrapy = grid.wrapy if wrapy is None else wrapy
+            y_is_down = grid.y_is_down if y_is_down is None else y_is_down
+            default = grid.default if default is None else default
             grid = grid.data
 
-        wrapx = wrapx if wrapx != None else False
-        wrapy = wrapy if wrapy != None else False
+        wrapx = wrapx if wrapx is not None else False
+        wrapy = wrapy if wrapy is not None else False
 
         if not type(wrapx) == bool:
             if not type(wrapx) == int:
@@ -67,7 +67,7 @@ class Grid(MutableMapping):
         self.default = default
 
         if isinstance(grid, list):
-            if self.y_is_down == None:
+            if self.y_is_down is None:
                 self.y_is_down = True
 
             if wrapy:
@@ -101,7 +101,7 @@ class Grid(MutableMapping):
                     self.data[IVec2(x, y)] = cell
 
         elif isinstance(grid, dict):
-            if y_is_down == None:
+            if y_is_down is None:
                 self.y_is_down = False
 
             if wrapy == True:
@@ -231,7 +231,7 @@ class Grid(MutableMapping):
             The direction y is to be interpreted as is determined by self.y_is_down, which may then be flipped by flipy.
         """
 
-        if symbols == None:
+        if symbols is None:
             v = set(self.values())
             if len(v) <= 2 and v <= {0, 1, "0", "1", "#", "."}:
                 symbols = {0: ' ', 1: '█', "0": " ",
@@ -256,7 +256,7 @@ class Grid(MutableMapping):
         for y in yrng:
             for x in xrng:
                 elt = self[x, y]
-                if elt == None:
+                if elt is None:
                     elt = ' '
                 sym = symbols[elt] if elt in symbols else str(elt)[0]
                 res += sym

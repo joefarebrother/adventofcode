@@ -1,7 +1,7 @@
-from collections import defaultdict, Counter, deque
 import math
 import re
 from typing import Tuple, Callable, Iterable, Optional
+from collections import deque
 
 
 block_char = '█'
@@ -9,7 +9,7 @@ block_char = '█'
 
 def irange(start, stop=None, step=1) -> range:
     """Inclusive range"""
-    if stop == None:
+    if stop is None:
         start, stop = 1, start
     return range(start, stop+step, step)
 
@@ -91,17 +91,17 @@ def crt(mods, vals=None):
 
     Implementation adapted from https://rosettacode.org/wiki/Chinese_remainder_theorem#Python
     """
-    if vals != None:
+    if vals is not None:
         mods = zip(mods, vals)
     elif isinstance(mods, dict):
         mods = mods.items()
 
-    sum = 0
+    total = 0
     prod = math.prod([n for (n, i) in mods])
     for n_i, a_i in mods:
         p = prod // n_i
-        sum += a_i * mod_inv(p, n_i) * p
-    return sum % prod
+        total += a_i * mod_inv(p, n_i) * p
+    return total % prod
 
 
 def clear_screen() -> None:
@@ -194,13 +194,13 @@ def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):
     - If xs is a sorted list, bin_search(0, len(xs), lambda i: xs[i]<=n) returns the index of n in xs.
     """
 
-    if (not (hi == None or lo < hi)):
+    if (not (hi is None or lo < hi)):
         raise Exception("Empty range")
 
     if not f(lo):
         return lo
 
-    if (hi == None):
+    if (hi is None):
         hi = lo*2 if lo > 0 else 32
         while (f(hi)):
             (lo, hi) = (hi, lo*2)

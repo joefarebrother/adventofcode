@@ -47,7 +47,7 @@ r2 = r*r
 r3 = r.inv()
 
 tiles = {}
-for gr in inp_groups()[:-1]:
+for gr in inp_groups():
     n, gr = gr[0], gr[1:]
     tiles[ints_in(n)[0]] = Grid(gr)
 
@@ -62,7 +62,7 @@ def get_in_ori(tile, ori, pos):
 
 def top_edge(tile, ori):
     r = [get_in_ori(tile, ori, x) for x in range(sz)]
-    assert all(x != None for x in r)
+    assert all(x is not None for x in r)
     return r
 
 

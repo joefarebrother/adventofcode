@@ -81,7 +81,7 @@ def adj(occ):
         nocc = dict(occ)
         del nocc[start]
         nocc[end] = occ[start]
-        nocc = frozenset((p, l) for p, l in nocc.items() if l != None)
+        nocc = frozenset((p, l) for p, l in nocc.items() if l is not None)
         res[nocc] = d
     # if gr:
     #     print(len(gr.pqueue))

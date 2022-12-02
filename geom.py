@@ -1,7 +1,6 @@
 # pylint: disable=unsubscriptable-object # pylint bug in python 3.9
-from typing import Optional, Iterable, Union
+from typing import Optional, Iterable
 import cmath
-import itertools
 from misc_utils import irange, bounds, DotDict
 
 
@@ -47,7 +46,7 @@ class IVec2:
     def __eq__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return (self.x, self.y) == (other.x, other.y)
 
@@ -71,14 +70,14 @@ class IVec2:
     def __add__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(self.x+other.x, self.y+other.y)
 
     def __sub__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(self.x-other.x, self.y-other.y)
 
@@ -87,14 +86,14 @@ class IVec2:
     def __rsub__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(other.x-self.x, other.y-self.y)
 
     def __mul__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(complex(self)*complex(other))
 
@@ -103,14 +102,14 @@ class IVec2:
     def __truediv__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(complex(self)/complex(other))
 
     def __rtruediv__(self, other):
         try:
             other = IVec2(other)
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
         return IVec2(complex(other)/complex(self))
 
@@ -153,11 +152,11 @@ class Rectangle:
     Supports addition of points and other rectangles.
     """
 
-    def __init__(self, *ps, ints=True):
+    def __init__(self, *ps):
         if len(ps) == 0:
             self.minx, self.maxx, self.miny, self.maxy = None, None, None, None
         else:
-            if ps[0] == None:
+            if ps[0] is None:
                 # internal optimisation
                 (_, self.minx, self.miny, self.maxx, self.maxy) = ps
             else:
@@ -169,7 +168,7 @@ class Rectangle:
                 self.miny, self.maxy = bounds(ys)
 
     def __bool__(self):
-        return self.minx != None
+        return self.minx is not None
 
     def width(self) -> int:
         """
@@ -213,7 +212,7 @@ class Rectangle:
                 return False
             (x, y) = IVec2(other)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
-        except:
+        except (TypeError, ValueError):
             return NotImplemented
 
     def __le__(self, other):
@@ -246,7 +245,7 @@ class Rectangle:
         else:
             try:
                 other = IVec2(other)
-            except:
+            except (TypeError, ValueError):
                 return NotImplemented
             if other in self:
                 return self
@@ -342,7 +341,7 @@ def angle(p0, p1=None) -> float:
     angle(p0, p1) returns the angle of p1 as seen from p0.
     Returns a float in [0,tau); which is anticlockwise in the y-is-up convention and clockwise in the y-is-down convention.
     """
-    if p1 == None:
+    if p1 is None:
         p = IVec2(p0)
     else:
         p = IVec2(p1) - IVec2(p0)

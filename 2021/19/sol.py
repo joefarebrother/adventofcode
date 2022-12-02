@@ -110,7 +110,7 @@ class Scanner:
     rot: Matrix = None
 
     def known(self):
-        return self.off != None and self.rot != None
+        return self.off is not None and self.rot is not None
 
     def adjusted_seen(self):
         if not self.known:

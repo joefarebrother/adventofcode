@@ -19,7 +19,7 @@ def add_adjacent(n, pars, idx):
 
 
 def check_explodes(n, pars=None):
-    if pars == None:
+    if pars is None:
         pars = []
     if type(n) == int:
         return False
@@ -33,7 +33,7 @@ def check_explodes(n, pars=None):
 
 
 def check_splits(n, pars=None):
-    if pars == None:
+    if pars is None:
         pars = []
     if type(n) == int:
         if n < 10:

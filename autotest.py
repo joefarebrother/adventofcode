@@ -3,14 +3,14 @@
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
 import urllib.request as req
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import os
 import sys
 import re
 import platform
 import math
-from input_utils import numeric, print_input_stats
 from time import sleep
+from input_utils import numeric, print_input_stats
 
 usage = """
 Python script for advent of code which downloads the problem description,
@@ -120,7 +120,7 @@ def get_or_save(url, file):
 
 
 def touch(fn):
-    with open(fn, "a") as f:
+    with open(fn, "a"):
         pass
 
 
@@ -163,7 +163,7 @@ if len(sys.argv) >= 4:
     else:
         try:
             part_arg = str(int(sys.argv[3]))
-        except:
+        except ValueError:
             alt_sol = sys.argv[3]
 
 
@@ -398,7 +398,7 @@ def run_examples(part):
         if m:
             try:
                 idx = int(m.groups(1)[0])
-            except:
+            except ValueError:
                 continue
             inputfile = workdir+f
             outputfile = f"{workdir}/test{idx}-part{part}.out"
@@ -503,9 +503,9 @@ bad_submit_time = None
 
 
 def submit(part, answer):
-    global submit_time, bad_submit_time
+    global submit_time
     url = f"https://adventofcode.com/{year}/day/{day}/answer"
-    print(f"Submitting", repr(answer), "to url", repr(url))
+    print(f"Submitting {answer} to url {url}")
     if bad_submit_time != None:
         timeout = (datetime.now() - bad_submit_time).total_seconds()
         if timeout < 60:
@@ -523,7 +523,7 @@ def submit(part, answer):
     resp = "".join(l.decode() for l in resp)
     content = tags("article", resp)[0]
     print(content)
-    return resp, content
+    return content
 
 
 def wait_for_changes(file):
@@ -580,7 +580,7 @@ def do_part(part=None):
     find_examples(part, s)
 
     ns = 0
-    if should_wait:
+    if should_wait:  # pylint: disable=used-before-assignment
         wait_for_changes(solution_file)
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
@@ -644,7 +644,7 @@ def do_part(part=None):
                 print("")
                 if (good_answers and not bad_answers and not p1wrong) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
                     print("Submitting answer:", repr(answer))
-                    resp, content = submit(part=part, answer=answer)
+                    content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
                         bad_submit_time = None
                         should_wait = True

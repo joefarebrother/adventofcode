@@ -3,7 +3,7 @@
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
 import urllib.request as req
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os
 import sys
 import re
@@ -92,9 +92,22 @@ def read_string(file):
         return f.read()
 
 
+ratelimit_time = None
+
+
+def ratelimit():
+    global ratelimit_time
+    if ratelimit_time == None or ratelimit_time < datetime.now():
+        return
+    diff = ratelimit_time-datetime.now()
+    sleep(diff.total_seconds())
+    ratelimit_time = datetime.now()+timedelta(seconds=1)
+
+
 def get_or_save(url, file):
     if file is None or not os.path.isfile(file) or read_string(file).strip() == "":
         print("requesting url", repr(url))
+        ratelimit()
         r1 = req.urlopen(req.Request(url, headers=headers))
         s = "".join(l.decode() for l in r1)
         if file is not None:
@@ -472,6 +485,7 @@ def submit(part, answer):
             sleep(61-timeout)
             print("Done")
 
+    ratelimit()
     resp = req.urlopen(req.Request(url, data=bytes(
         f"level={part}&answer={answer}", "utf8"), headers=headers))
 

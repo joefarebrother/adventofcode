@@ -9,7 +9,7 @@ import sys
 import re
 import platform
 import math
-from utils import get_day_year, wait_for_unlock, print_input_stats, numeric
+from input_utils import numeric, print_input_stats
 from time import sleep
 
 usage = """
@@ -69,6 +69,9 @@ tmpreal     stores the output of the solution on the real input
 if __name__ != "__main__":
     raise Exception("Don't import autotest")
 
+if hasattr(sys, "set_int_max_str_digits"):
+    sys.set_int_max_str_digits(0)
+
 for arg in sys.argv[1:]:
     if "help" in arg or "-h" in arg:
         print(usage)
@@ -120,6 +123,32 @@ def get_or_save(url, file):
 def touch(fn):
     with open(fn, "a") as f:
         pass
+
+
+def get_day_year(day=None, year=None):
+    """
+    If day or year are none and it's december, set them according to the current date and return them.
+    """
+    now = datetime.now()
+
+    if not (day and year) and now.month != 12:
+        raise Exception("Not december so could not determine intended date")
+
+    if day == None:
+        day = now.day
+    if year == None:
+        year = now.year
+
+    return int(day), int(year)
+
+
+def wait_for_unlock(day, year):
+    now = datetime.now()
+    if (now.day, now.month, now.year) == (day, 12, year) and now.hour < 5:
+        unlock = now.replace(hour=5, minute=0, second=1)
+        diff = (unlock-now).total_seconds()
+        print(f"Waiting {diff} seconds")
+        sleep(diff)
 
 
 year = sys.argv[1] if len(sys.argv) >= 3 else None
@@ -601,7 +630,7 @@ def do_part(part=None):
             elif answer in good_answers + unknown_answers:
                 print(repr(answer),
                       "is the same as the example output. Not submitting")
-            elif not numeric(answer, len_limit=False) and numeric(example_answers[0], len_limit=False):
+            elif not numeric(answer) and numeric(example_answers[0]):
                 print(
                     repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
             elif answer in bad_answers:

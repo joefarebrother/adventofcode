@@ -5,3 +5,6 @@ Day 1:
 Day 2:
 - Getting the permutations of the results table wrong several times, leading to 4 wrong submissions
 - Misreading the question on which results XYZ mean
+
+Day 3:
+- None!

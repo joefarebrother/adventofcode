@@ -46,6 +46,31 @@ def windows(xs: Iterable, n: int) -> Iterable:
         yield tuple(q)
 
 
+def chunks(xs: Iterable, n: int, exact=True) -> Iterable[list]:
+    """
+    Yields xs broken into chunks of size n
+    e.g. chunks("ABCDEF", 2) = "AB","CD","EF"
+    if exact is true, asserts that the length of xs divides n. Otherwise, the last chunk is the remainder.
+    """
+    ys = []
+    xs = iter(xs)
+    while True:
+        for i in range(n):
+            try:
+                ys.append(next(xs))
+            except StopIteration:
+                if i == 0:
+                    return
+                if exact:
+                    raise Exception(
+                        f"Non exact chunks (remainder chunk of size {len(ys)})") from None
+                else:
+                    yield ys
+                    return
+        yield ys
+        ys = []
+
+
 def sign(x) -> int:
     """Returns the sign of x"""
     if x < 0:
@@ -174,7 +199,11 @@ def ident(x):
     """The identity function."""
     return x
 
-#pylint: disable=unsubscriptable-object
+
+def only(xs: Iterable):
+    """Asserts that xs has length 1, and returns its only element"""
+    assert len(xs) == 1, xs
+    return next(iter(xs))
 
 
 def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):

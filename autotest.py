@@ -53,9 +53,8 @@ test{n}-part{p}.out   The expected output for test case {n}, part {p}.
 
 page{p}.html    the page when solving part {p}
 pagefinal.html  the page after both parts have been solved.
-wrong_ans       a text file containing a list of answers which have been rejected, as well as whether they were too high or low.
+wrong_ans{p}    a text file containing a list of answers which have been rejected for the given part, as well as whether they were too high or low.
                 Hopefully avoids repeatedly submitting wrong answers
-                Does not distinguish between part 1 and part 2
 
 timeout     Overrides the default example timeout of 10 seconds
 
@@ -176,34 +175,41 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 real_inputfile = f"{workdir}/real.in"
 solution_file = f"{workdir}/{alt_sol}.py"
 
-wrong_ans_file = workdir + "wrong_ans"
-bad_answers = set()
-bad_toohigh = None
-bad_toolow = None
-if os.path.isfile(wrong_ans_file):
-    with open(wrong_ans_file) as f:
-        for line in f:
-            if "[TOO HIGH]" in line:
-                line = line.split()[0]
-                bad_toohigh = min(int(line), bad_toohigh or math.inf)
-            if "[TOO LOW]" in line:
-                line = line.split()[0]
-                bad_toolow = max(int(line), bad_toolow or -math.inf)
-            bad_answers.add(line.strip())
 
+class Wrong:
+    def __init__(self, part):
+        self.filename = f"{workdir}/wrong_ans{part}"
+        self.answers = []
+        self.toohigh = None
+        self.toolow = None
+        if os.path.isfile(self.filename):
+            with open(self.filename) as f:
+                for line in f:
+                    ans = line.split()[0]
+                    self.add_bad(ans, line, write=False)
 
-def add_bad(ans, content):
-    global bad_toohigh, bad_toolow
-    extra = ""
-    if "too high" in content:
-        bad_toohigh = min(int(ans), bad_toohigh or math.inf)
-        extra = " [TOO HIGH]"
-    if "too low" in content:
-        bad_toolow = max(int(ans), bad_toolow or -math.inf)
-        extra = " [TOO LOW]"
-    bad_answers.add(ans)
-    with open(wrong_ans_file, mode="a") as f:
-        print(ans + extra, file=f)
+    def add_bad(self, ans, content, write=True):
+        self.answers.append(ans)
+        extra = ""
+        if "too high" in content:
+            self.toohigh = min(int(ans), self.toohigh or math.inf)
+            extra = " [too high]"
+        if "too low" in content:
+            self.toolow = max(int(ans), self.toolow or -math.inf)
+            extra = " [too low]"
+        if write:
+            with open(self.filename, mode="a") as f:
+                print(ans + extra, file=f)
+
+    def is_toohigh(self, ans):
+        if self.toohigh is None:
+            return False
+        return int(ans) >= self.toohigh
+
+    def is_toolow(self, ans):
+        if self.toolow is None:
+            return False
+        return int(ans) <= self.toolow
 
 
 def anything_but(s):
@@ -249,6 +255,8 @@ def html_entities(s):
 
 
 def summarize(s):
+    if isinstance(s, list):
+        s = '\n'.join(s)+'\n'
     s = re.sub(r'\d', '0', s)
     s = re.sub(r'[a-z]', 'a', s)
     s = re.sub(r'[A-Z]', 'A', s)
@@ -275,7 +283,7 @@ def find_examples(part, orig_s):
             print("Could not find example (No <pre><code> tags)")
             write_to(test1_inputfile, "[NONE]")
         else:
-            summarized_real = summarize("\n".join(real_input)+"\n")
+            summarized_real = summarize(real_input)
             for i, eg in enumerate(egs):
                 eg = eg.replace("<em>", "").replace("</em>", "")
                 eg = html_entities(eg)
@@ -289,6 +297,7 @@ def find_examples(part, orig_s):
                         f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
             else:
                 print("Could not find example (No code block matches input)")
+                write_to(test1_inputfile, "[NONE]")
 
     if not os.path.isfile(test1_outputfile):
         print("Trying to find sample output to save in", test1_outputfile)
@@ -317,7 +326,7 @@ def find_examples(part, orig_s):
             write_to(test1_outputfile, sample_out)
     else:
         sample_out = read_string(test1_outputfile).strip()
-        if sample_out == "[NONE]":
+        if sample_out in ["[NONE]", ""]:
             print("No output specified.")
     print("Assumed output:", sample_out)
 
@@ -428,7 +437,8 @@ def run_examples(part):
 def run_example(inputfile, outputfile, idx, part, timeout):
     """
     Runs a single example.
-    Returns (ans, succ) where ans is the answer given, and succ is True if the test passed, False if it didn't, and None if no expected output was found.
+    Returns (ans, succ) where ans is the answer given,
+    and succ is True if the test passed, False if it didn't, and None if no expected output was found.
     """
     tmpfile = workdir+"tmp"
 
@@ -441,7 +451,7 @@ def run_example(inputfile, outputfile, idx, part, timeout):
 
     ans = answer_in_out(read_string(tmpfile), part)
 
-    if ans == None:
+    if ans is None:
         print(f"=== Example {idx} produced no output")
         return None, False
 
@@ -514,16 +524,16 @@ def submit(part, answer):
             print("Done")
 
     ratelimit()
-    resp = req.urlopen(req.Request(url, data=bytes(
-        f"level={part}&answer={answer}", "utf8"), headers=headers))
+    with req.urlopen(req.Request(url, data=bytes(
+            f"level={part}&answer={answer}", "utf8"), headers=headers)) as resp:
 
-    submit_time = datetime.now()
-    print("time", submit_time)
-    print("response:")
-    resp = "".join(l.decode() for l in resp)
-    content = tags("article", resp)[0]
-    print(content)
-    return content
+        submit_time = datetime.now()
+        print("time", submit_time)
+        print("response:")
+        resp = "".join(l.decode() for l in resp)
+        content = tags("article", resp)[0]
+        print(content)
+        return content
 
 
 def wait_for_changes(file):
@@ -571,6 +581,9 @@ def do_part(part=None):
     no_submit = False
     if int(part) <= completed:
         no_submit = True
+
+    wrong = Wrong(part)
+    old_wrong = Wrong("1")
 
     correct_answers = []
     for p in tags("p", s):
@@ -623,6 +636,10 @@ def do_part(part=None):
                     print(f"Incorrect answer. Expecting {correct_answer}")
                     exit(1)
 
+            if part == "2" and answer in old_wrong.answers:
+                print(repr(answer),
+                      "was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
+
             # do some checks on answer
             if len(answer) < 3:
                 print(repr(answer), "looks too small. Not submitting")
@@ -632,17 +649,20 @@ def do_part(part=None):
             elif not numeric(answer) and numeric(example_answers[0]):
                 print(
                     repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
-            elif answer in bad_answers:
+            elif part == "2" and correct_answers and answer == correct_answers[0]:
+                print(repr(answer),
+                      "is the same as the correct part 1 answer. Not submitting.")
+            elif answer in wrong.answers:
                 print(repr(answer), "previously submitted and failed. Not submitting.")
-            elif bad_toohigh and int(answer) >= bad_toohigh:
+            elif wrong.is_toohigh(answer):
                 print(repr(answer),
-                      f"is too high; as {bad_toohigh} was. Not submitting.")
-            elif bad_toolow and int(answer) <= bad_toolow:
+                      f"is too high; as {wrong.toohigh} was. Not submitting.")
+            elif wrong.is_toolow(answer):
                 print(repr(answer),
-                      f"is too low; as {bad_toolow} was. Not submitting.")
+                      f"is too low; as {wrong.toolow} was. Not submitting.")
             else:
                 print("")
-                if (good_answers and not bad_answers and not p1wrong) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
+                if (good_answers and not wrong.answers and not old_wrong.answers and not p1wrong) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
                     print("Submitting answer:", repr(answer))
                     content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
@@ -653,7 +673,7 @@ def do_part(part=None):
                             exit(0)
                         break
                     elif "That's not the right answer" in content:
-                        add_bad(answer, content)
+                        wrong.add_bad(answer, content)
                         bad_submit_time = submit_time
                     else:
                         print(

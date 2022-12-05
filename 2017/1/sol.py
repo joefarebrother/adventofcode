@@ -1,4 +1,6 @@
-inp = open("2017/1.in").read().strip()
+from utils import *
+
+inp = inp_readall().strip()
 inp += inp[0]
 
 s = 0

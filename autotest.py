@@ -662,7 +662,8 @@ def do_part(part=None):
                       f"is too low; as {wrong.toolow} was. Not submitting.")
             else:
                 print("")
-                if (good_answers and not wrong.answers and not old_wrong.answers and not p1wrong) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
+                should_prompt = wrong.answers or old_wrong.answers or p1wrong
+                if (good_answers and not should_prompt) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
                     print("Submitting answer:", repr(answer))
                     content = submit(part=part, answer=answer)
                     if "That's the right answer!" in content:
@@ -682,7 +683,10 @@ def do_part(part=None):
     return part
 
 
-should_wait = not os.path.isfile(solution_file)
+should_wait = False
+if not os.path.isfile(solution_file):
+    should_wait = True
+    write_to(solution_file, "from utils import *\n\n")
 
 touch(real_inputfile)
 touch(solution_file)

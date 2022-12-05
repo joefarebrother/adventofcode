@@ -77,6 +77,7 @@ def print_input_stats(inp):
     print(f"Blank lines: {inp.count('')}")
     print(f"Numeric lines: {sum(numeric(l, len_limit=True) for l in inp)}")
     print(f"CSV Numeric lines: {sum(csv_numeric(l) for l in inp)}")
+    print(f"Columns: {max(len(l) for l in inp)}")
     if len(set(len(l) for l in inp)) == 1 and len(inp) != 1:
         print("Looks like a grid")
 

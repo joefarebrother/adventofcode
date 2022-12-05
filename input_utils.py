@@ -32,9 +32,8 @@ def inp_readall() -> str:
 def inp_groups(split=True) -> list[str]:
     """
     Splits the contents of the given file into groups separated by two newlines.
-    Strips whitespace around each group, such as trailing newlines.
     """
-    res = [gr.rstrip() for gr in inp_readall().split("\n\n")]
+    res = inp_readall().split("\n\n")
     if not res[-1]:
         res = res[:-1]
     if split:

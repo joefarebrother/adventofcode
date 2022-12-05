@@ -136,7 +136,7 @@ class Grid(MutableMapping):
         """
         Converts the given external key to IVec2, 
         """
-        (x, y) = IVec2(key)
+        (x, y) = IVec2(key, strict=True)
         if self.wrapx:
             x %= self.wrapx
         if self.wrapy:

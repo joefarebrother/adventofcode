@@ -8,12 +8,14 @@ class IVec2:
     """
     A 2d vector of integers. 
     Can be used like a complex number or a tuple.
+
+    If strict is False, the constructor may return a complex number with non-integer parts.
     """
 
     __slots__ = "x", "y"
     _cache = {}
 
-    def __new__(cls, x, y=None):
+    def __new__(cls, x, y=None, strict=False):
         if isinstance(x, cls):
             return x
         if (x, y) in cls._cache:
@@ -22,11 +24,14 @@ class IVec2:
             if type(x) in (int, float, complex):
                 x = complex(x)
                 ix, iy = x.real, x.imag
+                if not strict and not (ix == int(ix) and iy == int(iy)):
+                    return x
             else:
                 ix, iy = x
         else:
             ix, iy = x, y
         s = super(IVec2, cls).__new__(cls)
+        assert ix == int(ix) and iy == int(iy), (ix, iy)
         s.x = int(ix)
         s.y = int(iy)
         cls._cache[x, y] = s
@@ -68,6 +73,8 @@ class IVec2:
         return self.x + 1j*self.y
 
     def __add__(self, other):
+        if isinstance(other, complex):
+            return IVec2(complex(self)+other)
         try:
             other = IVec2(other)
         except (TypeError, ValueError):
@@ -75,6 +82,8 @@ class IVec2:
         return IVec2(self.x+other.x, self.y+other.y)
 
     def __sub__(self, other):
+        if isinstance(other, complex):
+            return IVec2(complex(self)-other)
         try:
             other = IVec2(other)
         except (TypeError, ValueError):
@@ -84,6 +93,8 @@ class IVec2:
     __radd__ = __add__
 
     def __rsub__(self, other):
+        if isinstance(other, complex):
+            return IVec2(other-complex(self))
         try:
             other = IVec2(other)
         except (TypeError, ValueError):
@@ -91,6 +102,8 @@ class IVec2:
         return IVec2(other.x-self.x, other.y-self.y)
 
     def __mul__(self, other):
+        if isinstance(other, complex):
+            return IVec2(complex(self)*other)
         try:
             other = IVec2(other)
         except (TypeError, ValueError):
@@ -100,6 +113,8 @@ class IVec2:
     __rmul__ = __mul__
 
     def __truediv__(self, other):
+        if isinstance(other, complex):
+            return IVec2(complex(self)/other)
         try:
             other = IVec2(other)
         except (TypeError, ValueError):
@@ -107,6 +122,8 @@ class IVec2:
         return IVec2(complex(self)/complex(other))
 
     def __rtruediv__(self, other):
+        if isinstance(other, complex):
+            return IVec2(other/complex(self))
         try:
             other = IVec2(other)
         except (TypeError, ValueError):

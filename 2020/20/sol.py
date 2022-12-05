@@ -1,6 +1,5 @@
-# pylint: disable=unused-wildcard-import
 from utils import *
-import pickle
+# import pickle
 
 
 @dataclass
@@ -84,7 +83,7 @@ print(fst)
 def compat(t1, or1, t2, or2, ed):
     # ed is the direction of tile t2 as seen from t1.
     # we divide by it (rotate in the opposite direction) to inspect the correct edge
-    return right_edge(tiles[t1], or1*D8(1/ed, False)) == left_edge(tiles[t2], or2*(D8(1/ed, False)))[::-1]
+    return right_edge(tiles[t1], or1*D8(1/ed, False)) == left_edge(tiles[t2], or2*D8(1/ed, False))[::-1]
 
 
 def fits(tile, pos, ori):
@@ -155,21 +154,24 @@ def draw_jig():
                     print(r, end="")
             print()
 
-
 # 1951    2311    3079
 # 2729    1427    2473
 # 2971    1489    1171
 
-try:
-    jigsaw = pickle.load(open("jigsaw.pkl", "rb"))
-except:
-    search()
-    pickle.dump(jigsaw, open("jigsaw.pkl", "wb"))
+
+# try:
+#     jigsaw = pickle.load(open("jigsaw.pkl", "rb"))
+# except:
+#     search()
+#     pickle.dump(jigsaw, open("jigsaw.pkl", "wb"))
+search()
 draw_jig()
+
+assert sol
 
 cs = [jigsaw[c][0] for c in jigsaw.bounding_box.corners()]
 print(cs)
-print(math.prod(cs))
+print("Part 1:", math.prod(cs))
 
 img = Grid()
 imx, imy = 0, 0
@@ -207,4 +209,4 @@ for ori in d8:
 
 # visualisation after determining that r was the correct orientation
 Grid({p*r: v for (p, v) in img.items()}).draw()
-print(list(img.values()).count("~"))
+print("Part 2:", list(img.values()).count("~"))

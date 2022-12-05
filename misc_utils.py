@@ -8,7 +8,9 @@ block_char = '█'
 
 
 def irange(start, stop=None, step=1) -> range:
-    """Inclusive range"""
+    """
+    Inclusive range
+    """
     if stop is None:
         start, stop = 1, start
     return range(start, stop+step, step)
@@ -202,8 +204,12 @@ def ident(x):
 
 def only(xs: Iterable):
     """Asserts that xs has length 1, and returns its only element"""
+    if hasattr(xs, "__len__"):
+        assert len(xs) == 1, xs
+        return next(iter(xs))
+    xs = list(xs)
     assert len(xs) == 1, xs
-    return next(iter(xs))
+    return xs[0]
 
 
 def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):
@@ -223,22 +229,22 @@ def bin_search(lo: int, hi: Optional[int], f: Callable[[int], bool]):
     - If xs is a sorted list, bin_search(0, len(xs), lambda i: xs[i]<=n) returns the index of n in xs.
     """
 
-    if (not (hi is None or lo < hi)):
+    if not (hi is None or lo < hi):
         raise Exception("Empty range")
 
     if not f(lo):
         return lo
 
-    if (hi is None):
+    if hi is None:
         hi = lo*2 if lo > 0 else 32
-        while (f(hi)):
+        while f(hi):
             (lo, hi) = (hi, lo*2)
 
     # Invariant: lo <= target < hi; i.e. f(lo) and not f(hi)
     # This invariant is not completely checked at the start; since f might be undefined on hi.
     # However, it still holds if we assume f "would be" false beyond its range.
 
-    while (hi - lo > 1):
+    while hi - lo > 1:
         mid = (lo+hi)//2
         if f(mid):
             lo = mid
@@ -282,6 +288,7 @@ def inv_mapping(d: dict) -> dict:
 
 
 class DotDict(dict):
+    """A dict whose elements can also be set or accessed as attributes"""
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__

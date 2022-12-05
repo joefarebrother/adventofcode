@@ -4,6 +4,7 @@ import re
 import itertools
 import sys
 from dataclasses import dataclass
+from copy import copy, deepcopy
 from functools import *
 from misc_utils import *
 from input_utils import *

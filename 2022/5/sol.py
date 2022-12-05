@@ -1,5 +1,4 @@
 from utils import *
-from copy import deepcopy
 
 crates_raw, instrs = inp_groups()
 

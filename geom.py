@@ -177,7 +177,7 @@ class Rectangle:
                 # internal optimisation
                 (_, self.minx, self.miny, self.maxx, self.maxy) = ps
             else:
-                ps = [IVec2(p) for p in ps]
+                ps = [IVec2(p, strict=True) for p in ps]
                 xs = [x for (x, y) in ps]
                 ys = [y for (x, y) in ps]
 
@@ -199,6 +199,9 @@ class Rectangle:
         """
         return self.maxy-self.miny+1 if self else 0
 
+    def __len__(self) -> int:
+        return self.width*self.height
+
     def xrange(self) -> range:
         """
         Returns the range of x-positions this rectangle spans.
@@ -212,12 +215,17 @@ class Rectangle:
         return irange(self.miny, self.maxy) if self else range(0)
 
     def points(self):
-        """Yields the points of this rectangle, from left to right then increasing Y values."""
+        """
+        Yields the points of this rectangle, in increasing X values then increasing Y values.
+        """
         for y in self.yrange():
             for x in self.xrange():
                 yield IVec2(x, y)
 
     def expand_1(self):
+        """
+        Expands this rectangle by 1 unit in each direction.
+        """
         return Rectangle((self.minx-1, self.miny-1), (self.maxx+1, self.maxy+1))
 
     def __iter__(self):
@@ -227,7 +235,7 @@ class Rectangle:
         try:
             if not self:
                 return False
-            (x, y) = IVec2(other)
+            (x, y) = IVec2(other, strict=True)
             return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
         except (TypeError, ValueError):
             return NotImplemented
@@ -235,7 +243,7 @@ class Rectangle:
     def __le__(self, other):
         if not isinstance(other, Rectangle):
             return NotImplemented
-        return all([p in other for p in self.opposite_corners()])
+        return all(p in other for p in self.opposite_corners())
 
     def corners(self) -> list[IVec2]:
         """
@@ -297,6 +305,7 @@ class Rectangle:
             (minx, maxx) = xint
             (miny, maxy) = yint
             return Rectangle(None, minx, miny, maxx, maxy)
+        return Rectangle()
 
 
 def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
@@ -340,7 +349,7 @@ def dist(p1, p2=0) -> float:
     Returns the Euclidean distance between the two specified points.
     Returns an integer if both inputs are integers.
     """
-    if type(p1) == int and type(p2) == int:
+    if isinstance(p1, int) and isinstance(p2, int):
         return abs(p1-p2)
     return abs(IVec2(p1)-p2)
 

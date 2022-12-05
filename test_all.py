@@ -15,7 +15,7 @@ if "--help" in sys.argv or "-h" in sys.argv:
     print_usage()
     exit(0)
 
-years = [2019, 2020, 2021]
+years = list(range(2018, 2023))
 if len(sys.argv) >= 2:
     try:
         years = [int(sys.argv[1])]
@@ -35,7 +35,7 @@ for year in years:
             continue
         if os.path.exists(f"{curdir}/{year}/{day}/sol.py"):
             print(f"\n======== Testing year {year} day {day} ========\n")
-            if (os.system(f"{curdir}/autotest.py {year} {day}")):
+            if os.system(f"{curdir}/autotest.py {year} {day}"):
                 fail.append((year, day))
             else:
                 success += 1

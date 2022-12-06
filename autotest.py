@@ -150,8 +150,7 @@ def wait_for_unlock(day, year):
 
 
 year = sys.argv[1] if len(sys.argv) >= 3 else None
-day = sys.argv[2] if len(sys.argv) >= 3 else (
-    sys.argv[1] if len(sys.argv) >= 2 else None)
+day = sys.argv[2] if len(sys.argv) >= 3 else (sys.argv[1] if len(sys.argv) >= 2 else None)
 day, year = get_day_year(day, year)
 
 part_arg = None
@@ -250,8 +249,7 @@ def remove_tags(tag, html, exact_start=False, exact_end=False):
 
 
 def html_entities(s):
-    return s.replace("&gt;", ">").replace(
-        "&lt;", "<").replace("&amp;", "&")
+    return s.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
 
 
 def summarize(s):
@@ -293,8 +291,7 @@ def find_examples(part, orig_s):
                     print(eg)
                     break
                 else:
-                    print(
-                        f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
+                    print(f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
             else:
                 print("Could not find example (No code block matches input)")
                 write_to(test1_inputfile, "[NONE]")
@@ -419,8 +416,7 @@ def run_examples(part):
                     continue
                 if read_string(outputfile).strip() == "":
                     print(f"Example {idx} skipped: Output file empty")
-                ans, suc = run_example(
-                    inputfile, outputfile, idx, part, timeout)
+                ans, suc = run_example(inputfile, outputfile, idx, part, timeout)
                 if suc == None:
                     unk.append(ans)
                 elif suc:
@@ -429,8 +425,7 @@ def run_examples(part):
                     unk.append(ans)
                     return good, unk, False
             else:
-                print(
-                    f"Example {idx} skipped: No expected output file found (use a file containing [NONE] to run anyway)")
+                print(f"Example {idx} skipped: No expected output file found (use a file containing [NONE] to run anyway)")
     return good, unk, True
 
 
@@ -443,8 +438,7 @@ def run_example(inputfile, outputfile, idx, part, timeout):
     tmpfile = workdir+"tmp"
 
     print(f"==== Trying example {idx} ({timeout} second timeout)\n")
-    p = tee(
-        f"timeout --foreground {timeout} python3 -u {solution_file} {inputfile}", tmpfile)
+    p = tee(f"timeout --foreground {timeout} python3 -u {solution_file} {inputfile}", tmpfile)
     if p:
         print(f"=== Example {idx} did not terminate successfully")
         return None, False
@@ -460,8 +454,7 @@ def run_example(inputfile, outputfile, idx, part, timeout):
         return ans, None
 
     if ans != sample_out:
-        print(
-            f"=== Example {idx} failed: Expected {sample_out}, got {ans}")
+        print(f"=== Example {idx} failed: Expected {sample_out}, got {ans}")
         return ans, False
 
     return ans, True
@@ -471,8 +464,7 @@ def run_real(part):
     tmpfile = workdir+"tmpreal"
 
     print("==== trying real input (no timeout)")
-    p = tee(
-        f"python3 -u {solution_file} {real_inputfile}", tmpfile)
+    p = tee(f"python3 -u {solution_file} {real_inputfile}", tmpfile)
     print("==== end of program output")
     if p:
         print("Did not terminate successfully on real input")
@@ -524,8 +516,7 @@ def submit(part, answer):
             print("Done")
 
     ratelimit()
-    with req.urlopen(req.Request(url, data=bytes(
-            f"level={part}&answer={answer}", "utf8"), headers=headers)) as resp:
+    with req.urlopen(req.Request(url, data=bytes(f"level={part}&answer={answer}", "utf8"), headers=headers)) as resp:
 
         submit_time = datetime.now()
         print("time", submit_time)
@@ -609,16 +600,14 @@ def do_part(part=None):
 
         if all_passed:
             if not good_answers:
-                print(
-                    "No examples were verified, so the result will not be submitted without confirmation")
+                print("No examples were verified, so the result will not be submitted without confirmation")
 
             answer, p1answer = run_real(part)
             if not answer:
                 continue
             p1wrong = False
             if part == "2" and p1answer and p1answer != correct_answers[0]:
-                print(
-                    f"Warning: Part 1 answer regressed (expecting {correct_answers[0]}, got {p1answer})")
+                print(f"Warning: Part 1 answer regressed (expecting {correct_answers[0]}, got {p1answer})")
                 p1wrong = True
 
             print("Verified example answers: ", good_answers)
@@ -637,29 +626,23 @@ def do_part(part=None):
                     exit(1)
 
             if part == "2" and answer in old_wrong.answers:
-                print(repr(answer),
-                      "was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
+                print(repr(answer), "was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
 
             # do some checks on answer
             if len(answer) < 3:
                 print(repr(answer), "looks too small. Not submitting")
             elif answer in good_answers + unknown_answers:
-                print(repr(answer),
-                      "is the same as the example output. Not submitting")
+                print(repr(answer), "is the same as the example output. Not submitting")
             elif not numeric(answer) and numeric(example_answers[0]):
-                print(
-                    repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
+                print(repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
             elif part == "2" and correct_answers and answer == correct_answers[0]:
-                print(repr(answer),
-                      "is the same as the correct part 1 answer. Not submitting.")
+                print(repr(answer), "is the same as the correct part 1 answer. Not submitting.")
             elif answer in wrong.answers:
                 print(repr(answer), "previously submitted and failed. Not submitting.")
             elif wrong.is_toohigh(answer):
-                print(repr(answer),
-                      f"is too high; as {wrong.toohigh} was. Not submitting.")
+                print(repr(answer), f"is too high; as {wrong.toohigh} was. Not submitting.")
             elif wrong.is_toolow(answer):
-                print(repr(answer),
-                      f"is too low; as {wrong.toolow} was. Not submitting.")
+                print(repr(answer), f"is too low; as {wrong.toolow} was. Not submitting.")
             else:
                 print("")
                 should_prompt = wrong.answers or old_wrong.answers or p1wrong
@@ -677,8 +660,7 @@ def do_part(part=None):
                         wrong.add_bad(answer, content)
                         bad_submit_time = submit_time
                     else:
-                        print(
-                            "\nDid not recognise success or incorrect, may be timeout or blank input or already completed")
+                        print("\nDid not recognise success or incorrect, may be timeout or blank input or already completed")
 
     return part
 

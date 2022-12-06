@@ -64,8 +64,7 @@ def chunks(xs: Iterable, n: int, exact=True) -> Iterable[list]:
                 if i == 0:
                     return
                 if exact:
-                    raise Exception(
-                        f"Non exact chunks (remainder chunk of size {len(ys)})") from None
+                    raise Exception(f"Non exact chunks (remainder chunk of size {len(ys)})") from None
                 else:
                     yield ys
                     return

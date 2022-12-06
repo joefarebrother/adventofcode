@@ -70,5 +70,4 @@ def adj2(p_):
         return res
 
 
-print("Part 2:", FGraph(adj2).dist1().astar(
-    (start, 0), h=lambda p_: p_[1]*1000).dist((end, 0)))
+print("Part 2:", FGraph(adj2).dist1().astar((start, 0), h=lambda p_: p_[1]*1000).dist((end, 0)))

@@ -119,8 +119,7 @@ for Aend in range(1, len(cmd)):
                                 break
 
                             print("Possibility found!\n")
-                            instr = '\n'.join(
-                                mapl(cmdstr, [cmd2, A, B, C]) + ['n', ''])
+                            instr = '\n'.join(mapl(cmdstr, [cmd2, A, B, C]) + ['n', ''])
                             print(instr)
                             instrs = mapl(ord, instr)
 

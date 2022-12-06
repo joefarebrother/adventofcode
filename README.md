@@ -20,4 +20,4 @@ My inputs aren't included.
 
 ## Utility scripts
 - `autotest.py [year/day] [day]` - Automatically runs solution file against example data, then submits the output for the real data when the test passes. See `--help` for more info.
-- `test_all.py year` - Automatically tuns `autotest.py` on every day for a given year
+- `test_all.py [year]` - Automatically tuns `autotest.py` on every day for a given year, or all years if none given.

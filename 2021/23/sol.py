@@ -29,8 +29,9 @@ occupied = {p: l for p, l in g.items() if l in "ABCD"}
 
 
 def path(occ, start, end):
-    ps = ({(start.x, y) for y in irange(1, start.y)} | {(end.x, y) for y in irange(
-        1, end.y)} | {(x, 1) for x in irange(*bounds((start.x, end.x)))}) - {start}
+    ps = ({(start.x, y) for y in irange(1, start.y)} |
+          {(end.x, y) for y in irange(1, end.y)} |
+          {(x, 1) for x in irange(*bounds((start.x, end.x)))}) - {start}
     if all(IVec2(p) not in occ for p in ps):
         return len(ps)
 

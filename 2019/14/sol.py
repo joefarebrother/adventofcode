@@ -5,8 +5,7 @@ inp = inp_readlines()
 react = {}
 
 for line in inp:
-    (lhs_, rhs_amt, rhs_chem) = re.match(
-        r'(.*) => (\d+) ([A-Z]+)', line).groups()
+    (lhs_, rhs_amt, rhs_chem) = re.match(r'(.*) => (\d+) ([A-Z]+)', line).groups()
     lhs = []
     for w in lhs_.split(','):
         (amt, chem) = re.search(r'(\d+) ([A-Z]+)', w).groups()

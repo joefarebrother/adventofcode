@@ -51,8 +51,7 @@ print(sum(invalid_nums))
 valid.add(my_tick)
 
 for r in rules:
-    r.pos = {p for p in range(len(my_tick)) if all(
-        tick[p] in r for tick in valid)}
+    r.pos = {p for p in range(len(my_tick)) if all(tick[p] in r for tick in valid)}
     print(r, r.pos)
 
 fpos = pick_uniq({r: r.pos for r in rules})

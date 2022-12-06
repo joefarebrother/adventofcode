@@ -72,25 +72,21 @@ class Vector:
         return sum(abs(self[i]-other[i]) for i in range(len(self.data)))
 
 
-rotx = Matrix(
-    [[1, 0, 0],
-     [0, 0, 1],
-     [0, -1, 0]])
+rotx = Matrix([[1, 0, 0],
+               [0, 0, 1],
+               [0, -1, 0]])
 
-roty = Matrix(
-    [[0, 0, 1],
-     [0, 1, 0],
-     [-1, 0, 0]])
+roty = Matrix([[0, 0, 1],
+               [0, 1, 0],
+               [-1, 0, 0]])
 
-rotz = Matrix(
-    [[0, 1, 0],
-     [-1, 0, 0],
-     [0, 0, 1]])
+rotz = Matrix([[0, 1, 0],
+               [-1, 0, 0],
+               [0, 0, 1]])
 
-id = Matrix(
-    [[1, 0, 0],
-     [0, 1, 0],
-     [0, 0, 1]])
+id = Matrix([[1, 0, 0],
+             [0, 1, 0],
+             [0, 0, 1]])
 
 
 all_rots = []

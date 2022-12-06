@@ -112,13 +112,10 @@ class Machine:
         self.prog = defaultdict(int)
         for i in range(0, len(prog)):
             self.prog[i] = prog[i]
-        self.inp = inp if type(inp) == list else [ord(
-            c) for c in inp] if type(inp) == str else []
-        self.inpfun = default_inpfun if type(inp) == list or type(
-            inp) == str or inp is None else inp
+        self.inp = inp if type(inp) == list else [ord(c) for c in inp] if type(inp) == str else []
+        self.inpfun = default_inpfun if type(inp) == list or type(inp) == str or inp is None else inp
         self.out = out if type(out) == list else []
-        self.outfun = default_outfun if out is None or type(
-            out) == list else out
+        self.outfun = default_outfun if out is None or type(out) == list else out
         self.name = name if name is not None else ""
         self.pc = 0
         self.inp_ptr = 0
@@ -227,7 +224,7 @@ class Machine:
         elif type(inp) == int:
             self.inp.append(inp)
         else:
-            raise "Unexpected input type!"
+            raise Exception("Unexpected input type!")
 
     def read(self, off):
         """Reads the off'th operand of the current opcode, taking the addressing mode into account."""

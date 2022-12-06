@@ -7,8 +7,7 @@ ex = "test" in sys.argv[1]
 
 prereq = defaultdict(set)
 for line in inp:
-    pre, post = re.findall(
-        r'Step (.) must be finished before step (.) can begin.', line)[0]
+    pre, post = re.findall(r'Step (.) must be finished before step (.) can begin.', line)[0]
     prereq[post].add(pre)
     prereq[pre]
 

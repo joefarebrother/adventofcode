@@ -73,8 +73,7 @@ class Grid(MutableMapping):
 
             if wrapy:
                 if type(wrapy) == int:
-                    raise Exception(
-                        "An explicit height may not be set when initialising from a list")
+                    raise Exception("An explicit height may not be set when initialising from a list")
                 height = len(grid)
                 self.wrapy = height
                 if height == 0:
@@ -82,12 +81,10 @@ class Grid(MutableMapping):
 
             if wrapx:
                 if type(wrapx) == int:
-                    raise Exception(
-                        "An explicit width may not be set when initialising from a list")
+                    raise Exception("An explicit width may not be set when initialising from a list")
                 widths = set(map(len, grid))
                 if len(widths) != 1:
-                    print(
-                        "WARNING: widths are not uniform. The maximum will be used.")
+                    print("WARNING: widths are not uniform. The maximum will be used.")
                 width = max(widths)
 
                 self.wrapx = width
@@ -106,22 +103,18 @@ class Grid(MutableMapping):
                 self.y_is_down = False
 
             if wrapy == True:
-                raise Exception(
-                    "An explicit width must be set when initialising from a dict")
+                raise Exception("An explicit width must be set when initialising from a dict")
             if wrapx == True:
-                raise Exception(
-                    "An explicit height must be set when initialising from a dict")
+                raise Exception("An explicit height must be set when initialising from a dict")
 
             keys = grid.keys()
             for key in keys:
                 elt = grid[key]
                 (x, y) = IVec2(key)
                 if wrapx and x not in range(0, wrapx):
-                    raise KeyError(
-                        "x index must by in range [0,wrapx)", x, wrapx)
+                    raise KeyError("x index must by in range [0,wrapx)", x, wrapx)
                 if wrapy and y not in range(0, wrapy):
-                    raise KeyError(
-                        "y index must by in range [0,wrapy)", y, wrapy)
+                    raise KeyError("y index must by in range [0,wrapy)", y, wrapy)
                 self.data[IVec2(x, y)] = elt
 
         else:

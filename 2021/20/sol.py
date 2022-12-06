@@ -18,14 +18,11 @@ def step(img):
 
 def run(n):
     im = img
-    for _ in range(n):
+    for i in range(n):
         im = step(im)
+        print(i, len(im), flush=True)
     return im.count("#")
 
-
-for i in range(50):
-    print(i, len(img), flush=True)
-    img = step(img)
 
 print("Part 1:", run(2))
 print("Part 2:", run(50))

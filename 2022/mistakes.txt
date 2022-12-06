@@ -16,3 +16,6 @@ Day 5:
 - Having my groups utility call strip on each group
 - Several off-by-ones: creating one too few crates, appending to the wrong crate
 - P2: Mixing up the new vs moved crates
+
+Day 6:
+- Reading to carefully, thinking part 2 was a little more complex than it was

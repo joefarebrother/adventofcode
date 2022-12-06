@@ -2,12 +2,12 @@ from utils import *
 
 inp = inp_readall()
 
-for i, m in enumerate(windows(inp, 4)):
-    if len(set(m)) == 4:
-        print(i+4)
-        break
 
-for i, m in enumerate(windows(inp, 14)):
-    if len(set(m)) == 14:
-        print(i+14)
-        break
+def find(unq):
+    for i, m in enumerate(windows(inp, unq)):
+        if is_uniq(m):
+            return i+unq
+
+
+print("Part 1:", find(4))
+print("Part 2:", find(14))

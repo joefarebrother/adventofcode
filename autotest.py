@@ -25,7 +25,7 @@ Requires env var AOC_KEY to be the session cookie, which can be obtained from th
 
 If part is given, only run for the given part.
 If sol is given, use that as the solution file rather than sol.py.
-If year is not given, use the current year. If year and day are not given, use the current year and day, if it's december.
+If year is not given, use the current year. If year and day are not given, use the current year and day, if it's December.
 
 Some different orderings of the arguments are accepted, if it's unambiguous.
 
@@ -82,7 +82,7 @@ if not sesh:
     raise Exception("Environment variable AOC_KEY not set")
 
 headers = {"Cookie": "session="+sesh,
-           "User-Agent": "https://github.com/joefarebrother/adventofcode/blob/master/autotest.py by joseph.farebrother@gmail.com"}
+           "User-Agent": "autotest.py (https://github.com/joefarebrother/adventofcode by joseph.farebrother@gmail.com)"}
 
 
 def write_to(file, content):
@@ -614,19 +614,19 @@ def get_page(part):
 def answer_checks(answer, example_answers, correct_answers, wrong, part):
     """Does some checks on the given answer, returns True if they pass"""
     if len(answer) < 3:
-        print(repr(answer), "looks too small. Not submitting")
+        print(f"{answer} looks too small. Not submitting")
     elif answer in example_answers:
-        print(repr(answer), "is the same as the example output. Not submitting")
+        print(f"{answer} is the same as the example output. Not submitting")
     elif not numeric(answer) and example_answers and numeric(example_answers[0]):
-        print(repr(answer), "isn't numeric, whereas the example output is. Not submitting.")
+        print(f"{answer} isn't numeric, whereas the example output is. Not submitting.")
     elif part == "2" and correct_answers and answer == correct_answers[0]:
-        print(repr(answer), "is the same as the correct part 1 answer. Not submitting.")
+        print(f"{answer} is the same as the correct part 1 answer. Not submitting.")
     elif answer in wrong.answers:
-        print(repr(answer), "previously submitted and failed. Not submitting.")
+        print(f"{answer} previously submitted and failed. Not submitting.")
     elif wrong.is_toohigh(answer):
-        print(repr(answer), f"is too high; as {wrong.toohigh} was. Not submitting.")
+        print(f"{answer} is too high; as {wrong.toohigh} was. Not submitting.")
     elif wrong.is_toolow(answer):
-        print(repr(answer), f"is too low; as {wrong.toolow} was. Not submitting.")
+        print(f"{answer} is too low; as {wrong.toolow} was. Not submitting.")
     else:
         return True
     return False
@@ -697,7 +697,7 @@ def do_part(part=None):
                 exit(1)
 
         if part == "2" and answer in old_wrong.answers:
-            print(repr(answer), "was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
+            print(f"{answer} was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
 
         if not answer_checks(answer, example_answers, correct_answers, wrong, part):
             continue

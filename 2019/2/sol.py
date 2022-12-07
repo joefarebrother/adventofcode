@@ -31,7 +31,7 @@ def run(noun, verb):
             return prog[0]
         else:
             debug(prog, pc)
-            raise "oh no"
+            raise Exception("oh no")
         pc += 4
 
 

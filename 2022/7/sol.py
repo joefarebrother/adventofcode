@@ -1,19 +1,12 @@
 from utils import *
-from dataclasses import field
 
 cmds = []
-cmd = None
 
 for line in inp_readlines():
     if line.startswith("$"):
-        cmds.append(cmd)
-        cmd = (line[1:].strip(), [])
+        cmds.append((line[1:].strip(), []))
     else:
-        cmd[1].append(line)
-
-cmds.append(cmd)
-
-cmds = cmds[1:]
+        cmds[-1][1].append(line)
 
 
 @dataclass
@@ -38,7 +31,7 @@ class Dir:
         return res
 
     def tot_size(self):
-        return sum(f.size for f in self.everything_under() if isinstance(f, File))
+        return sum(f.size for f in self.everything_under() if isinstance(f, File))  # pylint:disable=no-member
 
 
 root = Dir("/", None)
@@ -56,6 +49,7 @@ for (cmd, out) in cmds:
             if arg in pwd.files:
                 pwd = pwd.files[arg]
             else:
+                # this doesn't happen on he real input or the test
                 new = Dir(arg, pwd)
                 pwd.files[arg] = new
                 pwd = new
@@ -68,6 +62,7 @@ for (cmd, out) in cmds:
                 else:
                     pwd.files[name] = File(name, int(size))
             else:
+                # this doesn't happen on the real input or the test
                 actual = pwd.files[name]
                 assert actual.name == name
                 if size == "dir":
@@ -80,7 +75,6 @@ tot = 0
 for f in root.everything_under():
     if isinstance(f, Dir):
         sz = f.tot_size()
-        printx(f.name, sz)
         if sz <= 100000:
             tot += sz
 print("Part 1:", tot)

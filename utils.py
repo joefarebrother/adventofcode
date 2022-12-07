@@ -3,7 +3,7 @@ from collections import defaultdict, Counter, deque
 import re
 import itertools
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from copy import copy, deepcopy
 from functools import *
 from misc_utils import *

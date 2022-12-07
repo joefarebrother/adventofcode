@@ -13,20 +13,21 @@ from time import sleep
 from input_utils import numeric, print_input_stats
 
 usage = """
+Usage: ./autotest.py [year] [day] [part] [sol]
+
 Python script for advent of code which downloads the problem description,
 attempts to extract sample input and corresponding output,
 then runs sol.py on the sample input whenever sol.py is modified until
 sol.py gives the sample output. When it does, sol gets run on the real input
 and if that succeeds, the last printed word gets submitted automatically.
 
-Call as `autotest.py {year} {day} [{part}] [{sol}]`, `autotest.py {day}`, or `autotest.py`; with the
-environment variable $AOC_KEY set to the value of your session cookie.
+Requires env var AOC_KEY to be the session cookie, which can be obtained from the browser.
 
 If part is given, only run for the given part.
 If sol is given, use that as the solution file rather than sol.py.
+If year is not given, use the current year. If year and day are not given, use the current year and day, if it's december.
 
-If called with the current day as input (which is the default if year and day are omitted), before the puzzle
-unlocks at 5am GMT, waits until it unlocks. This assumes that the local timezone is GMT.
+Some different orderings of the arguments are accepted, if it's unambiguous.
 
 Files used, all under {year}/{day}:
 sol.py      This program assumes that your solution for the part you are
@@ -123,23 +124,6 @@ def touch(fn):
         pass
 
 
-def get_day_year(day=None, year=None):
-    """
-    If day or year are none and it's december, set them according to the current date and return them.
-    """
-    now = datetime.now()
-
-    if not (day and year) and now.month != 12:
-        raise Exception("Not december so could not determine intended date")
-
-    if day == None:
-        day = now.day
-    if year == None:
-        year = now.year
-
-    return int(day), int(year)
-
-
 def wait_for_unlock(day, year):
     now = datetime.now()
     if (now.day, now.month, now.year) == (day, 12, year) and now.hour < 5:
@@ -149,20 +133,64 @@ def wait_for_unlock(day, year):
         sleep(diff)
 
 
-year = sys.argv[1] if len(sys.argv) >= 3 else None
-day = sys.argv[2] if len(sys.argv) >= 3 else (sys.argv[1] if len(sys.argv) >= 2 else None)
-day, year = get_day_year(day, year)
+def parse_args():
+    argv = sys.argv[1:]
+    year, day, part, sol = None, None, None, "sol"
 
-part_arg = None
-alt_sol = "sol"
-if len(sys.argv) >= 4:
-    if len(sys.argv) >= 5:
-        part_arg, alt_sol = sys.argv[3:5]
-    else:
-        try:
-            part_arg = str(int(sys.argv[3]))
-        except ValueError:
-            alt_sol = sys.argv[3]
+    pot_sol = [s for s in argv if not numeric(s)]
+    if len(pot_sol) > 1:
+        print("Too many string arguments")
+        exit(1)
+
+    nums = [int(n) for n in argv if numeric(n)]
+    pot_years = [n for n in nums if n >= 2015]
+    pot_days = [n for n in nums if 1 <= n <= 25]
+
+    if len(pot_years) > 1:
+        print("Year ambiguous")
+        exit(1)
+    if len(pot_years) + len(pot_days) != len(nums):
+        print("Numerical args found that aren't year or day")
+        exit(1)
+    if len(pot_days) > 2:
+        print("Too many numerical args")
+        exit(1)
+
+    if pot_sol:
+        sol = pot_sol[0]
+    if pot_years:
+        year = pot_years[0]
+    if pot_days:
+        day = pot_days[0]
+        if len(pot_days) == 2:
+            part = pot_days[1]
+            if part not in [1, 2]:
+                print(f"Invalid part {part}")
+                exit(1)
+            part = str(part)
+
+    if year and not day:
+        print("No day specified")
+        exit(1)
+
+    now = datetime.now()
+
+    if not year:
+        if now.month != 12:
+            print("Not december, year and day required")
+            exit(1)
+        year = now.year
+        if not day:
+            day = now.day
+
+    if (year, day) > (now.year, now.day):
+        print("That time is in the future")
+        exit(1)
+
+    return year, day, part, sol
+
+
+year, day, part_arg, sol_arg = parse_args()
 
 
 curdir = os.path.dirname(sys.argv[0])
@@ -172,7 +200,7 @@ os.makedirs(workdir, exist_ok=True)
 dayurl = f"https://adventofcode.com/{year}/day/{day}"
 
 real_inputfile = f"{workdir}/real.in"
-solution_file = f"{workdir}/{alt_sol}.py"
+solution_file = f"{workdir}/{sol_arg}.py"
 
 
 class Wrong:

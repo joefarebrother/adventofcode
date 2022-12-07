@@ -10,7 +10,7 @@ curl_output
 *page*
 *.timestamp
 *.pkl
-.vscode
+
 test/*
 .python-version
 wrong_ans*

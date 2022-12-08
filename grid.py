@@ -128,9 +128,12 @@ class Grid(MutableMapping):
 
     def _convert_pos1(self, key):
         """
-        Converts the given external key to IVec2, 
+        Converts the given external key to IVec2, taking wrapping into account.
         """
-        (x, y) = IVec2(key, strict=True)
+        z = IVec2(key, strict=True)
+        if not (self.wrapx or self.wrapy):
+            return z
+        x, y = z.x, z.y
         if self.wrapx:
             x %= self.wrapx
         if self.wrapy:

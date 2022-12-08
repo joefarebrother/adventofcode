@@ -178,8 +178,8 @@ class Rectangle:
                 (_, self.minx, self.miny, self.maxx, self.maxy) = ps
             else:
                 ps = [IVec2(p, strict=True) for p in ps]
-                xs = [x for (x, y) in ps]
-                ys = [y for (x, y) in ps]
+                xs = [p.x for p in ps]
+                ys = [p.y for p in ps]
 
                 self.minx, self.maxx = bounds(xs)
                 self.miny, self.maxy = bounds(ys)
@@ -226,7 +226,7 @@ class Rectangle:
         """
         Expands this rectangle by 1 unit in each direction.
         """
-        return Rectangle((self.minx-1, self.miny-1), (self.maxx+1, self.maxy+1))
+        return Rectangle(None, self.minx-1, self.miny-1, self.maxx+1, self.maxy+1)
 
     def __iter__(self):
         return self.points()
@@ -235,8 +235,8 @@ class Rectangle:
         try:
             if not self:
                 return False
-            (x, y) = IVec2(other, strict=True)
-            return self.minx <= x <= self.maxx and self.miny <= y <= self.maxy
+            z = IVec2(other, strict=True)
+            return self.minx <= z.x <= self.maxx and self.miny <= z.y <= self.maxy
         except (TypeError, ValueError):
             return NotImplemented
 

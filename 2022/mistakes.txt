@@ -25,3 +25,10 @@ Day 7:
 - Forgetting to count files in my everything_under method
 - Missing the last command, causing the example to still pass (ws)
 - Missing that I need to free up a certain amount of space rather than just delete a dir over 30000000
+
+Day 8:
+- Not checking both `p0 in inp and p0+d in inp`
+- Comparing to d rather than p 
+- Then comparing adjacent trees rather than to the main tree (`inp[p0+d] >= inp[p0]` rather than `inp[p0+d] >= inp[p]`) 
+-- (3s off p1 leaderboard)
+- Mistyping [] rather than p

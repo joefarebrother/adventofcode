@@ -32,3 +32,7 @@ Day 8:
 - Then comparing adjacent trees rather than to the main tree (`inp[p0+d] >= inp[p0]` rather than `inp[p0+d] >= inp[p]`) 
 -- (3s off p1 leaderboard)
 - Mistyping [] rather than p
+
+Day 9:
+- Waking up late
+- Counting the tail's position after completing a full line rather than an individual step

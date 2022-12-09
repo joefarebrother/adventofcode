@@ -17,8 +17,8 @@ def step(state):
     nimg = defaultdict(lambda: ndefault)
     for p in nbb:
         px = ""
-        for dp in Rectangle((-1, -1), (1, 1)):
-            px += ("1" if img[p+dp] == "#" else "0")
+        for p1 in Rectangle(p-(1, 1), p+(1, 1)):
+            px += ("1" if img[p1] == "#" else "0")
         nimg[p] = enh[int(px, 2)]
     return nimg, ndefault, nbb
 

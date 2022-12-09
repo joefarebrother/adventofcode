@@ -32,6 +32,14 @@ def bounds(xs, key=None):
     return (min(xs, key=key), max(xs, key=key))
 
 
+def clamp(x, lo, hi):
+    """
+    Clamps x between the given bounds
+    """
+    assert lo <= hi
+    return min(hi, max(lo, x))
+
+
 def windows(xs: Iterable, n: int) -> Iterable:
     """
     Yields the sliding windows of size n from xs

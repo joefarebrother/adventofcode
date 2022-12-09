@@ -134,14 +134,18 @@ class IVec2:
         return IVec2(self.x, -self.y)
 
     def abs(self) -> float:
-        """Returns the Euclidean distance to the origin."""
+        """Returns the Euclidean (L2) distance to the origin."""
         return abs(complex(self))
 
     __abs__ = abs
 
     def man_abs(self) -> int:
-        """Returns the Manhattan distance to the origin"""
+        """Returns the Manhattan (L1) distance to the origin."""
         return abs(self.x)+abs(self.y)
+
+    def chess_abs(self) -> int:
+        """Returns the Chessboard (Linf) distance to the origin; i.e. max(abs(x),abs(y)), the number of King moves to the origin."""
+        return max(abs(self.x), abs(self.y))
 
     def angle(self) -> float:
         """Returns the angle as seen from the origin, in the range [0,tau). This is anticlockwise in the y-is-up convention."""
@@ -152,11 +156,13 @@ class IVec2:
 
     def neighbours(self):
         """Returns the 4 orthogonal neighbours of self"""
-        return [self+1j**dir for dir in range(4)]
+        x, y = self.x, self.y
+        return [IVec2(x+1, y), IVec2(x, y+1), IVec2(x-1, y), IVec2(x, y-1)]
 
     def neighbours8(self):
         """Returns the 8 neighbours of self"""
-        return [self+d for d in Rectangle(-1-1j, 1+1j) if d != 0j]
+        x, y = self.x, self.y
+        return [p for p in Rectangle((x-1, y-1), (x+1, y+1)) if p != self]
 
 
 class Rectangle:
@@ -346,7 +352,7 @@ def neighbours8(p) -> list[IVec2]:
 
 def dist(p1, p2=0) -> float:
     """
-    Returns the Euclidean distance between the two specified points.
+    Returns the Euclidean (L2) distance between the two specified points.
     Returns an integer if both inputs are integers.
     """
     if isinstance(p1, int) and isinstance(p2, int):
@@ -356,9 +362,16 @@ def dist(p1, p2=0) -> float:
 
 def man_dist(p1, p2=0) -> int:
     """
-    Returns the Manhattan distance between the two specified points.
+    Returns the Manhattan (L1) distance between the two specified points.
     """
     return (IVec2(p1)-p2).man_abs()
+
+
+def chess_dist(p1, p2=0) -> int:
+    """
+    Returns the Chessboard (Linf) distance between the two specified points, i.e. the number of King moves between them.
+    """
+    return (IVec2(p1)-p2).chess_abs()
 
 
 def angle(p0, p1=None) -> float:

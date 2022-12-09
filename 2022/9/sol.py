@@ -2,16 +2,15 @@ from utils import *
 
 
 def restrict(z):
-    return min(1, max(z, -1))
+    return clamp(z, -1, 1)
 
 
 def move(knots, d):
     knots[0] += d
     for i in range(len(knots)-1):
         diff = knots[i]-knots[i+1]
-        if diff in Rectangle((-1, -1), (1, 1)):
-            continue
-        knots[i+1] += (restrict(diff.x), restrict(diff.y))
+        if diff.chess_abs() > 1:
+            knots[i+1] += (restrict(diff.x), restrict(diff.y))
 
 
 def do(num_knots):

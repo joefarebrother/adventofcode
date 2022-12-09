@@ -10,8 +10,8 @@ def step(img):
     nimg = Grid(default=enh[0] if img.default != "#" else enh[-1])
     for p in img.bounding_box.expand_1():
         px = ""
-        for dp in Rectangle(-1-1j, 1+1j):
-            px += ("1" if img[p+dp] == "#" else "0")
+        for p1 in Rectangle(p-(1, 1), p+(1, 1)):
+            px += ("1" if img[p1] == "#" else "0")
         nimg[p] = enh[int(px, 2)]
     return nimg
 

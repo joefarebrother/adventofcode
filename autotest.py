@@ -202,6 +202,8 @@ dayurl = f"https://adventofcode.com/{year}/day/{day}"
 real_inputfile = f"{workdir}/real.in"
 solution_file = f"{workdir}/{sol_arg}.py"
 
+completed = 0
+
 
 class Wrong:
     def __init__(self, part):
@@ -536,7 +538,11 @@ def answer_in_out(out: list[str], part):
             nout.append(o)
     nout = " ".join(nout).split()
     if nout:
-        return nout[-1].strip("()[]{}")
+        if part == "1" and completed >= 1 and len(nout) == 2:
+            nout = nout[0]
+        else:
+            nout = nout[-1]
+        return nout.strip("()[]{}")
     return None
 
 
@@ -593,6 +599,7 @@ def wait_for_changes(file):
 
 
 def get_page(part):
+    global completed
     final_file = workdir+"pagefinal.html"
     if os.path.isfile(final_file):
         s = read_string(final_file)
@@ -611,10 +618,12 @@ def get_page(part):
     return s
 
 
-def answer_checks(answer, example_answers, correct_answers, wrong, part):
+def answer_checks(answer: str, example_answers, correct_answers, wrong, part):
     """Does some checks on the given answer, returns True if they pass"""
     if len(answer) < 3:
         print(f"{answer} looks too small. Not submitting")
+    elif answer != ascii(answer):
+        print(f"{answer} non-ascii. Not submitting.")
     elif answer in example_answers:
         print(f"{answer} is the same as the example output. Not submitting")
     elif not numeric(answer) and example_answers and numeric(example_answers[0]):
@@ -632,10 +641,15 @@ def answer_checks(answer, example_answers, correct_answers, wrong, part):
     return False
 
 
+should_wait = False
+if not os.path.isfile(solution_file):
+    should_wait = True
+    write_to(solution_file, "from utils import *\n\n")
+
+
 def do_part(part=None):
     global should_wait
     s = get_page(part)
-    completed = s.count("Your puzzle answer was")
     if not part:
         part = str(min(completed+1, 2 if day < 25 else 1))
     no_submit = False
@@ -653,7 +667,7 @@ def do_part(part=None):
     find_examples(part, s)
 
     ns = 0
-    if should_wait:  # pylint: disable=used-before-assignment
+    if should_wait:
         wait_for_changes(solution_file)
     while True:
         while ns == (ns := os.stat(solution_file).st_mtime_ns):
@@ -720,11 +734,6 @@ def do_part(part=None):
 
     return part
 
-
-should_wait = False
-if not os.path.isfile(solution_file):
-    should_wait = True
-    write_to(solution_file, "from utils import *\n\n")
 
 touch(real_inputfile)
 touch(solution_file)

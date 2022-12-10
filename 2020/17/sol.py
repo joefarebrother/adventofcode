@@ -31,7 +31,7 @@ for y, line in enumerate(inp_readlines()):
 for i in range(6):
     grid = evolve(grid)
 
-print(len(grid))
+print("Part 1:", len(grid))
 
 grid = set()
 for y, line in enumerate(inp_readlines()):
@@ -42,4 +42,4 @@ for y, line in enumerate(inp_readlines()):
 for i in range(6):
     grid = evolve(grid)
 
-print(len(grid))
+print("Part 2:", len(grid))

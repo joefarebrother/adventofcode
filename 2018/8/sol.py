@@ -1,6 +1,4 @@
 import sys
-import re
-from collections import defaultdict
 
 inp = list(open(sys.argv[1]))
 inp = [int(x) for x in inp[0].split()]
@@ -14,9 +12,9 @@ class Node:
         self.meta_size = xs.pop(0)
         self.nodes = []
         self.meta = []
-        for i in range(self.size):
+        for _ in range(self.size):
             self.nodes.append(Node(xs))
-        for i in range(self.meta_size):
+        for _ in range(self.meta_size):
             self.meta.append(xs.pop(0))
 
         nodes.append(self)
@@ -32,5 +30,5 @@ class Node:
 
 
 root = Node(inp)
-print(sum(sum(m for m in n.meta) for n in nodes))
-print(root.value())
+print("Part 1:", sum(sum(m for m in n.meta) for n in nodes))
+print("Part 2:", root.value())

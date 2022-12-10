@@ -1,4 +1,4 @@
-from utils import Rectangle, inp_readlines
+from utils import Rectangle, inp_readlines, man_dist
 
 
 def process(line):
@@ -55,13 +55,7 @@ wires = []
 for line in inp_readlines():
     wires.append(process(line))
 
-bestIntDist = None
-for w1 in wires[0]:
-    for w2 in wires[1]:
-        inter = intersect(w1, w2)
-        if inter and inter != (0, 0):
-            (p1, len) = inter
-            if (not bestIntDist) or bestIntDist > len:
-                bestIntDist = len
+inters = [i for w1 in wires[0] for w2 in wires[1] for i in [intersect(w1, w2)] if i not in [(0, 0), None]]
 
-print(bestIntDist)
+print("Part 1:", min(man_dist(p) for (p, d) in inters))
+print("Part 2:", min(d for (p, d) in inters))

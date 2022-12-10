@@ -21,9 +21,5 @@ def valid2(line):
     return (pw[lo] == ch) ^ (pw[hi] == ch)
 
 
-validcount = 0
-for line in data:
-    if valid2(line):
-        validcount += 1
-
-print(validcount)
+print("Part 1:", sum(map(valid, data)))
+print("Part 2:", sum(map(valid2, data)))

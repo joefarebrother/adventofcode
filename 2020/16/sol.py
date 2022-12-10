@@ -46,7 +46,7 @@ for tick in ticks:
         valid.add(tick)
 
 print(invalid_nums)
-print(sum(invalid_nums))
+print("Part 1:", sum(invalid_nums))
 
 valid.add(my_tick)
 
@@ -60,7 +60,7 @@ print([fpos[r] for r in rules])
 
 ans = [my_tick[fpos[r]]
        for r in rules if r.name.startswith("depart")]
-print(ans, math.prod(ans))
+print("Part 2:", ans, math.prod(ans))
 
 # sanity check
 for tick in valid:

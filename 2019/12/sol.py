@@ -1,4 +1,5 @@
 from math import lcm
+from utils import inp_readlines, ints_in
 
 
 class Moon:
@@ -38,11 +39,18 @@ class Moon:
     def energy(self):
         return self.kin_energy()*self.pot_energy()
 
-    def tostr(self):
+    def __str__(self):
         return "pos=<"+str(self.x)+", "+str(self.y)+", "+str(self.z)+">,vel=<"+str(self.xv)+", "+str(self.yv)+", "+str(self.zv)+">"
 
 
-moons = [Moon(-14, -4, -11), Moon(-9, 6, -7), Moon(4, 1, 4), Moon(2, -14, -9)]
+def inp():
+    moons = []
+    for line in inp_readlines():
+        moons.append(Moon(*ints_in(line)))
+    return moons
+
+
+moons = inp()
 
 
 def step_system(moons):
@@ -53,20 +61,19 @@ def step_system(moons):
         m.vel_step()
 
     # for m in moons:
-        # print(m.tostr())
+        # print(m)
     return sum([m.energy() for m in moons])
 
 
-'''
 for i in range(1, 1001):
-  en = step_system(moons)
-  print(str(i) + ": " + str(en))
-'''
+    en = step_system(moons)
+print("Part 1:", en)
+
+moons = inp()
 
 seen_states = []
 
-axes = [[Moon(m.x, 0, 0) for m in moons], [Moon(m.y, 0, 0)
-                                           for m in moons], [Moon(m.z, 0, 0) for m in moons]]
+axes = [[Moon(m.x, 0, 0) for m in moons], [Moon(m.y, 0, 0) for m in moons], [Moon(m.z, 0, 0) for m in moons]]
 
 
 def axis_period(axis):
@@ -87,4 +94,4 @@ starts = [s for (s, p) in data]
 periods = [p for (s, p) in data]
 
 
-print(max(starts) + lcm(periods[0], periods[1], periods[2]))
+print("Part 2:", max(starts) + lcm(periods[0], periods[1], periods[2]))

@@ -20,7 +20,7 @@ while len(done) < len(prereq):
             and n not in done]
     done.append(min(todo))
 
-print("".join(done))
+print("Part 1:", "".join(done))
 
 
 class Worker:
@@ -73,4 +73,4 @@ while len(done) < len(prereq):
         w.step2()
     print("".join(done))
     t += 1
-print(t-1)
+print("Part 2", t-1)

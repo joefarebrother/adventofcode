@@ -25,14 +25,12 @@ for (ing, _) in food:
         ing -= poss[a]
     imposs |= ing
 
-print(imposs)
 t = 0
 for (ing, _) in food:
     t += len(imposs & ing)
-print(t)
+print("Part 1:", t)
 
 conf = pick_uniq(poss)
 
-print(poss, conf)
 c = [conf[k] for k in sorted(conf)]
-print(",".join(c))
+print("Part 2:", ",".join(c))

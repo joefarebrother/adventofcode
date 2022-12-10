@@ -16,6 +16,7 @@ def base_fft(inp, pat_off=1):
         j = i+1
         tot = sum([int(inp[k])*pat(j, k+pat_off) for k in range(len(inp))])
         out.append(abs(tot) % 10)
+    return out
 
 
 def part2(inp):
@@ -27,6 +28,11 @@ def part2(inp):
         out.append(psum)
     return out
 
+
+xs = inp
+for i in range(100):
+    xs = base_fft(xs)
+print("Part 1:", ''.join(map(str, xs[:8])))
 
 inp = (inp*10000)[offset:]
 print('go')
@@ -45,4 +51,4 @@ inp = inp[::-1]
 for i in range(100):
     inp = part2(inp)
 inp = inp[::-1]
-print(''.join([str(i) for i in inp[:8]]))
+print("Part 2:", ''.join([str(i) for i in inp[:8]]))

@@ -18,7 +18,7 @@ def inpfun(m):
             idle_count = 0
             print(nat)
             if nat[1] == nat_history[-1]:
-                print("part 2", nat[1])
+                print("Part 2:", nat[1])
                 exit()
             nat_history += [nat[1]]
     else:
@@ -32,13 +32,17 @@ def inpfun(m):
 
 nat = [0, 0]
 
+have_p1 = False
+
 
 def outfun(m, v):
     global nat, have_p1
     m.out += [v]
     if len(m.out) == 3:
         if m.out[0] == 255:
-            print(m.out[2])
+            if not have_p1:
+                print("Part 1:", m.out[2])
+                have_p1 = True
             nat = m.out[1:]
         else:
             machines[m.out[0]].send_input(m.out[1:])

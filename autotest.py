@@ -529,11 +529,11 @@ def answer_in_out(out: list[str], part):
     for o in out:
         if o.lower().startswith("part"):
             if o.lower().startswith(f"part {part}"):
+                if o.lower().startswith("part 2") and part == "1":
+                    return None
                 o = o[len("part 1"):].strip(":").split()
                 if o:
                     return o[-1].strip("()[]{}")
-            if o.lower().startswith("part 2") and part == "1":
-                return None
         else:
             nout.append(o)
     nout = " ".join(nout).split()

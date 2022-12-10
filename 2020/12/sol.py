@@ -16,7 +16,7 @@ for l in instrs:
         pos += Dirs[c] * n
     print(l, pos, Dirs.F)
 
-print(man_dist(pos))
+print("Part 1:", man_dist(pos))
 
 pos = 0j
 way = 10+1j
@@ -31,4 +31,4 @@ for l in instrs:
         way += Dirs[c] * n
     print(l, pos, way)
 
-print(man_dist(pos))
+print("Part 2:", man_dist(pos))

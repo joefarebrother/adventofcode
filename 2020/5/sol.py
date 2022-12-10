@@ -18,6 +18,8 @@ pseats = mapl(parse, seats)
 
 ids = [rn*8+cn for (rn, cn) in pseats]
 
+print("Part 1:", max(ids))
+
 for i in range((min(ids)+1), max(ids)):
     if i-1 in ids and i+1 in ids and i not in ids:
-        print(i)
+        print("Part 2:", i)

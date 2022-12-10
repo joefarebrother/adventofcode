@@ -50,13 +50,17 @@ def valid(rec):
     # cid (Country ID) - ignored, missing or not.
 
 
+p1ans = 0
 ans = 0
 for gr in data:
     p = parse(gr)
+    if len(p) == 8:
+        p1ans += 1
     if valid(p):
         print("valid: ", p)
         ans += 1
     else:
         print('invalid:', p)
 
-print(ans)
+print("Part 1:", p1ans)
+print("Part 2:", ans)

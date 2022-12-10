@@ -11,7 +11,6 @@ inp = [l.split(" = ") for l in inp_readlines()]
 
 for (loc, val) in inp:
     if loc == "mask":
-        print(val.count("X"))
         maskm = int(val.translate(mtab), 2)
         maskv = int(val.replace("X", "0"), 2)
     else:
@@ -19,8 +18,7 @@ for (loc, val) in inp:
         rval = int(val) & maskm | maskv
         mem[adr] = rval
 
-print(mem)
-print(sum(mem.values()))
+print("Part 1:", sum(mem.values()))
 mask = None
 
 mem = defaultdict(int)
@@ -48,4 +46,4 @@ for (loc, val) in inp:
             mem[radr] = int(val)
 
 print(len(mem))
-print(sum(mem.values()))
+print("Part 2:", sum(mem.values()))

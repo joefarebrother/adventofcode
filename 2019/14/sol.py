@@ -53,8 +53,5 @@ def ore_for_fuel(fuel):
 
 budget = 1000000000000
 
-low = 1
-high = 10
-amt = 0
-
-print(bin_search(1, None, lambda fuel: ore_for_fuel(fuel) <= budget))
+print("Part 1:", ore_for_fuel(1))
+print("Part 2:", bin_search(1, None, lambda fuel: ore_for_fuel(fuel) <= budget))

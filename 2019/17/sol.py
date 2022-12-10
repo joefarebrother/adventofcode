@@ -24,7 +24,7 @@ for (pos, c) in grid_.items():
     if c == '#' and all([p in grid_ and grid_[p] == '#' for p in neighbours(pos)]):
         tot += int(pos.real*pos.imag)
 
-print(tot)
+print("Part 1", tot)
 
 instrs = '\n'.join([
     "A,B,A,B,C,C,B,C,B,A",
@@ -128,5 +128,5 @@ for Aend in range(1, len(cmd)):
 
                             mach.run()
                             print()
-                            print(ord(grid[-1][-1]))
+                            print("Part 2:", ord(grid[-1][-1]))
                             exit()

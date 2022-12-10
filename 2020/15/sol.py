@@ -18,11 +18,14 @@ while True:
     lastt = timestamps[nxt]
     timestamps[nxt] = t
 
+    if t == 2020:
+        print("Part 1:", t, len(timestamps), nxt)
+
     if t % 1000000 == 0:
         print(t, len(timestamps), nxt)
 
     if t == 30000000:
-        print(t, len(timestamps), nxt)
+        print("Part 2:", t, len(timestamps), nxt)
         break
 
     t += 1

@@ -28,7 +28,7 @@ def run(prog):
         pc += 1
 
 
-print(run(sprog))
+print("Part 1:", run(sprog))
 
 for (i, (instr, num)) in enumerate(sprog):
     if instr == "acc":
@@ -41,5 +41,5 @@ for (i, (instr, num)) in enumerate(sprog):
     (end, res) = run(nprog)
     print(end, res, i)
     if end:
-        print(res)
+        print("Part 2:", res)
         break

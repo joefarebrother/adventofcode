@@ -50,7 +50,7 @@ for l in inp_readlines():
         black.add(pos)
 
 print(black)
-print(0, len(black))
+print("Part 1:", len(black))
 
 
 def evolve(black):
@@ -76,3 +76,4 @@ def evolve(black):
 for i in range(100):
     black = evolve(black)
     print(i+1, len(black))
+print("Part 2:", len(black))

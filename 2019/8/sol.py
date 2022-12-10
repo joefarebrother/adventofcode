@@ -17,7 +17,7 @@ for i in range(0, len(inp)-1, 25*6):
 
     layers.append(layer)
 
-print(min_score)
+print("Part 1:", min_score)
 
 for y in range(6):
     for x in range(25):
@@ -30,4 +30,4 @@ for y in range(6):
             print(" ", end="")
     print()
 
-print(input())
+print("Part 2:", input())

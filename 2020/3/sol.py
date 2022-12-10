@@ -34,4 +34,5 @@ slopes = [1+1j, 3+1j, 5+1j, 7+1j, 1+2j]
 treecounts = mapl(trees_for_slope, slopes)
 
 print(treecounts)
-print(math.prod(treecounts))
+print("Part 1:", treecounts[0])
+print("Part 2:", math.prod(treecounts))

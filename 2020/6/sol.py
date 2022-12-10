@@ -3,12 +3,12 @@ from utils import *
 
 data = inp_groups()
 
-# ans = 0
-# for i in data:
-#     uniq = set(filter(lambda c: c.islower(), list(i)))
-#     print(uniq, len(uniq))
-#     ans += len(uniq)
-#     print(ans)
+ans = 0
+for grp in data:
+    uniq = set(''.join(grp))
+    print(uniq, len(uniq))
+    ans += len(uniq)
+print("Part 1:", ans)
 
 ans = 0
 for grp in data:
@@ -18,4 +18,4 @@ for grp in data:
         all &= qs
     ans += len(all)
     print(ans, all)
-print(ans)
+print("Part 2:", ans)

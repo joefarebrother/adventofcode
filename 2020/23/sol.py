@@ -2,8 +2,9 @@
 from utils import *
 import sys
 sys.setrecursionlimit(10000)
+inp = inp_readall().strip()
 
-cups = ints("364289715")  # real
+cups = ints(inp)  # real
 # cups = ints("389125467")  # test
 
 mx = max(cups)
@@ -13,25 +14,25 @@ def wrap(i):
     return ((i-1) % mx) + 1
 
 
-# for _ in range(100):
-#     cur = cups[0]
-#     picked = cups[1:4]
-#     cups[1:4] = []
-#     nxt = wrap(cur-1)
-#     while nxt in picked:
-#         nxt -= 1
-#         nxt = wrap(nxt)
-#     # print(cur, picked, nxt)
-#     nidx = cups.index(nxt)+1
-#     cups = cups[:nidx] + picked + cups[nidx:]
-#     cups = cups[1:]+[cur]
-#     print("".join([str(c) for c in cups]))
+for _ in range(100):
+    cur = cups[0]
+    picked = cups[1:4]
+    cups[1:4] = []
+    nxt = wrap(cur-1)
+    while nxt in picked:
+        nxt -= 1
+        nxt = wrap(nxt)
+    # print(cur, picked, nxt)
+    nidx = cups.index(nxt)+1
+    cups = cups[:nidx] + picked + cups[nidx:]
+    cups = cups[1:]+[cur]
+    print("".join([str(c) for c in cups]))
 
-# oneidx = cups.index(1)
-# cups = cups[oneidx:] + cups[:oneidx]
-# print("".join([str(c) for c in cups[1:]]))
+oneidx = cups.index(1)
+cups = cups[oneidx:] + cups[:oneidx]
+print("Part 1:", "".join([str(c) for c in cups[1:]]))
 
-cups = ints("364289715")  # real
+cups = ints(inp)  # real
 # cups = ints("389125467")  # test
 
 cupslen = 1000000
@@ -78,4 +79,4 @@ for i in range(iters):
 
 ans = (nxt[1], nxt[nxt[1]])
 print(ans)
-print(math.prod(ans))
+print("Part 2:", math.prod(ans))

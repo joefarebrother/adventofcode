@@ -23,7 +23,7 @@ if len(sys.argv) >= 2:
         print_usage()
         exit(1)
 
-manual_input = [(2021, 13), (2019, 8), (2019, 11), (2019, 21), (2019, 25)]
+manual_input = [(2019, 8), (2019, 11), (2019, 21), (2019, 25), (2021, 13), (2022, 10)]
 
 curdir = os.path.dirname(sys.argv[0])
 

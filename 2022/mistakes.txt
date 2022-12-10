@@ -42,3 +42,6 @@ Day 10:
 - Off by one: outputting on the wrong cycle 
 - Not running part 2 up to 240 cycles, and trying to guess what the obscured letters were (ws)
 - Mistakes in rendering, leaving it still readable (newline too early in first row, first column is moved to last)
+- 2 mistakes that canceled out: when rewriting runner for part 2, I checking x after rather than during the cycle, 
+  but also considering the pixels to be in the range 1-40 rather than 0-39; so it was effectively checking where x is next cycle. 
+  Net effect was only to chop off the first column, leaving the result still readable.

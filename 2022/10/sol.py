@@ -10,8 +10,19 @@ def run():
     x = 1
     waiting = False
 
-    for cyc in range(240):
+    for cyc in irange(240):
         instr = prog[pc]
+
+        if cyc % 40 == 20:
+            print(cyc, x, instr, waiting)
+            strength += cyc*x
+
+        pix = (cyc-1) % 40
+        if -1 <= pix-x <= 1:
+            img.append("#")
+        else:
+            img.append(".")
+
         if instr == "noop":
             pc += 1
         else:
@@ -21,15 +32,6 @@ def run():
                 x += ints_in(instr)[0]
             else:
                 waiting = True
-
-        if cyc % 40 == 20:
-            strength += cyc*x
-
-        pix = mod_inc(cyc+1, 40)
-        if -1 <= pix-x <= 1:
-            img.append("#")
-        else:
-            img.append(".")
 
     img = list(chunks(img, 40))
     return strength, Grid(img)

@@ -3,13 +3,14 @@ from utils import *
 prog = inp_readlines()
 
 
-def run(maxcyc):
-    img = [[]]
+def run():
+    img = []
+    strength = 0
     pc = 0
     x = 1
     waiting = False
 
-    for cyc in range(maxcyc):
+    for cyc in range(240):
         instr = prog[pc]
         if instr == "noop":
             pc += 1
@@ -21,21 +22,21 @@ def run(maxcyc):
             else:
                 waiting = True
 
+        if cyc % 40 == 20:
+            strength += cyc*x
+
         pix = mod_inc(cyc+1, 40)
         if -1 <= pix-x <= 1:
-            img[-1].append("#")
+            img.append("#")
         else:
-            img[-1].append(".")
-        if cyc % 40 == 39:
-            img.append([])
-    print(x, maxcyc)
-    return x*maxcyc, Grid(img)
+            img.append(".")
+
+    img = list(chunks(img, 40))
+    return strength, Grid(img)
 
 
-res = sum(run(x)[0] for x in [20, 60, 100, 140, 180, 220])
-print(res)
-
-_, img = run(240)
+strength, img = run()
+print("Part 1:", strength)
 img.draw()
 if not is_ex:
-    print(input())
+    print("Part 2:", input())

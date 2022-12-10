@@ -36,3 +36,9 @@ Day 8:
 Day 9:
 - Waking up late
 - Counting the tail's position after completing a full line rather than an individual step
+
+Day 10:
+- Copy/pasting the list of expected cycle numbers and missing the 220
+- Off by one: outputting on the wrong cycle 
+- Not running part 2 up to 240 cycles, and trying to guess what the obscured letters were (ws)
+- Mistakes in rendering, leaving it still readable (newline too early in first row, first column is moved to last)

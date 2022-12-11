@@ -35,7 +35,7 @@ def run(noun, verb):
         pc += 4
 
 
-print("Part 1:", run(1, 12))
+print("Part 1:", run(12, 2))
 for noun in range(1, 100):
     for verb in range(1, 100):
         if (run(noun, verb) == 19690720):

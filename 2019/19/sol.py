@@ -16,15 +16,14 @@ for x in range(50):
     for y in range(50):
         count += beam(x, y)
 
-print(count)
+print("Part 1:", count)
 
 # part 2
 x, y = 4, 3
-print(beam(x, y))
 while True:
     if beam(x, y):
         if beam(x+99, y-99):
-            print(x*10000 + (y-99))
+            print("Part 2:", x*10000 + (y-99))
             break
         else:
             y += 1

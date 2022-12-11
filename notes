@@ -14,9 +14,11 @@ issues with examples:
 2020 day 14: example provided for part 2 is not the first one on the page + initial example for part 1 causes solution to timeout
 2020 day 18: examples in code block aren't valid (actually contain explanatory steps), inline examples aren't  detected, but the output to one is.
 2020 day 19: example provided for part 2 is not the first one on the page; and the first one on the page isn't a valid example (second group missing)
+2021 day 6: example output for part 1 is bad - found non-example in em-code over true example output in code-em, despite the latter appearing later
 2021 day 8: example provided for part 2 is not the first one on the page; and the examples are in a different format to the input (2 lines per entry rather than 1). Set to [NONE].
 2021 day 18: example provided for part 2 is not the first one on the page.
 2021 day 19: example provided for part 2 is not the first one on the page; also first provided example is in a different format (only 2 dims)
-2021 day 22: example provided for part 2 is not the first one on the page.
+2021 day 21: example output for part 1 is bad - found non-example in em-code over true example output in code-em, despite the latter appearing later
+2021 day 22: example provided for parts 1 and 2 is not the first one on the page; and for part 2 it's new.
 2021 day 23: example provided is slow (just as complex as the real input). Set to [NONE]. 
 2021 day 24: example found doesn't work with full solution (just an example of an asm program, not one that does what the inp is supposed to do). Set to [NONE].

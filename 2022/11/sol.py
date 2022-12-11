@@ -19,9 +19,10 @@ class Monkey:
         for item in self.items:
             item = self.op(item)
             # print(self.id, old, item, item//3, (item//3) % self.test, self.true, self.false)
-            if not part2:
+            if part2:
+                item %= big_mod
+            else:
                 item //= 3
-            item %= big_mod
             if item % self.test == 0:
                 monkeys[self.true].items.append(item)
             else:

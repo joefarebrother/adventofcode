@@ -67,15 +67,17 @@ class Num:
         return Num(self.num + other.num)
 
 
-tab = str.maketrans("+*", "*+")  # part 1: tab = str.maketrans("+*", "-+")
+def do(part2):
+    tab = str.maketrans("+*", "*+") if part2 else str.maketrans("+*", "-+")
+
+    def process(line):
+        tr = str.translate(line, tab)
+        return re.sub(r'(\d+)', r'Num(\1)', tr)
+
+    pr = mapl(process, lines)
+    res = mapl(lambda l: eval(l).num, pr)
+    return sum(res)
 
 
-def process(line):
-    tr = str.translate(line, tab)
-    return re.sub(r'(\d+)', r'Num(\1)', tr)
-
-
-pr = mapl(process, lines)
-print(pr)
-res = mapl(lambda l: eval(l).num, pr)
-print(sum(res))
+print("Part 1:", do(False))
+print("Part 2:", do(True))

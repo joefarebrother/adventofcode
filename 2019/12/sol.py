@@ -1,5 +1,5 @@
 from math import lcm
-from utils import inp_readlines, ints_in
+from utils import inp_readlines, ints_in, is_ex
 
 
 class Moon:
@@ -65,7 +65,7 @@ def step_system(moons):
     return sum([m.energy() for m in moons])
 
 
-for i in range(1, 1001):
+for i in range(1, [1001, 11][is_ex]):
     en = step_system(moons)
 print("Part 1:", en)
 

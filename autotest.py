@@ -601,8 +601,11 @@ def wait_for_changes(file):
 def get_page(part):
     global completed
     final_file = workdir+"pagefinal.html"
+    p2_file = workdir+"page2.html"
     if os.path.isfile(final_file):
         s = read_string(final_file)
+    elif part == "1" and os.path.isfile(p2_file):
+        s = read_string(p2_file)
     else:
         part_file = f"{workdir}/page{part}.html" if part else None
         s = get_or_save(dayurl, part_file)
@@ -622,7 +625,7 @@ def answer_checks(answer: str, example_answers, correct_answers, wrong, part):
     """Does some checks on the given answer, returns True if they pass"""
     if len(answer) < 3:
         print(f"{answer} looks too small. Not submitting")
-    elif answer != ascii(answer):
+    elif any(ord(c) > 127 for c in answer):
         print(f"{answer} non-ascii. Not submitting.")
     elif answer in example_answers:
         print(f"{answer} is the same as the example output. Not submitting")

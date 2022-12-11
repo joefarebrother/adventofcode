@@ -1,19 +1,22 @@
 issues with examples:
+2018 day 3: example outputs aren't given directly, and are misidentified
 2019 day 2: intcode, but not detected as such; example provided doesn't work with actual problem. Set to [NONE].
 2019 day 10: example expected for part 2 is not the first one in the page
-2019 day 18: example provided fror part 2 is not the first ome on the page; and also doesn't exactly match expected input format, only after a processing step is performed on it. Set to [NONE].
+2019 day 14: example output expected for part 1 is not the last one on the page 
+2019 day 18: example provided for part 2 is not the first ome on the page; and also doesn't exactly match expected input format, only after a processing step is performed on it. Set to [NONE].
 2019 day 24: example found matches the expected final state, not the initial state; which is inside a block with additional contexts
+2020 day 1: expected output for part 1 misidentified
 2020 day 2: expected output not present for part 2 and is misidentified as "c". Set to 1.
 2020 day 6: example provided for part 2 is not the first one in the page
 2020 day 7: example provided for part 2 is not the first one on the page (multiple examples with answers provided)
 2020 day 9: example has a different setup from the real question (preamble length 5 rather than 25) - fixed
-2020 day 10: example provided for part 2 is not the first one on the page (multiple examples with answers provided)
-2020 day 14: example provided for part 2 is not the first one on the page (initial example for part 1 causes solution to timeout)
+2020 day 10: example provided for parts 1 and 2 is not the first one on the page (multiple examples with answers provided; also p1 answers aren't direct;y included)
+2020 day 14: example provided for part 2 is not the first one on the page + initial example for part 1 causes solution to timeout
 2020 day 18: examples in code block aren't valid (actually contain explanatory steps), inline examples aren't  detected, but the output to one is.
-2020 day 19: exammple provided for part 2 is not the first one on the page; and the first one on the page isn't a valid example (second group missing)
+2020 day 19: example provided for part 2 is not the first one on the page; and the first one on the page isn't a valid example (second group missing)
 2021 day 8: example provided for part 2 is not the first one on the page; and the examples are in a different format to the input (2 lines per entry rather than 1). Set to [NONE].
 2021 day 18: example provided for part 2 is not the first one on the page.
 2021 day 19: example provided for part 2 is not the first one on the page; also first provided example is in a different format (only 2 dims)
 2021 day 22: example provided for part 2 is not the first one on the page.
-2021 day 23: example provided is slow (just as compelex as the real input). Set to [NONE]. 
+2021 day 23: example provided is slow (just as complex as the real input). Set to [NONE]. 
 2021 day 24: example found doesn't work with full solution (just an example of an asm program, not one that does what the inp is supposed to do). Set to [NONE].

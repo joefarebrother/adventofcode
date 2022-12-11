@@ -45,3 +45,9 @@ Day 10:
 - 2 mistakes that canceled out: when rewriting runner for part 2, I checking x after rather than during the cycle, 
   but also considering the pixels to be in the range 1-40 rather than 0-39; so it was effectively checking where x is next cycle. 
   Net effect was only to chop off the first column, leaving the result still readable.
+
+Day 11:
+- Not knowing exec uses the current scope and won't affect the global new
+- Reversing the test (if item % self.test, rather than not item % self.test)
+- Using acts[:-2] rather than acts[-2:]
+- Running for 1000 rounds rather than 10000

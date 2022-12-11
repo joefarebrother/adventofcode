@@ -47,6 +47,7 @@ Day 10:
   Net effect was only to chop off the first column, leaving the result still readable.
 
 Day 11:
+- Thinking a monkey only processes one item per turn
 - Not knowing exec uses the current scope and won't affect the global new
 - Reversing the test (if item % self.test, rather than not item % self.test)
 - Using acts[:-2] rather than acts[-2:]

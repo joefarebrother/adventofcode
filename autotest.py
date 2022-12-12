@@ -11,6 +11,7 @@ import platform
 import math
 from time import sleep
 from input_utils import numeric, print_input_stats
+from page_parts import PageParts
 
 usage = """
 Usage: ./autotest.py [year] [day] [part] [sol]
@@ -241,47 +242,6 @@ class Wrong:
         return int(ans) <= self.toolow
 
 
-def anything_but(s):
-    """
-    Constructs a regular expression that matches anything except for the given substring.
-    Assumes s does not contain any special regex characters.
-    """
-    parts = []
-    for i in range(len(s)):
-        sofar = s[:i]
-        bad = s[i]
-        parts.append(f"{sofar}[^{bad}]")
-    end = f".{{,{len(s)-1}}}" if len(s) > 1 else ""
-    return f"(?:(?:{'|'.join(parts)})*{end})"
-
-
-def tag_regex(tag, exact_start=False, exact_end=False):
-    """
-    Constructs a regular expression that matches the contents of html elements of the given tag.
-    exact_start/exact_end determine whether the start/end should be anchored.
-    """
-    return f"(?s){'^'*exact_start}<{tag}(?: [^>]*)?>({anything_but('</'+tag+'>')})</{tag}>{'$'*exact_end}"
-
-
-def tags(tag, html, exact_start=False, exact_end=False, strip=True):
-    # insert stackoverflow post about parsing html with regex here
-    r = tag_regex(tag, exact_start, exact_end)
-    if isinstance(html, str):
-        res = re.findall(r, html)
-    else:
-        res = [c for h in html for c in re.findall(r, h)]
-    return [c.strip() for c in res] if strip else res
-
-
-def remove_tags(tag, html, exact_start=False, exact_end=False):
-    r = tag_regex(tag, exact_start, exact_end)
-    return re.sub(r, "", html)
-
-
-def html_entities(s):
-    return s.replace("&gt;", ">").replace("&lt;", "<").replace("&amp;", "&")
-
-
 def summarize(s):
     if isinstance(s, list):
         s = '\n'.join(s)+'\n'
@@ -291,11 +251,7 @@ def summarize(s):
     return set(s)
 
 
-def possible_outputs(s):
-    return tags("em", tags("code", s), exact_end=True) + tags("code", tags("em", s), exact_end=True)
-
-
-def find_examples(part, orig_s):
+def find_examples(part, page: PageParts):
     if year == 2019 and "intcode" in read_string(solution_file):
         return
 
@@ -304,28 +260,24 @@ def find_examples(part, orig_s):
 
     might_have_inline_ex = len(real_input) <= 2
     looked = False
-    s = orig_s
 
     if not os.path.isfile(test1_inputfile):
         print("Trying to find sample input to save in ", test1_inputfile)
         looked = True
 
-        egs = tags("code", tags("pre", s), True, True, False)
+        egs = page.possible_examples()
         if not egs:
             print("Could not find example (No <pre><code> tags)")
             write_to(test1_inputfile, "[NONE]")
         else:
             summarized_real = summarize(real_input)
             for i, eg in enumerate(egs):
-                eg = eg.replace("<em>", "").replace("</em>", "")
-                eg = html_entities(eg)
                 if summarize(eg) <= summarized_real:
                     write_to(test1_inputfile, eg)
                     print("Assumed input:")
                     print(eg)
                     break
-                else:
-                    print(f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
+                print(f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
             else:
                 print("Could not find example (No code block matches input)")
                 write_to(test1_inputfile, "[NONE]")
@@ -334,21 +286,9 @@ def find_examples(part, orig_s):
         print("Trying to find sample output to save in", test1_outputfile)
         looked = True
 
-        find_res = s.find("--- Part Two ---")
-        if find_res > -1:
-            if part == "1":
-                s = s[:find_res]
-            else:
-                s = s[find_res:]
-
-        # lists may contain other examples, but (usually) not the answer to the current example
-        if might_have_inline_ex:
-            s = remove_tags("li", s)
-        s = remove_tags("pre", s)
-
-        o = possible_outputs(s)
+        o = page.possible_outputs(part, no_li=True)
         if o:
-            sample_out = o[-1]
+            sample_out = o.last()
             write_to(test1_outputfile, sample_out)
         else:
             print("Could not find example output (no <code><em> tag)")
@@ -363,36 +303,8 @@ def find_examples(part, orig_s):
     print("Assumed output:", sample_out)
 
     if might_have_inline_ex and looked:
-        s = orig_s
-        # find more inline examples
-        find_res = s.find("--- Part Two ---")
-        if find_res > -1:
-            if part == "1":
-                s = s[:find_res]
-            else:
-                s = s[find_res:]
-
-        s = remove_tags("pre", s)
-
-        uls = tags("ul", s)
-        if uls:
-            ul = uls[-1]
-            o = possible_outputs(s)
-            if o and (o[-1]+"</em></code>" in ul or o[-1]+"</code></em>" in ul):
-                # last highlighted answer was in a ul tag; probably in inline example
-                # 2018 day 8 part 2 is a counterexample
-                lis = tags("li", ul)
-                for li in lis:
-                    codes = tags("code", li)
-                    if len(codes) >= 2:
-                        em = possible_outputs(li)
-                        if em:
-                            inp, out = codes[0], em[-1]
-                            if "<" not in inp and "<" not in out:
-                                inp = html_entities(inp)
-                                out = html_entities(out)
-                                if len(inp) >= 5:
-                                    add_example(inp, out, part)
+        for inp, out in page.possible_inline_examples(part):
+            add_example(inp, out, part)
 
     if looked:
         add_example("", "", part)
@@ -567,7 +479,7 @@ def submit(part, answer):
         print("time", submit_time)
         print("response:")
         resp = "".join(l.decode() for l in resp)
-        content = tags("article", resp)[0]
+        content = PageParts(resp).tags("article").last()
         print(content)
 
         passed = False
@@ -600,6 +512,7 @@ def wait_for_changes(file):
 
 def get_page(part):
     global completed
+
     final_file = workdir+"pagefinal.html"
     p2_file = workdir+"page2.html"
     if os.path.isfile(final_file):
@@ -609,7 +522,11 @@ def get_page(part):
     else:
         part_file = f"{workdir}/page{part}.html" if part else None
         s = get_or_save(dayurl, part_file)
-    completed = s.count("Your puzzle answer was")
+
+    page = PageParts(s)
+    correct_answers = list(page.tags("p").filter(lambda p: p.startswith("Your puzzle answer was")).tags("code"))
+    completed = len(correct_answers)
+
     if completed == 2:
         write_to(final_file, s)
     if completed == 1:
@@ -618,7 +535,8 @@ def get_page(part):
         write_to(workdir+"page1.html", s)
         if part == "2":
             raise Exception("Can't do part 2 without having completed part 1")
-    return s
+
+    return page, correct_answers
 
 
 def answer_checks(answer: str, example_answers, correct_answers, wrong, part):
@@ -652,7 +570,8 @@ if not os.path.isfile(solution_file):
 
 def do_part(part=None):
     global should_wait
-    s = get_page(part)
+    page, correct_answers = get_page(part)
+
     if not part:
         part = str(min(completed+1, 2 if day < 25 else 1))
     no_submit = False
@@ -662,12 +581,7 @@ def do_part(part=None):
     wrong = Wrong(part)
     old_wrong = Wrong("1")
 
-    correct_answers = []
-    for p in tags("p", s):
-        if p.startswith("Your puzzle answer was"):
-            correct_answers.append(tags("code", p)[0])
-
-    find_examples(part, s)
+    find_examples(part, page)
 
     ns = 0
     if should_wait:

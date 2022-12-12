@@ -7,7 +7,7 @@ curl_output
 *.in
 *.out
 *tmp*
-*page*
+*.html
 *.timestamp
 *.pkl
 .vscode

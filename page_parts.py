@@ -140,8 +140,8 @@ class PageParts:
         uls = self.for_part(part).tags("ul")
         if not uls:
             return
-        last_out = self.possible_outputs(part).last_part()
-        if last_out in uls:
+        outs = self.possible_outputs(part)
+        if outs and outs.last_part() in uls:
             for li in uls.tags("li").subparts():
                 codes = li.tags("code")
                 if len(codes) >= 2:

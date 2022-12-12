@@ -54,5 +54,5 @@ Day 11:
 - Running for 1000 rounds rather than 10000
 
 Day 12:
-- Writing a height of 26 for E rather than 25
+- Writing a height of 26 for E rather than 25 (ws)
 - Having inefficiencies in my BFS function

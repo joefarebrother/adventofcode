@@ -15,10 +15,10 @@ def height(c):
 
 
 def adj(p1):
-    """Inverse graph handles both parts"""
+    """Inverse graph (i.e. searching backwards from the end point) handles both parts"""
     for p in neighbours(p1):
         if p in inp:
-            if height(inp[p]) - height(inp[p1]) >= -1:
+            if height(inp[p]) + 1 >= height(inp[p1]):
                 yield p
 
 

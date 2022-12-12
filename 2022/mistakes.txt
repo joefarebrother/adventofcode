@@ -52,3 +52,7 @@ Day 11:
 - Reversing the test (if item % self.test, rather than not item % self.test)
 - Using acts[:-2] rather than acts[-2:]
 - Running for 1000 rounds rather than 10000
+
+Day 12:
+- Writing a height of 26 for E rather than 25
+- Having inefficiencies in my BFS function

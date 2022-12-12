@@ -144,10 +144,10 @@ class AbGraph():
                     self.prev[self.key(node)] = prev
                     yield (node, d)
 
-                for nxt in self[node]:
-                    k = self.key(nxt)
-                    if k not in self.prev:
-                        queue.append((nxt, d+1, node))
+                    for nxt in self[node]:
+                        k = self.key(nxt)
+                        if k not in self.prev:
+                            queue.append((nxt, d+1, node))
 
         return GraphSearchResult(self, go())
 

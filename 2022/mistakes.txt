@@ -56,3 +56,7 @@ Day 11:
 Day 12:
 - Writing a height of 26 for E rather than 25 (ws)
 - Having inefficiencies in my BFS function
+
+Day 13:
+- Implementing comparator wrong - returning -1 when list 1 runs out even if p2 has also run out (ws)
+- Needing to look up how to sort with a comparator

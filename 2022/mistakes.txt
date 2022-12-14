@@ -60,3 +60,7 @@ Day 12:
 Day 13:
 - Implementing comparator wrong - returning -1 when list 1 runs out even if p2 has also run out (ws)
 - Needing to look up how to sort with a comparator
+
+Day 14:
+- Not handling my input correctly (just chunks(ints_in(line), 2); i.e. iterating over points, rather than windows(that,2))
+- Getting my condition for checking whether the next position is the lowest backwards 

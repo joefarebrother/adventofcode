@@ -15,16 +15,16 @@ if "--help" in sys.argv or "-h" in sys.argv:
     print_usage()
     exit(0)
 
-years = list(range(2018, 2023))
+years = list(range(2015, 2023))
 argv = sys.argv[1:]
-part = 2
+part = ""
 
 try:
     if len(argv) == 2:
         year, part = argv[:2]
         year = int(year)
         part = int(part)
-        assert (year >= 2015)
+        assert year >= 2015
         assert part in [1, 2]
         years = [year]
     elif len(argv) == 1:

@@ -18,6 +18,8 @@ class IVec2:
     def __new__(cls, x, y=None, strict=False):
         if isinstance(x, cls):
             return x
+        if y is None and isinstance(x, list):
+            x, y = x
         if (x, y) in cls._cache:
             return cls._cache[x, y]
         if y is None:

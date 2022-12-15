@@ -1,5 +1,4 @@
 from utils import *
-import dataclasses
 
 inp = inp_readlines()
 
@@ -9,11 +8,11 @@ instrs = []
 for line in inp:
     on = line.startswith("on")
     x0, x1, y0, y1, z0, z1 = ints_in(line)
-    instrs.append((on, ints_in(line)))
+    instrs.append((on, [(x0, y0, z0), (x1, y1, z1)]))
 
 for on, bnds in instrs:
-    if all(abs(b) <= 50 for b in bnds):
-        x0, x1, y0, y1, z0, z1 = bnds
+    if all(abs(c) <= 50 for b in bnds for c in b):
+        (x0, y0, z0), (x1, y1, z1) = bnds
         for x in irange(x0, x1):
             for y in irange(y0, y1):
                 for z in irange(z0, z1):
@@ -24,70 +23,62 @@ print("Part 1:", Counter(g.values())[True])
 
 @dataclass
 class Cuboid:
-    x0: int
-    x1: int
-    y0: int
-    y1: int
-    z0: int
-    z1: int
+    los: tuple[int]
+    his: tuple[int]
 
     def intersect(self, other):
-        xint = intersect_irange((self.x0, self.x1),
-                                (other.x0, other.x1))
-        yint = intersect_irange((self.y0, self.y1),
-                                (other.y0, other.y1))
-        zint = intersect_irange((self.z0, self.z1),
-                                (other.z0, other.z1))
-        if xint and yint and zint:
-            (x0, x1) = xint
-            (y0, y1) = yint
-            (z0, z1) = zint
-            return Cuboid(x0, x1, y0, y1, z0, z1)
-        return None
+        lores = []
+        hires = []
+        for s0, s1, o0, o1 in zip(self.los, self.his, other.los, other.his, strict=True):
+            rint = intersect_irange((s0, s1), (o0, o1))
+            if rint:
+                r0, r1 = rint
+                lores.append(r0)
+                hires.append(r1)
+            else:
+                return None
+        return Cuboid(tuple(lores), tuple(hires))
 
     def difference(self, other):
         res = []
-        cur = dataclasses.replace(self)
-        if not cur.intersect(other):
-            return [cur]
+        if not self.intersect(other):
+            return [self]
 
-        # left
-        if cur.x0 < other.x0 <= cur.x1:
-            ox0 = other.x0
-            res.append(dataclasses.replace(cur, x1=ox0-1))
-            cur.x0 = ox0
-        # right
-        if cur.x0 <= other.x1 < cur.x1:
-            ox1 = other.x1
-            res.append(dataclasses.replace(cur, x0=ox1+1))
-            cur.x1 = ox1
+        locur = list(self.los)
+        hicur = list(self.his)
 
-        # front
-        if cur.y0 < other.y0 <= cur.y1:
-            oy0 = other.y0
-            res.append(dataclasses.replace(cur, y1=oy0-1))
-            cur.y0 = oy0
-        # back
-        if cur.y0 <= other.y1 < cur.y1:
-            oy1 = other.y1
-            res.append(dataclasses.replace(cur, y0=oy1+1))
-            cur.y1 = oy1
+        for d, (c0, c1, o0, o1) in enumerate(zip(locur, hicur, other.los, other.his, strict=True)):
+            #       oooooooooooooo              oooooooooooooo
+            #       o            o              o            o
+            #  ccccccccccc       o         rrrrrcccccc       o
+            #  c    o    c       o         r   rc    c       o
+            #  c    o    c       o         r   rc    c       o
+            #  c    ooooocoooooooo    =>   r   rcoooocoooooooo
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  ccccccccccc                 rrrrrcccccc
+            #
 
-        # top
-        if cur.z0 < other.z0 <= cur.z1:
-            oz0 = other.z0
-            res.append(dataclasses.replace(cur, z1=oz0-1))
-            cur.z0 = oz0
-        # bottom
-        if cur.z0 <= other.z1 < cur.z1:
-            oz1 = other.z1
-            res.append(dataclasses.replace(cur, z0=oz1+1))
-            cur.z1 = oz1
+            # left
+            if c0 < o0 <= c1:
+                res.append((tuple(locur), modify_idx(tuple(hicur), d, o0-1)))
+                locur[d] = o0
+            # right
+            if c0 <= o1 < c1:
+                res.append((modify_idx(tuple(locur), d, o1+1), tuple(hicur)))
+                hicur[d] = o1
 
-        return res
+        res2 = []
+        for (rlo, rhi) in res:
+            res2.append(Cuboid(tuple(rlo), tuple(rhi)))
+
+        return res2
 
     def volume(self):
-        return (self.x1-self.x0+1)*(self.y1-self.y0+1)*(self.z1-self.z0+1)
+        return math.prod(c1-c0+1 for c0, c1 in zip(self.los, self.his, strict=True))
 
 
 cubes = []
@@ -95,21 +86,21 @@ for (on, bnds) in instrs:
     c = Cuboid(*bnds)
 
     if on:
-        printx("Adding:", c)
+        # printx("Adding:", c)
         cs = [c]
         for d in cubes:
             ncs = []
             for nc in cs:
                 ncs += nc.difference(d)
             cs = ncs
-        printx(len(cs), "added")
+        # printx(len(cs), "added")
         cubes += cs
     else:
-        printx("Removing:", c, "from", len(cubes))
+        # printx("Removing:", c, "from", len(cubes))
         nds = []
         for d in cubes:
             nds += d.difference(c)
         cubes = nds
-        printx(len(cubes), "remain")
+        # printx(len(cubes), "remain")
 
 print("Part 2:", sum(c.volume() for c in cubes))

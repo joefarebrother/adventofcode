@@ -1,7 +1,7 @@
 # pylint: disable=unsubscriptable-object # pylint bug in python 3.9
 from typing import Optional, Iterable
 import cmath
-from misc_utils import irange, bounds, DotDict
+from misc_utils import irange, bounds, DotDict, modify_idx
 
 
 class IVec2:
@@ -314,6 +314,45 @@ class Rectangle:
             (miny, maxy) = yint
             return Rectangle(None, minx, miny, maxx, maxy)
         return Rectangle()
+
+    def difference(self, other):
+        """Returns a list of non-overlapping rectangles whose union is the difference between self and other"""
+        res = []
+        if not self & other:
+            return [self]
+
+        locur = [self.minx, self.miny]
+        hicur = [self.maxx, self.maxy]
+
+        for d, (c0, c1, o0, o1) in enumerate(zip(locur, hicur, [other.minx, other.miny], [other.maxx, other.maxy], strict=True)):
+            #       oooooooooooooo              oooooooooooooo
+            #       o            o              o            o
+            #  ccccccccccc       o         rrrrrcccccc       o
+            #  c    o    c       o         r   rc    c       o
+            #  c    o    c       o         r   rc    c       o
+            #  c    ooooocoooooooo    =>   r   rcoooocoooooooo
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  c         c                 r   rc    c
+            #  ccccccccccc                 rrrrrcccccc
+            #
+
+            # left
+            if c0 < o0 <= c1:
+                res.append((tuple(locur), modify_idx(tuple(hicur), d, o0-1)))
+                locur[d] = o0
+            # right
+            if c0 <= o1 < c1:
+                res.append((modify_idx(tuple(locur), d, o1+1), tuple(hicur)))
+                hicur[d] = o1
+
+        res2 = []
+        for (rlo, rhi) in res:
+            res2.append(Rectangle(rlo, rhi))
+
+        return res2
 
 
 def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:

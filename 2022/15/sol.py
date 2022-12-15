@@ -79,60 +79,6 @@ def rects(s, d):
         return inner, outer
 
 
-def rect_diff(r1: Rectangle, r2: Rectangle):
-    if not r1 & r2:
-        return [r1]
-    res = []
-    cur = DotDict()
-    cur.minx = r1.minx
-    cur.miny = r1.miny
-    cur.maxx = r1.maxx
-    cur.maxy = r1.maxy
-
-    # left
-    if cur.minx < r2.minx <= cur.maxx:
-        ominx = r2.minx
-        ocur = copy(cur)
-        ocur.maxx = ominx-1
-        res.append(ocur)
-        cur.minx = ominx
-    # right
-    if cur.minx <= r2.maxx < cur.maxx:
-        omaxx = r2.maxx
-        ocur = copy(cur)
-        ocur.minx = omaxx+1
-        res.append(ocur)
-        cur.maxx = omaxx
-
-    # top
-    if cur.miny < r2.miny <= cur.maxy:
-        ominy = r2.miny
-        ocur = copy(cur)
-        ocur.maxy = ominy-1
-        res.append(ocur)
-        cur.miny = ominy
-    # bottom
-    if cur.miny <= r2.maxy < cur.maxy:
-        omaxy = r2.maxy
-        ocur = copy(cur)
-        ocur.miny = omaxy+1
-        res.append(ocur)
-        cur.maxy = omaxy
-
-    res2 = []
-    for r in res:
-        if r.minx <= r.maxx and r.miny <= r.maxy:
-            res2.append(Rectangle((r.minx, r.miny), (r.maxx, r.maxy)))
-
-    if is_ex:
-        for r in res2:
-            for p in r:
-                assert p in r1
-                assert p not in r2, (p, r, r1, r2)
-
-    return res2
-
-
 maxc = 20 if is_ex else 4000000
 
 rs1, rs2 = ([Rectangle((-maxc, -maxc), (maxc, maxc))] for _ in range(2))
@@ -145,7 +91,7 @@ if is_ex:
 def rect_list_diff(rs, dr):
     res = []
     for r in rs:
-        for nr in rect_diff(r, dr):
+        for nr in r.difference(dr):
             res.append(nr)
     return res
 

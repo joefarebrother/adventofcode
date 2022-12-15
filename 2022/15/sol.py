@@ -8,28 +8,9 @@ for line in inp_readlines():
     b = IVec2(bx, by)
     s_b.add((s, b, man_dist(s, b)))
 
-bb = bounding_box([s for (s, b, d) in s_b])
-maxd = max(d for (s, b, d) in s_b)
-cor = bb.opposite_corners()
-bb = Rectangle(cor[0]-(maxd, maxd), cor[1]+(maxd, maxd))
-print(bb)
-
 bs = set(b for (s, b, d) in s_b)
 
 y = 10 if is_ex else 2000000
-
-# tot = 0
-# for x in bb.xrange():
-#     p = IVec2(x, y)
-#     if p in bs:
-#         continue
-#     for s, b, d in s_b:
-#         if d >= man_dist(s, p):
-#             printx(x)
-#             tot += 1
-#             break
-#     else:
-#         continue
 
 row = set()
 for s, b, d in s_b:
@@ -43,14 +24,6 @@ row -= set(b.x for b in bs if b.y == y)
 printx(row)
 
 print("Part 1:", len(row))
-
-maxc = 20 if is_ex else 4000000
-
-tot = 0
-for (s, b, d) in s_b:
-    tot += (d//2)**2
-
-print(tot, 4000000**2-tot)
 
 # rotated coord system: ((x+y),(x-y))
 # .x#..    (2,0),(1,1),(2,1),(3,1),(2,2)    ..#.#..
@@ -99,12 +72,6 @@ def rects(s, d):
     assert rotate(s+(0, d))[0] in outer.corners()
     assert rotate(s-(0, d-1))[0] in inner.corners()
     assert rotate(s+(0, d-1))[0] in inner.corners()
-
-    if is_ex:
-        for p in inner:
-            assert rotate_back(p, ii1) != IVec2(14, 11)
-        for p in outer:
-            assert rotate_back(p, oi1) != IVec2(14, 11)
 
     if oi1 == 0:
         return outer, inner
@@ -166,6 +133,8 @@ def rect_diff(r1: Rectangle, r2: Rectangle):
     return res2
 
 
+maxc = 20 if is_ex else 4000000
+
 rs1, rs2 = ([Rectangle((-maxc, -maxc), (maxc, maxc))] for _ in range(2))
 if is_ex:
     for p in Rectangle((0, 0), (maxc, maxc)):
@@ -183,7 +152,6 @@ def rect_list_diff(rs, dr):
 
 for s, b, d in s_b:
     r1, r2 = rects(s, d)
-    # print(s, d, len(rs1), len(rs2))
     rs1 = rect_list_diff(rs1, r1)
     rs2 = rect_list_diff(rs2, r2)
     if is_ex:
@@ -197,28 +165,16 @@ for s, b, d in s_b:
 def done(p):
     print(p)
     print("Part 2:", 4000000*p.x+p.y)
-    if 4000000*p.x+p.y == 56000011:
-        print("!")
     exit()
 
 
 for r in rs1:
-    if False:
-        for p in r:
-            print(rotate_back(p, 0))
-    print(len(r), r)
-    if (rotate(IVec2(14, 11))[0] in r):
-        print("!", r)
     if len(r) == 1:
         p = rotate_back(list(r)[0], 0)
         if p in Rectangle((0, 0), (maxc, maxc)):
             done(p)
 
 for r in rs2:
-    if False:
-        for p in r:
-            print(rotate_back(p, 1))
-    print(len(r), r)
     if len(r) == 1:
         p = rotate_back(list(r)[0], 1)
         if p in Rectangle((0, 0), (maxc, maxc)):

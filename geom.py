@@ -208,7 +208,7 @@ class Rectangle:
         return self.maxy-self.miny+1 if self else 0
 
     def __len__(self) -> int:
-        return self.width*self.height
+        return self.width()*self.height()
 
     def xrange(self) -> range:
         """

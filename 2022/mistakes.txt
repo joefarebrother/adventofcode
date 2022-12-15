@@ -64,3 +64,7 @@ Day 13:
 Day 14:
 - Not handling my input correctly (just chunks(ints_in(line), 2); i.e. iterating over points, rather than windows(that,2))
 - Getting my condition for checking whether the next position is the lowest backwards 
+
+Day 15:
+- Mistyping some of the attributes when copying over and adapting 2021/22
+- Not including the full search space 

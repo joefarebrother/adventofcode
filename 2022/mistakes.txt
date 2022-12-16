@@ -68,3 +68,6 @@ Day 14:
 Day 15:
 - Mistyping some of the attributes when copying over and adapting 2021/22
 - Not including the full search space 
+
+Day 16:
+- Crashing my pc by running out of memory 3 or 4 times

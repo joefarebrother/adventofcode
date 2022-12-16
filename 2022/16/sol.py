@@ -15,36 +15,27 @@ for v in valves:
     for v2, d in gr.BFS(v):
         dists[v][v2] = d
 
-fr_0 = frozenset(v for v, (fr, vs) in valves.items() if fr == 0)
+bits = {}
+for v, (fr, vs) in valves.items():
+    if fr > 0:
+        bits[v] = 1 << len(bits)
+
+# pylint:disable=redefined-builtin
 
 
 @cache
-def flowrate(time, v, open):
-    if time == 0:
-        return 0
-    assert time > 0
-    best = 0
+def pressure(time, v, open, part2):
+    best = pressure(26, "AA", open, False) if part2 else 0
+    if time <= 1:
+        return best
     for v2, d in dists[v].items():
         fr = valves[v2][0]
-        if time >= d+1 and v2 not in open:
-            best = max(best, fr*(time-d-1)+flowrate(time-d-1, v2, open | {v2}))
+        ntime = time-d-1
+        if ntime >= 0 and v2 in bits and not bits[v2] & open:
+            best = max(best, fr*ntime + pressure(ntime, v2, open | bits[v2], part2))
     return best
 
 
-print("Part 1:", flowrate(30, "AA", fr_0))
+print("Part 1:", pressure(30, "AA", 0, False))
 
-
-@cache
-def flowrate2(time, v, open):
-    if time == 0:
-        return flowrate(26, "AA", open)
-    assert time > 0
-    best = flowrate(26, "AA", open)
-    for v2, d in dists[v].items():
-        fr = valves[v2][0]
-        if time >= d+1 and v2 not in open:
-            best = max(best, fr*(time-d-1)+flowrate2(time-d-1, v2, open | {v2}))
-    return best
-
-
-print("Part 2:", flowrate2(26, "AA", fr_0))
+print("Part 2:", pressure(26, "AA", 0, True))

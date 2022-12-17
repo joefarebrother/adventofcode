@@ -71,3 +71,7 @@ Day 15:
 
 Day 16:
 - Crashing my pc by running out of memory 3 or 4 times
+
+Day 17:
+- Checking for each position in the rock to block horizontal movement rather than only #s (ws + TWO HECKING HOURS of debugging + needing to have Toby help)
+- Couple off-by-ones in p2 (incrementing time in wrong place; and checking for the rock 1 index too low) (ws*2)

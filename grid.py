@@ -219,7 +219,7 @@ class Grid(MutableMapping):
         """
         return Counter(self.data.values())
 
-    def draw(self, symbols=None, flipx=False, flipy=False) -> None:
+    def draw(self, symbols=None, flipx=False, flipy=False, maxrows=None) -> None:
         """
         Draws the grid to the screen.
 
@@ -265,5 +265,9 @@ class Grid(MutableMapping):
                 sym = symbols[elt] if elt in symbols else str(elt)[0]
                 res += sym
             res += '\n'
+            if maxrows is not None:
+                maxrows -= 1
+                if maxrows == 0:
+                    break
 
         print(res)

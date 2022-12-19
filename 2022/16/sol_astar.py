@@ -33,7 +33,7 @@ def pressure(time, part2):
     #     if ntime >= 0 and v2 in bits and not bits[v2] & open:
     #         best = max(best, fr*ntime + pressure(ntime, v2, open | bits[v2], part2))
     # return best
-    def adj(node, _pr=True):
+    def adj(node):
         time, v, open, ele = node
         # as noted in 2022/19, A* is correct even with negative weights provided the heuristic is consistent, and the heuristic at goal nodes is constant.
         # if _pr:
@@ -49,11 +49,12 @@ def pressure(time, part2):
         return res
 
     def h(node):
-        time, _v, open, ele = node
-        if not adj(node, _pr=False):
-            return 0
+        time, v, open, ele = node
+        mind = min([1000] + [dists[v][v2] for v2, b in bits.items() if not b & open])
+        tt = mind + 1
+        # print((time, v, f"{open:15b}", ele), tt)
         remaining_fr = sum(valves[v2][0] for v2, b in bits.items() if not b & open)
-        h = -remaining_fr*max(time-1, 25*ele, 0)
+        h = -remaining_fr*max(time-tt, 25*ele, 0)
         return h
 
     gr = FGraph(adj)
@@ -69,9 +70,9 @@ print("Part 1:", pressure(30, False))
 print("Part 2:", pressure(26, True))
 
 # sol_astar.py:
-# real    1m56.886s
-# user    1m56.151s
-# sys     0m0.624s
+# real    0m53.172s
+# user    0m52.431s
+# sys     0m0.541s
 
 # sol.py
 # real    0m17.695s

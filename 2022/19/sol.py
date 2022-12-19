@@ -124,6 +124,12 @@ class Blueprint:
 
         # the reason this doesn't work with djikstra (i.e. h=0) is that h=0 is not admissible when there are negative weights.
 
+        # alternative proof that works on any graph with negative weights and a consistent heuristic,
+        # not just a graph in which we can add costs to each time step like this:
+        # h is consistent, i.e. h(x) <= d(x,y) + h(y)
+        # this makes A* equiv to djikstra with d'(x,y) = h(y) - h(x) + d(x,y)
+        # this is a graph with nonnegative weights, so djikstra minimises d'(start, end); which minimizes d(start,end) as h(start) and h(end) are constant.
+
         def h(node):
             time, stuff, robots = node
             if time == 0:

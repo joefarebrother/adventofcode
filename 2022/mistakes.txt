@@ -78,3 +78,8 @@ Day 17:
 
 Day 18:
 - A couple typos - calling adj2 rather than adj, using c rather than ac
+
+Day 19: 
+- Initially misunderstanding the problem (thinking it was a deterministic process)
+- Not properly handling format differences between example and real input 
+- My program being really slow

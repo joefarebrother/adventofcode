@@ -7,11 +7,10 @@ xs = list(enumerate(inp))
 
 def move(xs: list, idx):
     nidx = next(i for i, (j, x) in enumerate(xs) if j == idx)
-    (j, v) = xs[nidx]
+    (j, v) = xs.pop(nidx)
     assert j == idx
-    xs = xs[:nidx] + xs[nidx+1:]
     nidx = (nidx + v) % len(xs)
-    xs = xs[:nidx] + [(j, v)] + xs[nidx:]
+    xs.insert(nidx, (j, v))
     return xs
 
 
@@ -37,9 +36,9 @@ for _ in range(10):
 print("Part 2:", res(xs))
 
 # sol_simple:
-# real    0m10.871s
-# user    0m10.793s
-# sys     0m0.063s
+# real    0m5.167s
+# user    0m5.147s
+# sys     0m0.018s
 
 # sol:
 # real    0m48.437s

@@ -130,6 +130,10 @@ class Blueprint:
         # this makes A* equiv to djikstra with d'(x,y) = h(y) - h(x) + d(x,y)
         # this is a graph with nonnegative weights, so djikstra minimises d'(start, end); which minimizes d(start,end) as h(start) and h(end) are constant.
 
+        # in fact, the first proof can be adapted to any DAG where we don't have explicit timesteps. Order the nodes topologically,
+        # and put all goal nodes at the end. Then assign each node a timestamp based on the order it appears, with all goal nodes receiving the same timestamp.
+        # then the above proof works. We also need h(goal) to be constant (ideally 0).
+
         def h(node):
             time, stuff, robots = node
             if time == 0:

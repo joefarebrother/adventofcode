@@ -35,7 +35,8 @@ def pressure(time, part2):
     # return best
     def adj(node):
         time, v, open, ele = node
-        # as noted in 2022/19, A* is correct even with negative weights provided the heuristic is consistent, and the heuristic at goal nodes is constant.
+        # as noted in 2022/19, A* is correct on a DAG even with negative weights
+        # provided the heuristic is admissible, and the heuristic at goal nodes is constant.
         # if _pr:
         #     print((time, v, f"{open:15b}", ele), gr.dists[node], h(node), gr.dists[node]+h(node))
         res = {}

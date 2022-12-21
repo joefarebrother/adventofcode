@@ -58,8 +58,9 @@ class SkipNode:
             if j < len(self.links):
                 lf, f = self.links[j]
                 lb, b = self.backlinks[j]
-                f.backlinks[j] = (lf+lb-1, b)
-                b.links[j] = (lf+lb-1, f)
+                lbf = lf+lb-1,
+                f.backlinks[j] = (lbf, b)
+                b.links[j] = (lbf, f)
             else:
                 lf, f = fs[j]
                 lbf, b = f.backlinks[j]
@@ -74,8 +75,9 @@ class SkipNode:
             if j < len(self.links):
                 self.links[j] = (lf, f)
                 f.backlinks[j] = (lf, self)
-                self.backlinks[j] = (lbf-lf+1, b)
-                b.links[j] = (lbf-lf+1, self)
+                lb = lbf-lf+1
+                self.backlinks[j] = (lb, b)
+                b.links[j] = (lb, self)
             else:
                 f.backlinks[j] = (lbf+1, b)
                 b.links[j] = (lbf+1, f)

@@ -24,7 +24,7 @@ def calc(var, scope):
     return res
 
 
-print("Part 1:", calc("root", {}))
+print("Part 1:", int(calc("root", {})))
 
 eqs["root"] = re.sub(r'[+\-*/]', "-", eqs["root"])
 

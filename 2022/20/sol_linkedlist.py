@@ -90,3 +90,8 @@ print("Part 2:", res)
 # sys     0m0.038s
 
 # was not worth it...
+
+# sol_skiplist:
+# real    0m0.920s
+# user    0m0.911s
+# sys     0m0.010s

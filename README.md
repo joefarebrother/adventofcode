@@ -9,8 +9,9 @@ My inputs aren't included.
 `mistakes.txt` documents the mistakes I make each day.
 
 ## Dependencies
-- Python >= 3.9
+- Python >= 3.10
 - `pip install -e .` 
+- `pip install sympy`
 - Linux specific for autotester:
 - - `sudo apt install inotify-tools` 
 - Mac specific for autotester:

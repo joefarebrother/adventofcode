@@ -1,29 +1,34 @@
 from utils import *
 import sympy
+import operator as ops
 
 eqs = {}
 for line in inp_readlines():
     v, ex = line.split(": ")
-    m = re.findall(r'(....) . (....)', ex)
-    deps = []
-    if m:
-        deps = list(m[0])
-    eqs[v] = (ex, deps)
+    eqs[v] = ex
 
-print(eqs)
 
-scope = {}
-for v in FGraph(adj=lambda v: eqs[v][1]).topsort("root")[::-1]:
-    scope[v] = eval(eqs[v][0], scope)
+def calc(var, scope):
+    if var in scope:
+        return scope[var]
+    ex = eqs[var]
+    try:
+        res = int(ex)
+        scope[var] = res
+        return res
+    except ValueError:
+        pass
+    l, op, r = ex.split()
+    res = {"+": ops.add, "-": ops.sub, "*": ops.mul, "/": ops.truediv}[op](calc(l, scope), calc(r, scope))
+    scope[var] = res
+    return res
 
-print("Part 1:", int(scope["root"]))
 
-eqs["humn"] = ('sympy.Symbol("x")', [])
-eqs["root"] = (re.sub(r'[+\-*/]', "-", eqs["root"][0]), eqs["root"][1])
+print("Part 1:", calc("root", {}))
 
-scope = {"sympy": sympy}
-for v in FGraph(adj=lambda v: eqs[v][1]).topsort("root")[::-1]:
-    scope[v] = eval(eqs[v][0], scope)
+eqs["root"] = re.sub(r'[+\-*/]', "-", eqs["root"])
 
-print(scope["root"])
-print("Part 2:", ints(sympy.solve(scope["root"])))
+eq = calc("root", {"humn": sympy.Symbol("x")})
+
+print(eq)
+print("Part 2:", int(sympy.solve(eq)[0]))

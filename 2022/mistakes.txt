@@ -88,3 +88,7 @@ Day 20:
 - Thinking that the input was unique
 - Modulo len(nodes) rather tha len(nodes)-1
 - Fiddling about with writing a doubly-linked list rather than just use a direct solution (was pre-prepping for a potential part2 in which the list could have been longer, like 2020/23)
+
+Day 21:
+- Getting the arguments to re.sub wrong
+- Not rounding my results

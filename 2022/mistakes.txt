@@ -93,3 +93,6 @@ Day 21:
 - Taking a long time fiddling about with input parsing with regex + topologically sorting by dependencies 
 - Getting the arguments to re.sub wrong
 - Not rounding my results (so autotest wouldn't submit them)
+
+Day 22:
+- Making 2 mistakes in hard-coding edge mappings (transposing 2 edges + marking and edge as flipped) (ws*2)

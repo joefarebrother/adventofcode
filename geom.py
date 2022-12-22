@@ -441,7 +441,8 @@ Dirs.tR = -1j
 def _flipy(d):
     def _dirs_flipy():
         for x in d:
-            d[x] = d[x].conjugate()
+            if hasattr(d[x], "conjugate"):
+                d[x] = d[x].conjugate()
     return _dirs_flipy
 
 

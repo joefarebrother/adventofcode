@@ -83,6 +83,9 @@ class IVec2:
             return NotImplemented
         return IVec2(self.x+other.x, self.y+other.y)
 
+    def __neg__(self):
+        return IVec2(-self.x, -self.y)
+
     def __sub__(self, other):
         if isinstance(other, complex):
             return IVec2(complex(self)-other)

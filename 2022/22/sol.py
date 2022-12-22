@@ -43,39 +43,79 @@ for x in path:
 res = 1000*(pos.y+1) + 4*(pos.x+1) + [Dirs.R, Dirs.D, Dirs.L, Dirs.U].index(dr)
 print("Part 1:", res)
 
-edges1 = []
-for p in gr:
-    for d in neighbours(0):
-        if gr[p] != ' ' and gr[p+d] == ' ':
-            np = p
-            while gr[np] != ' ' and gr[np+d] == ' ':
-                np += d*Dirs.tR
-            np1 = np-d*Dirs.tR
-            np = p
-            while gr[np] != ' ' and gr[np+d] == ' ':
-                np += d*Dirs.tL
-            np2 = np-d*Dirs.tL
-            r = Rectangle(np1, np2)
-            if r not in edges1:
-                edges1.append(r)
+identified = {}
 
-size = min(max(r.width(), r.height()) for r in edges1)
 
-edges2 = []
-for e in edges1:
-    l = list(e)
-    for c in chunks(l, size):
-        edges2.append(Rectangle(*c))
+def identify(pd1, pd2):
+    p1, d1 = pd1
+    p2, d2 = pd2
+    assert gr[p1] != ' ' and gr[p1+d1] == ' ' and gr[p2] != ' ' and gr[p2+d2] == ' '
+    identified[p1+d1, d1] = (p2, -d2)
+    identified[p2+d2, d2] = (p1, -d1)
 
-for e in edges2:
-    print(e)
-assert len(edges2) == 14, len(edges2)
 
-# hard-coded
-edge_pairings = {0: 6, 8: 9, 3: 10, 5: 1, 7: 12, 2: 11, 4: 13} if is_ex else {1: 10, 5: 6, 11: 12, 4: 7, 3: 13, 0: 8, 2: 9}
-edge_flips = [8, 3, 5, 7, 2, 4] if is_ex else [4, 0]
+start = opos, Dirs.R
+pos = opos
+dr = Dirs.R
+# walk the perimeter
+perim_with_angles = []
+while (pos, dr) != start or not perim_with_angles:
+    # invariant: gr[pos+dr*Dirs.tl] == ' '
+    match (gr[pos+dr] == ' ', gr[pos+dr+dr*Dirs.tL] == ' '):
+        case (False, True):
+            #
+            #  ...>...
+            #  .......
+            perim_with_angles.append((pos, dr, 2))
+            pos += dr
+        case (False, False):
+            #      ...
+            #  ...>...
+            #  .......
+            perim_with_angles.append((pos, dr, 3))
+            pos += dr+dr*Dirs.tL
+            dr *= Dirs.tL
+        case (True, _):
+            #
+            #  ...>
+            #  ....
+            perim_with_angles.append((pos, dr, 1))
+            dr *= Dirs.tR
 
-edge_pairings = edge_pairings | inv_mapping(edge_pairings)
+sz = 4 if is_ex else 50
+
+perim_with_angles = mapl(lambda p: (p[0], p[1]*Dirs.tL, p[2]), perim_with_angles)
+assert len(perim_with_angles) == sz*14
+
+edges_ = chunks(perim_with_angles, sz)
+edges = []
+for e in edges_:
+    assert all(p[2] == 2 for p in e[:-1])
+    edges.append([[p[:2] for p in e], e[-1][2]])
+
+
+while edges:
+    print(l := [e[1] for e in edges], sum(l))
+    assert l.count(3) >= 2  # Toby proved this
+    edges_ = []
+    for i in range(len(edges)-1):
+        e1 = edges[i]
+        e2 = edges[i+1]
+        if e1[1] == 3:
+            for pd1, pd2 in zip(e1[0], reversed(e2[0]), strict=True):
+                identify(pd1, pd2)
+            edges[i-1][1] = (edges[i-1][1]+e2[1])
+            assert edges[i-1][1] in [1, 2, 3] + [6]*(len(edges) == 2), (i, len(edges), edges[i-1][1], e2[1])
+            edges_ += edges[i+2:]
+            break
+        else:
+            edges_.append(edges[i])
+
+    edges = edges_
+
+
+pos = opos
+dr = Dirs.R
 
 
 def step2():
@@ -83,16 +123,7 @@ def step2():
     npos = pos+dr
     ndr = dr
     if gr[npos] == ' ':
-        ei = only(i for i, e in enumerate(edges2) if pos in e and (pos+dr*Dirs.tL in e or pos+dr*Dirs.tR in e))
-        oei = edge_pairings[ei]
-        flip = (ei in edge_flips or oei in edge_flips)
-        e = list(edges2[ei])
-        oe = list(edges2[oei])
-        if flip:
-            oe = oe[::-1]
-        npos = oe[e.index(pos)]
-        ndr = only(d for d in neighbours(0) if gr[npos-d] == ' ' and (npos+d*Dirs.tL in oe or npos+d*Dirs.tR in oe))
-        print(pos, dr, ei, oei, flip, npos, ndr)
+        npos, ndr = identified[npos, dr]
     if gr[npos] == '.':
         pos = npos
         dr = ndr
@@ -101,15 +132,9 @@ def step2():
     return False
 
 
-pos = opos
-dr = Dirs.R
-
-dgr = Grid(gr)
-
 for x in path:
     if isinstance(x, int):
         for _ in range(x):
-            dgr[pos] = {Dirs.R: '>', Dirs.L: '<', Dirs.U: '^', Dirs.D: 'v'}[dr]
             if not step2():
                 break
     else:

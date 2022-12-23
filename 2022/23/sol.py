@@ -6,22 +6,16 @@ gr = set(p for p, v in gr.items() if v == '#')
 
 def step(gr, i):
     dirs = [Dirs.N, Dirs.S, Dirs.W, Dirs.E]
-    for _ in range(i):
+    for _ in range((i-1) % 4):
         dirs.append(dirs.pop(0))
     nxt = defaultdict(list)
     stay = set()
     for p in gr:
-        for dp in neighbours8(p):
-            if dp in gr:
-                break
-        else:
+        if all(np not in gr for np in neighbours8(p)):
             stay.add(p)
             continue
         for d in dirs:
-            for dd in [d, d+d*Dirs.tL, d+d*Dirs.tR]:
-                if p+dd in gr:
-                    break
-            else:
+            if all(p+d+d*dd not in gr for dd in [0, Dirs.tL, Dirs.tR]):
                 nxt[p+d].append(p)
                 break
         else:
@@ -46,22 +40,15 @@ def draw(gr):
 print("Init:")
 draw(gr)
 
-for i in range(10):
-    gr = step(gr, i)
-    print("Round", i)
-    draw(gr)
-
-bb = bounding_box(gr)
-area = len(bb)
-
-
-print("Part 1:", area - len(gr))
-
-i += 1
+i = 1
 while True:
     ngr = step(gr, i)
+    if i == 10:
+        bb = bounding_box(ngr)
+        area = len(bb)
+        print("Part 1:", area - len(ngr))
     if ngr == gr:
-        print("Part 2:", i+1)
+        print("Part 2:", i)
         exit()
     print("Round", i)
     # draw(gr)

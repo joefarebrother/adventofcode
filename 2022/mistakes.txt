@@ -96,3 +96,7 @@ Day 21:
 
 Day 22:
 - Making 2 mistakes in hard-coding edge mappings (transposing 2 edges + marking and edge as flipped) (ws*2)
+
+Day 23:
+- Missing parts of the question: elves with no neighbours don't move, and considered directions change each round 
+- Getting my for/break/else logic wrong (essentially causing elves to consider only one direction)

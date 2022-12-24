@@ -100,3 +100,7 @@ Day 22:
 Day 23:
 - Missing parts of the question: elves with no neighbours don't move, and considered directions change each round 
 - Getting my for/break/else logic wrong (essentially causing elves to consider only one direction)
+
+Day 24:
+- Transposing x and y in endpoint 
+- Using a function to check for blizzards which was really slow

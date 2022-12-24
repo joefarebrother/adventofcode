@@ -102,5 +102,6 @@ Day 23:
 - Getting my for/break/else logic wrong (essentially causing elves to consider only one direction)
 
 Day 24:
+- Not constraining points to the grid, allowing for a path that just goes all around the outside
 - Transposing x and y in endpoint 
 - Using a function to check for blizzards which was really slow

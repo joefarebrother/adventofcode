@@ -4,25 +4,26 @@ gr = Grid(0, y_is_down=True)
 
 internal_width = gr.width()-2
 internal_height = gr.height()-2
-# assert internal_width == internal_height, (internal_height, internal_width)
+period = math.lcm(internal_height, internal_width)
 
 Dirs.flipy()
 
 blizzards = []
 for p, v in gr.items():
     if v in "^v<>":
-        blizzards.append((p, {"^": Dirs.U, "v": Dirs.D, ">": Dirs.R, "<": Dirs.L}[v]))
+        blizzards.append((p, Dirs[v]))
 
 
 blizz_steps = set()
 
 for opb, d in blizzards:
-    for i in range(math.lcm(internal_height, internal_width)):
+    for i in range(period):
         pb = opb+d*i
         pb = IVec2(mod_inc(pb.x, internal_width), mod_inc(pb.y, internal_height))
         blizz_steps.add((pb, i))
 
-start = IVec2(1, 0), 0
+startp = IVec2(1, 0)
+start = startp, 0
 endp = IVec2(internal_width, gr.height()-1)
 print(endp)
 
@@ -30,12 +31,11 @@ steps = [0]
 
 
 def adj(pi):
-    # print(pi)
     p, i = pi
-    ni = (i+1) % (math.lcm(internal_height, internal_width))
-    if steps[0] % 100 == 0:
-        print(steps, len(grph.pqueue), grph.dists[pi], grph.dists[pi]+h(pi))
-    steps[0] += 1
+    ni = (i+1) % period
+    # if steps[0] % 100 == 0:
+    #     print(steps, len(grph.pqueue), grph.dists[pi], grph.dists[pi]+h(pi))
+    # steps[0] += 1
     for np in neighbours(p)+[p]:
         if np in gr and gr[np] != '#' and not (np, ni) in blizz_steps:
             yield np, ni
@@ -51,16 +51,16 @@ node, dist = grph.astar(start, h=h).find(lambda pi: pi[0] == endp)
 print(list(grph.get_path(node)))
 
 print("Part 1:", dist)
-startp = IVec2(1, 0)
+
 start2 = startp, 0, 0
 
 
 def adj2(pis):
     p, i, s = pis
-    ni = (i+1) % (math.lcm(internal_height, internal_width))
+    ni = (i+1) % period
     # if steps[0] % 100 == 0:
-    #     print(steps, len(grph.pqueue), grph.dists[pis], grph.dists[pis]+h(pis))
-    steps[0] += 1
+    #     print(steps, len(grph2.pqueue), grph2.dists[pis], grph2.dists[pis]+h2(pis))
+    # steps[0] += 1
     for np in neighbours(p)+[p]:
         if np in gr and gr[np] != '#' and not (np, ni) in blizz_steps:
             ns = s

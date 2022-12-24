@@ -432,10 +432,10 @@ def angle(p0, p1=None) -> float:
 
 
 Dirs = DotDict()
-Dirs.up = Dirs.U = Dirs.north = Dirs.N = IVec2(1j)
-Dirs.down = Dirs.D = Dirs.south = Dirs.S = IVec2(-1j)
-Dirs.left = Dirs.L = Dirs.west = Dirs.W = IVec2(-1+0j)
-Dirs.right = Dirs.R = Dirs.east = Dirs.E = IVec2(1+0j)
+Dirs.up = Dirs.U = Dirs.north = Dirs.N = Dirs["^"] = IVec2(1j)
+Dirs.down = Dirs.D = Dirs.south = Dirs.S = Dirs["v"] = IVec2(-1j)
+Dirs.left = Dirs.L = Dirs.west = Dirs.W = Dirs["<"] = IVec2(-1+0j)
+Dirs.right = Dirs.R = Dirs.east = Dirs.E = Dirs[">"] = IVec2(1+0j)
 
 Dirs.tL = 1j
 Dirs.tR = -1j

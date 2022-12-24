@@ -10,7 +10,7 @@ def printx(*args, **kwargs):
     Prints only if running on example data
     """
     if is_ex:
-        print(*args, *kwargs)
+        print(*args, **kwargs)
 
 
 def inp_readlines() -> list[str]:

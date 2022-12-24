@@ -22,3 +22,17 @@ issues with examples:
 2021 day 22: example provided for parts 1 and 2 is not the first one on the page; and for part 2 it's new.
 2021 day 23: example provided is slow (just as complex as the real input). Set to [NONE]. 
 2021 day 24: example found doesn't work with full solution (just an example of an asm program, not one that does what the inp is supposed to do). Set to [NONE].
+
+possible improvements and things for next time:
+- Look into more complex example finder - a lot of cases above is when multiple examples were provided 
+- Make y-is-up vs y-is-down more consistent - currently grids in most but not all situations use y-is-down by default, and Dirs uses y-is-up. 
+- - investigate how often y-is-up is actually necessary 
+- - maybe print a warning when inconsistent uses are detected. or use a global flag... 
+- Dirs being a DotDict means autocompletions don't work. as a class maybe it could do more smart thing with y-is-down stuff too.  
+- The fact that Grid taking an int or str as its first argument means to read the input file is weird. But it is convenient and quick to type...
+- Utilities related to which part you're on - printp1(), printp2() (auto-prefix, perhaps early exit), is_p1, support part via sys.argv. Useful for updating old solutions that can't easily be rewritten to do both parts at once, or would take a big performance hit when testing. 
+- Visualisation flag? --vis in argv, is_vis; enable displaying visualisations without costing performance or output clutter when testing. 
+- - Utilities useful for visualisations, such as coloured text (use curses library?)
+- - But visualisations more complex than e.g. drawing grids while the sol is running could go in separate files. 
+- Can anything be done about the performance overhead of IVec2 compared to plain tuples/complexes? Particularly on cellular automata questions. 
+- Perhaps custom version of @dataclass that makes it a vector? (i.e. supports +,-,* pointwise). 

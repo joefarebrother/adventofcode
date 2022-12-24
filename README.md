@@ -10,8 +10,8 @@ My inputs aren't included.
 
 ## Dependencies
 - Python >= 3.10
-- `pip install -e .` 
-- `pip install sympy`
+- `pip install -e .`  (or put this dir on pythonpath)
+- `pip install sympy` (just used for one solution)
 - Linux specific for autotester:
 - - `sudo apt install inotify-tools` 
 - Mac specific for autotester:

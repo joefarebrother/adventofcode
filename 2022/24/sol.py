@@ -48,7 +48,7 @@ def h(pi):
 grph = FGraph(adj=adj).dist1()
 node, dist = grph.astar(start, h=h).find(lambda pi: pi[0] == endp)
 
-print(list(grph.get_path(node)))
+# print(list(grph.get_path(node)))
 
 print("Part 1:", dist)
 

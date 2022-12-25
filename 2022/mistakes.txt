@@ -105,3 +105,8 @@ Day 24:
 - Not constraining points to the grid, allowing for a path that just goes all around the outside
 - Transposing x and y in endpoint 
 - Using a function to check for blizzards which was really slow
+
+Day 25:
+- Adding p**5 rather than multiplying by it
+- Having my to_snafu function return the reversed output 
+- Auto-submitter doesn't url-encode the answer and thus breaks on =

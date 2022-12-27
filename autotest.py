@@ -2,6 +2,7 @@
 
 # Based on https://github.com/penteract/adventofcode/blob/master/autotest.py
 
+import urllib
 import urllib.request as req
 from datetime import datetime, timedelta
 import os
@@ -473,7 +474,7 @@ def submit(part, answer):
             print("Done")
 
     ratelimit()
-    with req.urlopen(req.Request(url, data=bytes(f"level={part}&answer={answer}", "utf8"), headers=headers)) as resp:
+    with req.urlopen(req.Request(url, data=bytes(urllib.parse.urlencode({'level': part, 'answer': answer}), "utf8"), headers=headers)) as resp:
 
         submit_time = datetime.now()
         print("time", submit_time)

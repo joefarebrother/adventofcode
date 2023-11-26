@@ -1,0 +1,1 @@
+day 24: parsing issues (example formatted differently, weaknesses optional), negative attack from dead group (ws), infloop. 

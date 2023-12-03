@@ -2,3 +2,5 @@ Day 1:
 - i got 99 problems so i used regular expressions and now i got 100 problems (re.findall not considering overlaps - ws)
 Day 2:
 - misreading (not realising there were ;, thought it was the sum)
+Day 3:
+- missing diagonal adjacents

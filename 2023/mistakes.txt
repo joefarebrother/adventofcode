@@ -4,3 +4,5 @@ Day 2:
 - misreading (not realising there were ;, thought it was the sum)
 Day 3:
 - missing diagonal adjacents
+Day 4:
+- None

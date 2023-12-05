@@ -299,3 +299,33 @@ class DotDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+
+def prefixes(xs: Iterable) -> Iterable[list|str]:
+    """
+    Yields the prefixes of xs.
+    If xs is a string, yields strings; else yields lists.
+    """
+    r = "" if isinstance(xs, str) else []
+    yield r
+    for x in xs:
+        if isinstance(xs, str):
+            r += x
+            yield r
+        else:
+            r.append(x)
+            yield r.copy()
+
+def suffixes(xs: Iterable) -> Iterable[list|str]:
+    """
+    Yields the prefixes of xs.
+    If xs is a string, yields strings; else yields lists.
+    """
+    r = "" if isinstance(xs, str) else []
+    yield r
+    for x in reversed(xs):
+        if isinstance(xs, str):
+            r = x+r
+            yield r
+        else:
+            r.insert(0, x)
+            yield r.copy()

@@ -6,3 +6,6 @@ Day 3:
 - missing diagonal adjacents
 Day 4:
 - None
+Day 5:
+- map instead of mapl in parsing (so iterating again doesn't work)
+- wrong arithmetic (forgot to subtract src_start)

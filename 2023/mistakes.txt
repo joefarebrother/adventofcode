@@ -11,3 +11,7 @@ Day 5:
 - wrong arithmetic (forgot to subtract src_start)
 Day 6:
 - not just trying the p1 solution again 
+Day 7:
+- typo in rank checker (ws)
+- spending a while trying to make a more complex checker involving jokers 
+- not actually printing the p2 output

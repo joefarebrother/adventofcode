@@ -15,3 +15,5 @@ Day 7:
 - typo in rank checker (ws)
 - spending a while trying to make a more complex checker involving jokers 
 - not actually printing the p2 output
+Day 8:
+- spending a very long time trying to compute an impossible CRT due to using the wrong step values (time to first thing that repeats instead of time to first z)

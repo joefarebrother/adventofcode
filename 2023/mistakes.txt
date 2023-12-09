@@ -17,3 +17,5 @@ Day 7:
 - not actually printing the p2 output
 Day 8:
 - spending a very long time trying to compute an impossible CRT due to using the wrong step values (time to first thing that repeats instead of time to first z)
+Day 9:
+- None big; just spent s little longer than needed changing everything necessary for p2

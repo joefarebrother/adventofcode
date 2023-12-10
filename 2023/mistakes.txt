@@ -18,4 +18,8 @@ Day 7:
 Day 8:
 - spending a very long time trying to compute an impossible CRT due to using the wrong step values (time to first thing that repeats instead of time to first z)
 Day 9:
-- None big; just spent s little longer than needed changing everything necessary for p2
+- None major; just spent a little longer than needed changing everything necessary for p2
+Day 10:
+- floodfill on whole integer coords doesn't work
+- start point for finding area was pipe 
+- grid class too inefficient to do visualisations

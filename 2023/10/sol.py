@@ -64,10 +64,11 @@ for p1,p2 in windows(loop+[loop[0]], 2):
     x2,y2 = p2 
     loop_halfints.add(((x1+x2)/2, (y1+y2)/2))
 
+loop = set(loop)
+
 def area(p):
     res = FGraph(adj=adj).BFS(p)
     n = 0
-
 
     sg = {}
     for x,y in loop_halfints:
@@ -84,22 +85,11 @@ def area(p):
                 assert IVec2(x,y) not in loop_halfints, (x,y)
                 n += 1
                 sg[2*x,2*y] = block_char
-        print("got area")
         sg = Grid(sg, y_is_down=True)
-        print("made grid")
-        sg.draw()
+        # sg.draw()
         return n
     except Boundary:
         return 0
-
-# i = dict(g.items())
-# print(len(i))
-# print(loop)
-# for p,x in dict(g.items()):
-#     if p not in loop:
-#         g[p] = " "
-# print("visg")
-# g.draw()
 
 for (x,y) in neighbours8(0):
     sx,sy = start 

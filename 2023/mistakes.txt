@@ -22,4 +22,4 @@ Day 9:
 Day 10:
 - floodfill on whole integer coords doesn't work
 - start point for finding area was pipe 
-- grid class too inefficient to do visualisations
+- accidental quadratic trying to visualise

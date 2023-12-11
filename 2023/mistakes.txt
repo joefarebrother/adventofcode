@@ -23,3 +23,5 @@ Day 10:
 - floodfill on whole integer coords doesn't work
 - start point for finding area was pipe 
 - accidental quadratic trying to visualise
+Day 11:
+- not subtracting 1

@@ -25,3 +25,5 @@ Day 10:
 - accidental quadratic trying to visualise
 Day 11:
 - not subtracting 1
+Day 12:
+- missing that copies are separated by ?

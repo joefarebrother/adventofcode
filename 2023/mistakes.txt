@@ -27,3 +27,5 @@ Day 11:
 - not subtracting 1
 Day 12:
 - missing that copies are separated by ?
+Day 13:
+- few off by one errors

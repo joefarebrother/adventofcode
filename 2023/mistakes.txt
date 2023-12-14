@@ -29,3 +29,6 @@ Day 12:
 - missing that copies are separated by ?
 Day 13:
 - few off by one errors
+Day 14:
+- not changing < to >
+- going over the target (not subtracting i from target when calculating reps)

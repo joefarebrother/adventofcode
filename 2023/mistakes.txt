@@ -32,3 +32,6 @@ Day 13:
 Day 14:
 - not changing < to >
 - going over the target (not subtracting i from target when calculating reps)
+Day 15:
+- calculating hash wrong (multiplying by 17 first)
+- spending a while before realising that what it's asking is actually very simple

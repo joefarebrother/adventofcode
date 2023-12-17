@@ -37,3 +37,5 @@ Day 15:
 - spending a while before realising that what it's asking is actually very simple
 Day 16:
 - None
+Day 17:
+- p1 missing "can't reverse" (ws), p2 ob1e c<10 instead of c<9 (ws)

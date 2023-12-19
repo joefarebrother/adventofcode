@@ -1,6 +1,6 @@
 # pylint: disable=unsubscriptable-object # pylint bug in python 3.9
 from typing import Optional, Iterable
-import cmath
+import cmath, math
 from misc_utils import irange, bounds, DotDict, modify_idx
 
 
@@ -372,6 +372,255 @@ def intersect_irange(r1: tuple, r2: tuple) -> Optional[tuple]:
     else:
         return None
 
+class Interval:
+    """
+    An interval.
+    """
+    def __init__(self, start, end=None, len=None, inclusive=True, sort=False): #pylint:disable=redefined-builtin # len is really the best name for this
+        if end is None and len is None:
+            start,end = start 
+        elif end is None and len is not None:
+            end = start+len
+            inclusive=False 
+        elif end is not None and len is not None:
+            raise Exception("Cannot specify both end and len:", start, end, len)
+        
+        if sort:
+            if not inclusive:
+                raise Exception("Can only sort inclusive ranges")
+            start,end = sorted((start,end))
+
+        if inclusive:
+            end += 1
+        
+        assert end >= start
+
+        self._start = start
+        self._end = end 
+
+    @property
+    def start(self):
+        """Gets the start point of this interval"""
+        return self._start
+    
+    @property
+    def endi(self):
+        """Gets the inclusive endpoint of this interval"""
+        return self._end-1 
+    
+    @property
+    def endx(self):
+        """Gets the exclusive endpoint of this interval"""
+        return self._end 
+    
+    @property
+    def len(self):
+        """Returns the length of this interval"""
+        return self.endx-self.start 
+    
+    @property
+    def tupi(self):
+        """Returns this interval as an inclusive tuple"""
+        return self.start, self.endi 
+    
+    @property
+    def tupx(self):
+        """Returns this interval as an exclusive tuple"""
+        return self.start, self.endx
+                
+
+    def __eq__(self, other):
+        if isinstance(other, Interval):
+            return self.tupx == other.tupx
+        if isinstance(other, tuple):
+            return self.tupi == other 
+        return NotImplemented 
+    
+    def __hash__(self):
+        return hash(self.tupi)
+    
+    def __and__(self, other):
+        if not isinstance(other, tuple):
+            return NotImplemented
+        
+        res = intersect_irange(self, other)
+        if res is None:
+            return Interval(0, len=0)
+        return Interval(res)
+    
+    @property
+    def range(self):
+        return range(self.start, self.endx)
+    
+    def __contains__(self, pt):
+        return self.start <= pt < self.endx
+    
+    def __repr__(self):
+        return f"Interval({self.start}, {self.endi})"
+    
+    def complement(self):
+        """Returns the complement of this interval, as an `IntervalSet`"""
+        return IntervalSet([self]).complement()
+    
+    def shift(self, amt):
+        """Returns this interval shifted by `amt`"""
+        return Interval(self.start+amt, self.endx+amt, inclusive=False)
+    
+class IntervalSet:
+    """A set of integers, represented as a collection of disjoint intervals"""
+    def __init__(self, parts=None):
+        if parts is None:
+            parts = []
+        ps = []
+        for p in parts:
+            if isinstance(p, Interval):
+                if not p:
+                    continue
+                p = p.tupi 
+            ps = IntervalSet._add_interval(ps, p)
+        self._parts = ps 
+
+    @staticmethod
+    def _add_interval(intervals, interval):
+        # invariant: intervals is a list of disjoint, non-adjacent, inclusive intervals sorted by their lowest endpoint
+        # TODO: does binary search make this more efficient?
+        n_int = []
+        x0, x1 = interval
+        assert x0 <= x1, (x0,x1)
+        i = 0
+        while i < len(intervals):
+            y0, y1 = intervals[i]
+            if y1+1 < x0:
+                n_int.append((y0, y1))
+            elif x1+1 < y0:
+                break
+            else:
+                x0 = min(x0, y0)
+                x1 = max(x1, y1)
+            i += 1
+        n_int.append((x0, x1))
+        n_int += intervals[i:]
+        return n_int
+    
+    @classmethod 
+    def _new(cls, parts):
+        res = cls.__new__(cls)
+        res._parts = parts #pylint:disable=protected-access # TODO: what's the pythonic way to do a private constructor?
+        return res
+
+    def __or__(self, other):
+        if isinstance(other,IntervalSet):
+            ops = other._parts
+        elif isinstance(other, Interval):
+            ops = [other.tupi]*bool(other)
+        elif isinstance(other,tuple):
+            ops = [other]
+        else:
+            return NotImplemented
+        
+        ps = self._parts 
+        for p in ops:
+            ps = IntervalSet._add_interval(ps, p)
+
+        return IntervalSet._new(ps)
+    
+    __ror__ = __or__
+    
+    def __and__(self, other):
+        if isinstance(other,IntervalSet):
+            ops = other._parts
+        elif isinstance(other, Interval):
+            ops = [other.tupi]*bool(other)
+        elif isinstance(other,tuple):
+            ops = [other]
+        else:
+            return NotImplemented
+        
+        sps = self._parts 
+
+        nps = []
+        try:
+            ops = iter(ops)
+            sps = iter(sps)
+
+            csp = next(sps)
+            cop = next(ops)
+
+            while True:
+                r = intersect_irange(csp,cop)
+                if r is not None:
+                    nps.append(r)
+                if csp[1]<cop[1]:
+                    csp = next(sps)
+                else:
+                    cop = next(ops)
+
+        except StopIteration:
+            return IntervalSet._new(nps)
+        
+    __rand__ = __and__
+
+    def complement(self):
+        """Returns the complement of this set"""
+        nps = []
+        prev = -math.inf
+        for (lo,hi) in self._parts:
+            cinv = (prev,lo-1)
+            if lo != -math.inf:
+                nps.append(cinv)
+            prev = hi+1 
+        if prev != math.inf:
+            nps.append((prev,math.inf))
+
+        return IntervalSet._new(nps)
+
+    def __sub__(self, other):
+        if isinstance(other,IntervalSet):
+            pass
+        elif isinstance(other, Interval):
+            other = IntervalSet([other])
+        elif isinstance(other,tuple):
+            other = IntervalSet([other])
+        else:
+            return NotImplemented
+        
+        return self & other.complement()
+    
+    def __rsub__(self, other):
+        return self.complement() & other
+    
+    def shift(self, amt):
+        """Returns this interval shifted by `amt`"""
+        return IntervalSet._new([(l+amt,h+amt) for l,h in self._parts])
+    
+    @property
+    def intervals(self):
+        """Gets the list of intervals representing this set"""
+        return [Interval(lo,hi) for lo,hi in self._parts]
+    
+    def len(self):
+        """Returns the length of this set"""
+        return sum(hi-lo+1 for hi,lo in self._parts)
+    
+    def __contains__(self, elem):
+        # TODO: binary search 
+        for lo,hi in self._parts:
+            if lo <= elem <= hi:
+                return True 
+            if elem < lo:
+                return False 
+        return False
+    
+    def __eq__(self, other):
+        if isinstance(other, IntervalSet):
+            return self._parts == other._parts 
+        return NotImplemented
+    
+    def __hash__(self):
+        return hash(tuple(self._parts))
+    
+    def __repr__(self):
+        return f"IntervalSet({self._parts})"
 
 def bounding_box(points: Iterable) -> Rectangle:
     """

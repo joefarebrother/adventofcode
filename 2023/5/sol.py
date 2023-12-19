@@ -1,13 +1,5 @@
 from utils import *
 
-def cut_range(rng, cut):
-    mid = intersect_irange(rng, cut)
-    r1 = intersect_irange(rng, (-math.inf, cut[0]))
-    r2 = intersect_irange(rng, (cut[1], math.inf))
-    
-    return r1, mid, r2
-
-
 class Group:
     def __init__(self, gr):
         self.name = gr[0]
@@ -21,20 +13,15 @@ class Group:
     
     def translate_ranges(self, rs):
         remaining = rs
-        res = []
+        res = IntervalSet()
 
         for dest_start, src_start, rng_len in self.lines:
-            cut = (src_start, src_start+rng_len)
+            cut = Interval(src_start,len=rng_len)
 
-            new_remaining = []
-            for rn in remaining:
-                lo, mid, hi = cut_range(rn, cut)
-                new_remaining += [lo,hi]
-                if mid:
-                    res.append((dest_start-src_start+mid[0], dest_start-src_start+mid[1]))
-            remaining = [r for r in new_remaining if r and r[1]>r[0]]
+            res |= (remaining & cut).shift(dest_start-src_start)
+            remaining -= cut 
 
-        res += remaining
+        res |= remaining
         return res
 
     
@@ -51,7 +38,7 @@ print("Part 1:", min(seeds))
 
 seeds1 = ints_in(gs[0][0])
 
-seed_ranges = [(a, a+b) for a,b in chunks(seeds1, 2)]
+seed_ranges = IntervalSet([Interval(a,len=b) for a,b in chunks(seeds1, 2)])
 
 for g in grps:
     seed_ranges = g.translate_ranges(seed_ranges)
@@ -59,4 +46,4 @@ for g in grps:
     # if len(seed_ranges) > 100000:
     #     raise Exception()
     
-print("Part 2:", min(r[0] for r in seed_ranges))
+print("Part 2:", seed_ranges.intervals[0].start)

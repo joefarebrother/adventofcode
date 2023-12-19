@@ -11,43 +11,23 @@ for line in inp_readlines():
 bs = set(b for (s, b, d) in s_b)
 
 
-def add_interval(intervals, interval):
-    # invariant: intervals is a list of disjoint, non-adjacent intervals sorted by their lowest endpoint
-    n_int = []
-    x0, x1 = interval
-    i = 0
-    while i < len(intervals):
-        y0, y1 = intervals[i]
-        if y1+1 < x0:
-            n_int.append((y0, y1))
-        elif x1+1 < y0:
-            break
-        else:
-            x0 = min(x0, y0)
-            x1 = max(x1, y1)
-        i += 1
-    n_int.append((x0, x1))
-    n_int += intervals[i:]
-    return n_int
-
-
 def row(y):
-    intervals = []
+    intervals = IntervalSet()
     for s, _, d in s_b:
         sx, sy = s.x, s.y
         yd = abs(sy-y)
         if d < yd:
             continue
         d -= yd
-        intervals = add_interval(intervals, (sx-d, sx+d))
+        intervals |= (sx-d, sx+d)
     return intervals
 
 
 p1y = 10 if is_ex else 2000000
-inter = row(p1y)
-x0, x1 = only(inter)
+inter = row(p1y) 
+ointer = only(inter.intervals)
 
-print("Part 1:", x1-x0+1 - sum(1 for b in bs if b.y == p1y))
+print("Part 1:", ointer.len - sum(1 for b in bs if b.y == p1y))
 
 # rotated coord system: ((x+y),(x-y))
 # .x#..    (2,0),(1,1),(2,1),(3,1),(2,2)    ..#.#..

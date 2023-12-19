@@ -40,4 +40,8 @@ Day 16:
 Day 17:
 - p1 missing "can't reverse" (ws), p2 ob1e c<10 instead of c<9 (ws)
 Day 18:
-- Not implementing the shoelace formula + pick's theorem approach to Day 10 to have ready for today 
+- Not implementing the shoelace formula + pick's theorem approach to Day 10 to have ready for today
+Day 19:
+- Not implementing general cuboid set class earlier 
+- Implementing general cuboid set handling now when all sets that can end up in the same workflow are already disjoint
+- Mutability issue; not copying dims list on splitting

@@ -1,6 +1,6 @@
 # pylint: disable=unsubscriptable-object # pylint bug in python 3.9
 from typing import Optional, Iterable
-import cmath, math
+import cmath, math, itertools
 from misc_utils import irange, bounds, DotDict, modify_idx
 
 
@@ -395,6 +395,9 @@ class Interval:
         
         assert end >= start
 
+        if start == end:
+            start = end = 0
+
         self._start = start
         self._end = end 
 
@@ -440,13 +443,17 @@ class Interval:
         return hash(self.tupi)
     
     def __and__(self, other):
+        if isinstance(other,Interval):
+            other = other.tupi
         if not isinstance(other, tuple):
             return NotImplemented
         
-        res = intersect_irange(self, other)
+        res = intersect_irange(self.tupi, other)
         if res is None:
             return Interval(0, len=0)
         return Interval(res)
+    
+    __rand__ = __and__
     
     @property
     def range(self):
@@ -466,11 +473,16 @@ class Interval:
         """Returns this interval shifted by `amt`"""
         return Interval(self.start+amt, self.endx+amt, inclusive=False)
     
+    def __bool__(self):
+        return bool(self.len)
+    
 class IntervalSet:
     """A set of integers, represented as a collection of disjoint intervals"""
     def __init__(self, parts=None):
         if parts is None:
             parts = []
+        if isinstance(parts,Interval) or (isinstance(parts,tuple) and isinstance(parts[0],int)):
+            parts = [parts]
         ps = []
         for p in parts:
             if isinstance(p, Interval):
@@ -483,11 +495,13 @@ class IntervalSet:
     @staticmethod
     def _add_interval(intervals, interval):
         # invariant: intervals is a list of disjoint, non-adjacent, inclusive intervals sorted by their lowest endpoint
-        # TODO: does binary search make this more efficient?
         n_int = []
         x0, x1 = interval
+        if x1-x0 == -1:
+            return intervals
         assert x0 <= x1, (x0,x1)
         i = 0
+        # binary search isn't more efficient as slicing the list is linear anyway
         while i < len(intervals):
             y0, y1 = intervals[i]
             if y1+1 < x0:
@@ -505,7 +519,7 @@ class IntervalSet:
     @classmethod 
     def _new(cls, parts):
         res = cls.__new__(cls)
-        res._parts = parts #pylint:disable=protected-access # TODO: what's the pythonic way to do a private constructor?
+        res._parts = parts #pylint:disable=protected-access # TODO: is there a way to do a sort of private constructor that doesn't require disabling this lint?
         return res
 
     def __or__(self, other):
@@ -601,6 +615,9 @@ class IntervalSet:
     def len(self):
         """Returns the length of this set"""
         return sum(hi-lo+1 for hi,lo in self._parts)
+
+    def __bool__(self):
+        return bool(self.len())
     
     def __contains__(self, elem):
         # TODO: binary search 
@@ -621,6 +638,245 @@ class IntervalSet:
     
     def __repr__(self):
         return f"IntervalSet({self._parts})"
+    
+class Cuboid:
+    """An n-dimensional hypercuboid"""
+
+    def __init__(self, dims):
+        if isinstance(dims, Rectangle):
+            dims = [(dims.minx,dims.maxx),(dims.miny,dims.maxy)]
+        self.dims = []
+        zero = False
+        for d in dims:
+            if not isinstance(d, Interval):
+                d = Interval(d,sort=True)
+            if d.len == 0:
+                zero = True
+            self.dims.append(d)
+
+        if zero:
+            self.dims = [Interval(0,len=0)]*len(self.dims)
+        self.dims = tuple(self.dims)
+
+    def volume(self):
+        return math.prod(d.len for d in self.dims)
+    
+    def as_rect(self):
+        assert len(self.dims) == 2
+        if not self.volume():
+            return None
+        (minx,maxx),(miny,maxy) = self.dims[0].tupi,self.dims[1].tupi 
+        return Rectangle((minx,miny),(maxx,maxy))
+    
+    def __and__(self, other):
+        if isinstance(other,Rectangle):
+            other = Cuboid(other)
+        if not isinstance(other,Cuboid):
+            return NotImplemented
+        
+        return Cuboid(a & b for a,b in zip(self.dims,other.dims,strict=True))
+
+    __rand__ = __and__
+
+    def __bool__(self):
+        return bool(self.volume())
+    
+    def difference_list(self,other):
+        if not isinstance(other,Cuboid):
+            return NotImplemented
+        
+        if not (self & other):
+            return [self]
+        
+        sdims = list(self.dims)
+        res = []
+        for i,(saxis,oaxis) in enumerate(zip(self.dims,other.dims,strict=True)):
+            diff = IntervalSet(saxis)-oaxis 
+            inter = saxis & oaxis 
+
+            #             oooooooooooooooo                    oooooooooooooooo
+            #             o              o                    o              o
+            #  cccccccccccccccccccccccc  o         rrrrrrrrrrrccccccccccccc  o
+            #  c          o           c  o         r         rc           c  o
+            #  c <-diff-> o           c  o         r <-diff->rc           c  o
+            #  c          ooooocoooooooooo    =>   r         rcoooocoooooooooo
+            #  c                      c            r         rc           c
+            #  c           <-inter->  c            r         rc<-inter->  c
+            #  c                      c            r         rc           c
+            #  c                      c            r         rc           c
+            #  c                      c            r         rc           c
+            #  cccccccccccccccccccccccc            rrrrrrrrrrrccccccccccccc
+            #
+
+            for diffi in diff.intervals:
+                sdims[i] = diffi 
+                assert diffi.len > 0, diffi
+                res.append(Cuboid(sdims))
+
+            sdims[i] = inter
+            if inter.len == 0:
+                break
+
+        assert all(c.volume()>0 for c in res), res
+        return res
+    
+    def __eq__(self,other):
+        if not isinstance(other,Cuboid):
+            return NotImplemented
+        return self.dims == other.dims 
+
+    def __hash__(self):
+        return hash(self.dims)
+    
+    def __repr__(self):
+        return f"Cuboid({list(self.dims)})"
+    
+    def complement(self):
+        """Returns the complement of this cuboid as a cuboid set"""
+        return CuboidSet([self]).complement()
+    
+def infinite_cuboid(ndims):
+    """Returns the cuboid representing the entire n-dimensional space"""
+    return Cuboid([(-math.inf,math.inf)]*ndims)
+
+def hyperplane(axis,ndims,val,symbol):
+    """Returns the hyperplane or hyper half-space for which the given axis is related to the given value by `symbol` (<,<=,=,=>,>)"""
+    dims = [(-math.inf,math.inf)]*ndims
+    match symbol:
+        case "<": dim = Interval(-math.inf,val,inclusive=False)
+        case "<=": dim = Interval(-math.inf,val,inclusive=True)
+        case ">": dim = Interval(val+1,math.inf)
+        case ">=": dim = Interval(val,math.inf)
+        case "=": dim = Interval(val,val,inclusive=True)
+
+    dims[axis] = dim
+
+    return Cuboid(dims)
+
+class CuboidSet:
+    """A set of points in n-dimensional space represented, as a collection of disjoint cuboids"""
+
+    def __init__(self, cubs=None):
+        if cubs==None:
+            cubs = []
+        if isinstance(cubs,Cuboid) or isinstance(cubs,Rectangle):
+            cubs = [cubs]
+
+        ncubs = []
+        for c in cubs:
+            if isinstance(c,Rectangle):
+                c = Cuboid(c)
+            ncubs = CuboidSet.add_cuboid(ncubs,c)
+
+        self.cubs = frozenset(ncubs)
+
+    def volume(self):
+        """Computes the volume of this set"""
+        return sum(c.volume() for c in self.cubs)
+
+    @classmethod
+    def _new(cls,cubs):
+        res = cls.__new__(cls)
+        res.cubs = frozenset(cubs)
+        assert all(c.volume()>0 for c in cubs)
+        return res
+
+    @staticmethod
+    def add_cuboid(cubs,cub):
+        if cub.volume() == 0:
+            return cubs
+        res = [cub]
+        for c in cubs:
+            res += c.difference_list(cub)
+        return res
+
+    def __or__(self,other):
+        if isinstance(other,Rectangle):
+            ocubs = [Cuboid(other)]
+        elif isinstance(other,Cuboid):
+            ocubs = [other]
+        elif isinstance(other,CuboidSet):
+            ocubs = other.cubs
+        else:
+            return NotImplemented 
+        
+        ncubs = self.cubs
+        for c in ocubs:
+            ncubs = CuboidSet.add_cuboid(ncubs,c)
+        return CuboidSet._new(ncubs)
+    
+    __ror__ = __or__
+
+    def __and__(self,other):
+        if isinstance(other,Rectangle):
+            ocubs = [Cuboid(other)]
+        elif isinstance(other,Cuboid):
+            ocubs = [other]
+        elif isinstance(other,CuboidSet):
+            ocubs = other.cubs
+        else:
+            return NotImplemented
+
+        ncubs = []
+        for a,b in itertools.product(self.cubs,ocubs):
+            c = a & b 
+            if c.volume() > 0:
+                ncubs.append(c)
+
+        return CuboidSet._new(ncubs)
+    
+    __rand__ = __and__
+
+    def __sub__(self,other):
+        if isinstance(other,Rectangle):
+            ocubs = [Cuboid(other)]
+        elif isinstance(other,Cuboid):
+            ocubs = [other]
+        elif isinstance(other,CuboidSet):
+            ocubs = other.cubs
+        else:
+            return NotImplemented 
+        
+        def dif_one(cubs,c):
+            ncubs = []
+            for cc in cubs:
+                ncubs += cc.difference_list(c)
+            return ncubs
+
+        cubs = self.cubs 
+        for c in ocubs:
+            cubs = dif_one(cubs,c)
+
+        return CuboidSet._new(cubs)
+    
+    def __rsub__(self,other):
+        if isinstance(other,Rectangle):
+            ocubs = [Cuboid(other)]
+        elif isinstance(other,Cuboid):
+            ocubs = [other]
+        elif isinstance(other,CuboidSet):
+            ocubs = other.cubs
+        else:
+            return NotImplemented 
+        
+        return CuboidSet._new(ocubs) - self
+
+    def __eq__(self,other):
+        if not isinstance(other,CuboidSet):
+            return NotImplemented 
+        return self.cubs == other.cubs 
+
+    def __hash__(self):
+        return hash(self.cubs)
+
+    def __repr__(self):
+        return f"CuboidSet({list(self.cubs)})"
+
+    def complement(self):
+        """Returns the complement of this set"""
+        if not self.cubs:
+            raise Exception("Cannot determine dimension")
+        return CuboidSet._new([infinite_cuboid(len(next(iter(self.cubs)).dims))])        
 
 def bounding_box(points: Iterable) -> Rectangle:
     """

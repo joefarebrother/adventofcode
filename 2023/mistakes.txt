@@ -43,7 +43,8 @@ Day 18:
 - Not implementing the shoelace formula + pick's theorem approach to Day 10 to have ready for today
 Day 19:
 - Not implementing general cuboid set class earlier 
-- Implementing general cuboid set handling now when all sets that can end up in the same workflow are already disjoint
+- Spending time implementing general cuboid set handling now when all sets that can end up in the same workflow are already disjoint
+- Spending time altering my prior general cuboid handling code from a prev year to fit a different internal representation rather than just altering the callsites
 - Mutability issue; not copying dims list on splitting
 Day 20:
 - Not using a graph visualisation tool

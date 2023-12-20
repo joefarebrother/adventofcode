@@ -57,7 +57,7 @@ class Module:
         st = self.dep_state()
 
         if st in self.cache and not self.period:
-            nbtnidx,pls = self.cache[st]
+            nbtnidx,_ = self.cache[st]
             self.pstart = nbtnidx 
             self.period = btnidx - nbtnidx 
             print("Cache hit", self.name, self.period, self.pstart, set(m for m in mods if mods[m].period is None))

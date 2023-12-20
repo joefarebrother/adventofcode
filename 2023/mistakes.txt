@@ -46,4 +46,5 @@ Day 19:
 - Implementing general cuboid set handling now when all sets that can end up in the same workflow are already disjoint
 - Mutability issue; not copying dims list on splitting
 Day 20:
+- Not using a graph visualisation tool
 - Attempting to track pulseidx in various ways rather than just track the period after a full button press

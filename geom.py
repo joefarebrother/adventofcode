@@ -66,7 +66,7 @@ class IVec2:
             return self.x
         if idx == 1:
             return self.y
-        return NotImplemented
+        raise ValueError("Bad index for point:", self, idx)
 
     def __repr__(self):
         return f"IVec2({self.x}, {self.y})"

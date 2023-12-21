@@ -136,12 +136,14 @@ class AbGraph():
         queue = deque([(start, 0, None)])
         self.queue = queue
         self.prev = {}
+        self.dists = {}
 
         def go():
             while len(queue) > 0:
                 node, d, prev = queue.popleft()
                 if self.key(node) not in self.prev:
                     self.prev[self.key(node)] = prev
+                    self.dists[self.key(node)] = d
                     yield (node, d)
 
                     for nxt in self[node]:

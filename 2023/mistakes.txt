@@ -49,3 +49,7 @@ Day 19:
 Day 20:
 - Not using a graph visualisation tool
 - Attempting to track pulseidx in various ways rather than just track the period after a full button press
+Day 21:
+- Library bug causing all_dists for BFS to not work
+- Library bug not throwing an error on indexing a point incorrectly, allowing a typo to cause #s to initially be ignored. Fortunately, the approach i'd spent over an hour experimenting with was still viable.
+- Many fiddly errors while counting number of "good" metacoords 

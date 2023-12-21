@@ -21,7 +21,7 @@ def by_row(ps):
 def load(rounded): 
     tot = 0
     for p in rounded:
-        tot += g.height()-p.y
+        tot += g.height-p.y
     return tot
     
 
@@ -52,7 +52,7 @@ def roll_south(rounded):
         scol = set(sc[c])
         new_rcol = set()
         for p in sorted(rcol, key=lambda p:p.y, reverse=True):
-            y = min([g.height()-1]+[s.y-1 for s in scol if s.y > p.y] + [s.y-1 for s in new_rcol if s.y > p.y])
+            y = min([g.height-1]+[s.y-1 for s in scol if s.y > p.y] + [s.y-1 for s in new_rcol if s.y > p.y])
             #printx(y)
             new_rcol.add(IVec2(p.x,y))
         new_rounded |= new_rcol
@@ -88,7 +88,7 @@ def roll_east(rounded):
         srow = set(sc[c])
         new_rrow = set()
         for p in sorted(rrow, key=lambda p:p.x, reverse=True):
-            x = min([g.width()-1]+[s.x-1 for s in srow if s.x > p.x] + [s.x-1 for s in new_rrow if s.x > p.x])
+            x = min([g.width-1]+[s.x-1 for s in srow if s.x > p.x] + [s.x-1 for s in new_rrow if s.x > p.x])
             #printx(x)
             new_rrow.add(IVec2(x,p.y))
         new_rounded |= new_rrow

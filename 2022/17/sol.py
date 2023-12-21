@@ -65,7 +65,7 @@ def spawn_new_rock():
     global rock_idx
     rock = rocks[rock_idx % len(rocks)]
     rock_idx += 1
-    return IVec2(spawnx, highest+3+rock.height()), rock
+    return IVec2(spawnx, highest+3+rock.height), rock
 
 
 def draw():

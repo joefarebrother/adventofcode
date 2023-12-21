@@ -24,12 +24,12 @@ def process(line):
 
 def isHor(wire):
     (rec, _, _) = wire
-    return rec.height() == 1
+    return rec.height == 1
 
 
 def isVer(wire):
     (rec, _, _) = wire
-    return rec.width() == 1
+    return rec.width == 1
 
 
 def intersect(w1, w2):

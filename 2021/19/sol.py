@@ -22,16 +22,18 @@ class Matrix:
         row, col = idx
         return self.data[row][col]
 
+    @property
     def width(self):
         return len(self.data[0])
 
+    @property
     def height(self):
         return len(self.data)
 
     def __matmul__(self, other):
         if isinstance(other, Matrix):
-            sw, sh = self.width(), self.height()
-            ow, oh = other.width(), other.height()
+            sw, sh = self.width, self.height
+            ow, oh = other.width, other.height
             assert sw == oh, f"Cannot multiply {sh}x{sw} by {oh}x{ow}"
             res = [[0]*ow for _ in range(sh)]
             for row in range(sh):

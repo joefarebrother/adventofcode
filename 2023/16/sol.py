@@ -48,5 +48,5 @@ def from_edge(b):
 
 print("Part 1:", from_edge((IVec2(0,0), Dirs.R))) 
 
-edges = [(IVec2(x,0),Dirs.D) for x in range(mirs.width())] + [(IVec2(x,mirs.height()-1),Dirs.U) for x in range(mirs.width())]+ [(IVec2(0,y),Dirs.R) for y in range(mirs.height())] + [(IVec2(mirs.width()-1,y),Dirs.L) for y in range(mirs.height())]
+edges = [(IVec2(x,0),Dirs.D) for x in range(mirs.width)] + [(IVec2(x,mirs.height-1),Dirs.U) for x in range(mirs.width)]+ [(IVec2(0,y),Dirs.R) for y in range(mirs.height)] + [(IVec2(mirs.width-1,y),Dirs.L) for y in range(mirs.height)]
 print("Part 2:", max(from_edge(e) for e in edges))

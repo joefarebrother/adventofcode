@@ -13,7 +13,7 @@ for p, c in g.items():
         adj.append(p-(1,0))
         adj.append(p-(1,1))
         adj.append(p-(1,-1))
-        for i in range(g.width()):
+        for i in range(g.width):
             if (nc := g[p+(i,0)]) in digs:
                 n += nc
                 adj.append(p+(i,1))

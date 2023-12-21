@@ -90,7 +90,7 @@ def fits(tile, pos, ori):
     if pos in jigsaw:
         return False
     bb = jigsaw.bounding_box + pos
-    if bb.width() > jig_size or bb.height() > jig_size:
+    if bb.width > jig_size or bb.height > jig_size:
         return False
     for d in neighbours(0):
         if pos+d not in jigsaw:

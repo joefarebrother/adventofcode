@@ -22,7 +22,7 @@ def adj(node):
 
 gr = FGraph(adj)
 start = (None,0,0)
-# print("Part 1:", gr.dijkstra(start).dist(lambda n: n[0] == (inp.width()-1, inp.height()-1)))
+# print("Part 1:", gr.dijkstra(start).dist(lambda n: n[0] == (inp.width-1, inp.height-1)))
 
 def adj2(node):
     p, d, c = node 
@@ -43,4 +43,4 @@ def adj2(node):
     return res
 
 gr = FGraph(adj2)
-print("Part 2:", gr.dijkstra(start).dist(lambda n: n[0] == (inp.width()-1, inp.height()-1) and n[2]>=3))
+print("Part 2:", gr.dijkstra(start).dist(lambda n: n[0] == (inp.width-1, inp.height-1) and n[2]>=3))

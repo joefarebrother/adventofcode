@@ -9,7 +9,7 @@ path = [mint(x, x) for x in path]
 Dirs.flipy()
 
 dr = Dirs.R
-for x in range(gr.width()):
+for x in range(gr.width):
     if gr[x, 0] == '.':
         opos = IVec2(x, 0)
         break

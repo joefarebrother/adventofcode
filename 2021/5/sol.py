@@ -7,7 +7,7 @@ diags = []
 
 for ((x1, y1, x2, y2), l) in zip(inp, inp):
     r = Rectangle((x1, y1), (x2, y2))
-    if r.height() == 1 or r.width() == 1:
+    if r.height == 1 or r.width == 1:
         straight_lines.append(r)
     else:
         diags.append(l)

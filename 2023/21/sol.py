@@ -21,8 +21,8 @@ print("Part 1:", sum(1 for p in g if reachable(p)))
 # def adj2(p):
 #     for np in neighbours(p):
 #         x,y = np 
-#         x %= g.width()
-#         y %= g.height()
+#         x %= g.width
+#         y %= g.height
 #         np = IVec2(x,y)
 #         if g[np] != "#":
 #             yield np 
@@ -38,10 +38,10 @@ def adj_expanded3(p):
     for ngp in neighbours(gp):
         x,y = ngp 
         mx,my = mp 
-        mx += x//g.width()
-        my += y//g.height()
-        x %= g.width()
-        y %= g.height()
+        mx += x//g.width
+        my += y//g.height
+        x %= g.width
+        y %= g.height
         ngp = IVec2(x,y)
         nmp = IVec2(mx,my)
         if g[ngp] != "#" and nmp in Rectangle((-metalen,-metalen),(metalen,metalen)):
@@ -89,13 +89,13 @@ for p in g:
         col = {(x,y):v for (x1,y),v in loc_vdiffs.items() if x == x1}
         #assert len(set(col.values())) <= 3, (p,"col",x,col)
         coll = list(col.values())
-        assert (abs(coll[0]) == g.width() and abs(coll[-1]) == g.width()), ("col",x,col,coll)
+        assert (abs(coll[0]) == g.width and abs(coll[-1]) == g.width), ("col",x,col,coll)
 
     for y in irange(-metalen,metalen):
         row = {(x,y):v for (x,y1),v in loc_hdiffs.items() if y == y1}
         #assert len(set(col.values())) <= 3, (p,"row",y,row)
         rowl = list(row.values())
-        assert (abs(rowl[0]) == g.width() and abs(rowl[-1]) == g.width()), ("row",y,row,rowl)
+        assert (abs(rowl[0]) == g.width and abs(rowl[-1]) == g.width), ("row",y,row,rowl)
 
 # turns out loc_vdiff/hdiff is gridsize
     
@@ -114,7 +114,7 @@ def good_combinations(dist):
     # sum of n odds is n^2, sum of n evens is n(n-1)
     
 
-    size = g.width()
+    size = g.width
     target = target_steps - dist # what i'm trying to make 131*s be less than and even
     if target < 0:
         return 0
@@ -130,7 +130,7 @@ def good_combinations(dist):
     
 def good_combinations_linear(dist):
     # same but in just 1 dir 
-    size = g.width()
+    size = g.width
     target = target_steps - dist
 
     rngmax = target // size 

@@ -2,8 +2,8 @@ from utils import *
 
 gr = Grid(0, y_is_down=True)
 
-internal_width = gr.width()-2
-internal_height = gr.height()-2
+internal_width = gr.width-2
+internal_height = gr.height-2
 period = math.lcm(internal_height, internal_width)
 
 Dirs.flipy()
@@ -24,7 +24,7 @@ for opb, d in blizzards:
 
 startp = IVec2(1, 0)
 start = startp, 0
-endp = IVec2(internal_width, gr.height()-1)
+endp = IVec2(internal_width, gr.height-1)
 print(endp)
 
 steps = [0]

@@ -22,7 +22,7 @@ g.draw()
 rooms = {l: [IVec2(x, y) for y in [2, 3, 4, 5]]
          for x in [3, 5, 7, 9] for l in ["___A_B_C_D"[x]]}
 hallway = [IVec2(x, 1)
-           for x in irange(1, g.width()-2) if x not in [3, 5, 7, 9]]
+           for x in irange(1, g.width-2) if x not in [3, 5, 7, 9]]
 energy = {l: 10**i for i, l in enumerate("ABCD")}
 
 occupied = {p: l for p, l in g.items() if l in "ABCD"}

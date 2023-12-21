@@ -177,21 +177,23 @@ class Grid(MutableMapping):
             return _key(self) == _key(other)
         return NotImplemented
 
+    @property
     def width(self) -> int:
         """
         Returns the width of this grid.
         """
         if self.wrapx:
             return self.wrapx
-        return self.bounding_box.width()
+        return self.bounding_box.width
 
+    @property
     def height(self) -> int:
         """
         Returns the height of this grid.
         """
         if self.wrapy:
             return self.wrapy
-        return self.bounding_box.height()
+        return self.bounding_box.height
 
     def map(self, f: Callable):
         """

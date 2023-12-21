@@ -198,12 +198,14 @@ class Rectangle:
     def __bool__(self):
         return self.minx is not None
 
+    @property
     def width(self) -> int:
         """
         Returns the width of this rectangle.
         """
         return self.maxx-self.minx+1 if self else 0
 
+    @property
     def height(self) -> int:
         """
         Returns the height of this rectangle.
@@ -211,7 +213,7 @@ class Rectangle:
         return self.maxy-self.miny+1 if self else 0
 
     def __len__(self) -> int:
-        return self.width()*self.height()
+        return self.width*self.height
 
     def xrange(self) -> range:
         """

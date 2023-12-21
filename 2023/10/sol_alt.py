@@ -51,9 +51,9 @@ for x,y in windows(loop+[loop[0]], 2):
 loop = set(loop)
 
 area = 0
-for y in range(g.height()):
+for y in range(g.height):
     inside = False 
-    for x in range(g.width()):
+    for x in range(g.width):
         p = IVec2(x,y)
         if p in loop_vert:
             inside ^= True 

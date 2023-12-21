@@ -7,7 +7,7 @@ grid = Grid("input3", wrapx=True)
 trees = 0
 
 grid.draw()
-print(grid.width(), grid.height())
+print(grid.width, grid.height)
 
 
 def check_tree(pos: complex):

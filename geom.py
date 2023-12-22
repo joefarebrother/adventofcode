@@ -737,6 +737,15 @@ class Cuboid:
         """Returns the complement of this cuboid as a cuboid set"""
         return CuboidSet([self]).complement()
     
+    def project(self, axis):
+        d = list(self.dims)
+        d = d[:axis]+d[axis+1:]
+        return Cuboid(d)
+    
+    def shift(self,pt):
+        d = [ax.shift(c) for ax,c in zip(self.dims,pt)]
+        return Cuboid(d)
+    
 def infinite_cuboid(ndims):
     """Returns the cuboid representing the entire n-dimensional space"""
     return Cuboid([(-math.inf,math.inf)]*ndims)

@@ -57,3 +57,5 @@ Day 22:
 - == instead of &
 - making the bricks fall up
 - visiting bricks to consider falling in BFS order (ws)
+Day 23:
+- Needing to reboot 3 times

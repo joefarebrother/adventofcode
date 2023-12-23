@@ -31,30 +31,6 @@ def adj_choice(p):
             res[np] = d 
     return res
 
-@cache
-def longest(p, seen):
-    if p.y == g.height-1:
-        return 0
-    
-    if not goal_reachable(p,seen):
-        return -math.inf
-    
-    best = -math.inf
-    for np,d in adj_choice(p).items():
-        if np not in seen:
-            nseen = seen|{p} 
-            best = max(best,d+longest(np,nseen))
-            print(p,np,len(seen),d,best)
-    return best
-
-@cache
-def goal_reachable(p,seen):
-    def adj_mod(p):
-        return [np for np in adj_choice(p) if np not in seen]
-    return FGraph(adj_mod).DFS(p).dist(lambda np: np.y == g.height-1) != math.inf 
-
-
-
 import graphviz
 choice_nodes = set(FGraph(adj_choice).BFS(IVec2(1,0)).all_dists().keys())
 
@@ -69,4 +45,32 @@ for p in choice_nodes:
 
 dot.render("2023/23/gr.gv",format="png")
 
-print("Part 2:", longest(IVec2(1,0),frozenset()))
+bits = {}
+for i,p in enumerate(choice_nodes):
+    bits[p] = 1<<i
+
+@cache
+def longest(p, seen):
+    if p.y == g.height-1:
+        return 0
+    
+    if not goal_reachable(p,seen):
+        return -math.inf
+    
+    best = -math.inf
+    for np,d in adj_choice(p).items():
+        if not bits[np] & seen:
+            nseen = seen|bits[p]
+            best = max(best,d+longest(np,nseen))
+            print(p,np,bin(seen),d,best)
+    return best
+
+@cache
+def goal_reachable(p,seen):
+    def adj_mod(p):
+        return [np for np in adj_choice(p) if not bits[np] & seen]
+    return FGraph(adj_mod).DFS(p).dist(lambda np: np.y == g.height-1) != math.inf 
+
+print("Part 2:", longest(IVec2(1,0),0))
+
+# TODO: alt sol involving astar

@@ -62,3 +62,5 @@ Day 23:
 Day 24:
 - Typo vz as vx
 - Running sympy on all 300 equations instead of just first few
+Day 25:
+- None

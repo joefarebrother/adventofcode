@@ -317,7 +317,7 @@ def prefixes(xs: Iterable) -> Iterable[list|str]:
 
 def suffixes(xs: Iterable) -> Iterable[list|str]:
     """
-    Yields the prefixes of xs.
+    Yields the suffixes of xs.
     If xs is a string, yields strings; else yields lists.
     """
     r = "" if isinstance(xs, str) else []

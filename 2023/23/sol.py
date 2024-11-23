@@ -1,7 +1,6 @@
 from utils import *
 
 g = Grid(0)
-Dirs.flipy()
 
 def adj(p):
     res = []

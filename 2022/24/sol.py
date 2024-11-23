@@ -6,8 +6,6 @@ internal_width = gr.width-2
 internal_height = gr.height-2
 period = math.lcm(internal_height, internal_width)
 
-Dirs.flipy()
-
 blizzards = []
 for p, v in gr.items():
     if v in "^v<>":

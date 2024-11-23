@@ -990,3 +990,6 @@ HexDirs.downleft = HexDirs.DL = HexDirs.southwest = HexDirs.SW = IVec2(-1-1j)
 HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = IVec2(+1+1j)
 
 HexDirs.flipy = _flipy(HexDirs)
+
+Dirs.flipy()
+HexDirs.flipy()

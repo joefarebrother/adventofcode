@@ -1,7 +1,6 @@
 from utils import *
 
 mirs = Grid(0)
-Dirs.flipy()
 
 def prop(b):
     p,d = b 

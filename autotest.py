@@ -526,7 +526,9 @@ def get_page(part):
 
     page = PageParts(s)
     correct_answers = list(page.tags("p").filter(lambda p: p.startswith("Your puzzle answer was")).tags("code"))
-    completed = len(correct_answers)
+    print(f"{correct_answers=}")
+    if "Both parts of this puzzle are complete" in s:
+        completed = 2
 
     if completed == 2:
         write_to(final_file, s)

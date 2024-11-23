@@ -1,7 +1,6 @@
 from utils import *
 
 inp = Grid(0)
-Dirs.flipy()
 
 def adj(node):
     p, d, c = node 

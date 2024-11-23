@@ -6,8 +6,6 @@ gr = Grid(gr, y_is_down=True, default=' ')
 path = re.findall(r'\d+|[LR]', path[0])
 path = [mint(x, x) for x in path]
 
-Dirs.flipy()
-
 dr = Dirs.R
 for x in range(gr.width):
     if gr[x, 0] == '.':

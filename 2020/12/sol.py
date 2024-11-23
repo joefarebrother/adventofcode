@@ -19,7 +19,7 @@ for l in instrs:
 print("Part 1:", man_dist(pos))
 
 pos = 0j
-way = 10+1j
+way = 10-1j
 
 for l in instrs:
     c, n = l[0], int(l[1:])

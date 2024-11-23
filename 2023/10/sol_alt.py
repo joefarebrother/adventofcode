@@ -1,7 +1,6 @@
 from utils import *
 
 g = Grid(0, y_is_down=True)
-Dirs.flipy()
 
 start = only([p for p,x in g.items() if x == "S"])
 

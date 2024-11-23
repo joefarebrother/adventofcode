@@ -1,6 +1,6 @@
 from utils import *
 
-gr = Grid(y_is_down=False)
+gr = Grid()
 pos = IVec2(0,0)
 
 for line in inp_readlines():

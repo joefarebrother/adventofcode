@@ -1,6 +1,6 @@
 from utils import *
 
-gr = Grid(0, y_is_down=False)
+gr = Grid(0)
 gr = set(p for p, v in gr.items() if v == '#')
 
 
@@ -31,7 +31,7 @@ def step(gr, i):
 
 
 def draw(gr):
-    dgr = Grid(y_is_down=False)
+    dgr = Grid()
     for p in gr:
         dgr[p] = '#'
     dgr.draw()

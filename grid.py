@@ -17,7 +17,7 @@ class Grid(MutableMapping):
     - default: Default value for empty cells. 
         Should be immutable else it may lead to bugs as the same reference would be used for each. 
     - y_is_down: Whether a higher y index is to be interpreted as down.
-        The default is determined by the type of grid: If it's a list/file, it's True, if it's a dict its False, and if its' a Grid it's copied.
+        Default True or copy from passed grid.
         If it's set to False when its a list, the the top-left corner will still be (0,0), so it will be negative for subsequent rows.
         Otherwise, it only matters for printing.
     - wrapx, wrapy: Determines whether to wrap in the given direction, making the grid into a cylinder or torus.
@@ -100,7 +100,7 @@ class Grid(MutableMapping):
 
         elif isinstance(grid, dict):
             if y_is_down is None:
-                self.y_is_down = False
+                self.y_is_down = True
 
             if wrapy == True:
                 raise Exception("An explicit width must be set when initialising from a dict")

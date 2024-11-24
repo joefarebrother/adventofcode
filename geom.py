@@ -99,6 +99,9 @@ class IVec2:
 
     __radd__ = __add__
 
+    def __lt__(self,other):
+        return tuple(self)<tuple(other)
+
     def __rsub__(self, other):
         if isinstance(other, complex):
             return IVec2(other-complex(self))
@@ -958,15 +961,59 @@ def angle(p0, p1=None) -> float:
         p = IVec2(p1) - IVec2(p0)
     return p.angle()
 
+class Turn_:
+    def __init__(self):
+        self.y_is_down = True
 
-Dirs = DotDict()
-Dirs.up = Dirs.U = Dirs.north = Dirs.N = Dirs["^"] = IVec2(1j)
-Dirs.down = Dirs.D = Dirs.south = Dirs.S = Dirs["v"] = IVec2(-1j)
-Dirs.left = Dirs.L = Dirs.west = Dirs.W = Dirs["<"] = IVec2(-1+0j)
-Dirs.right = Dirs.R = Dirs.east = Dirs.E = Dirs[">"] = IVec2(1+0j)
+    @property
+    def L(self):
+        return -1j if self.y_is_down else 1j
+    
+    @property
+    def R(self):
+        return 1j if self.y_is_down else -1j
 
-Dirs.tL = 1j
-Dirs.tR = -1j
+    def __getitem__(self,idx):
+        return getattr(self, idx)
+
+class _Dirs:
+    def __init__(self):
+        self.y_is_down = True
+
+    def flipy(self):
+        self.y_is_down ^= True
+        self.t.y_is_down ^= True
+    
+    @property 
+    def U(self):
+        return IVec2(0,-1) if self.y_is_down else IVec2(0,1)
+    up = N = north = U 
+
+    @property
+    def D(self):
+        return IVec2(0,1) if self.y_is_down else IVec2(0,-1)
+    down = S = south = D 
+
+    left = L = west = W = IVec2(-1,0)
+    right = R = east = E = IVec2(1,0)
+
+    def __getitem__(self,idx):
+        if idx in ["^","v","<",">"]:
+            return {"^":self.U,"v":self.D,"<":self.L,">":self.R}[idx]
+        return getattr(self, idx)
+    
+    t = Turn_()
+
+    @property
+    def tL(self):
+        return self.t.L 
+    
+    @property
+    def tR(self):
+        return self.t.R
+    
+
+Dirs = _Dirs()       
 
 
 def _flipy(d):
@@ -975,9 +1022,6 @@ def _flipy(d):
             if hasattr(d[x], "conjugate"):
                 d[x] = d[x].conjugate()
     return _dirs_flipy
-
-
-Dirs.flipy = _flipy(Dirs)
 
 HexDirs = DotDict()
 HexDirs.up = HexDirs.U = HexDirs.north = HexDirs.N = IVec2(2j)
@@ -991,5 +1035,4 @@ HexDirs.downright = HexDirs.DR = HexDirs.southeast = HexDirs.SW = IVec2(+1+1j)
 
 HexDirs.flipy = _flipy(HexDirs)
 
-Dirs.flipy()
 HexDirs.flipy()

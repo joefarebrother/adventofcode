@@ -1,0 +1,6 @@
+day 21
+- many
+- attempting to rotate the outputs
+- messing up the factors to be multiplied several times resulting in Nones
+- p2 expanding 2x2->3x3->4x4 ws
+- p2: ob1e long time staring at output after 6 steps and comparing t p2 answer of 5

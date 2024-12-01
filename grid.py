@@ -160,6 +160,11 @@ class Grid(MutableMapping):
         del self.data[key]
         self._compute_bb()
 
+    # TODO: fetch/set rectangle
+    # could be done through getitem, or func for more flaxibility over strictness
+    # maybe strictness field?
+    # then rewrite 2017/21 with it
+
     def __iter__(self):
         return iter(self.data.keys())
 

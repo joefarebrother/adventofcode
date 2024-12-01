@@ -126,9 +126,9 @@ def enhance(res, sub, p):
 g = start
 for i in range(5):
     g = step(g)
-    print("=== step", i, sorted(g.items()))
+    print("=== step", i)
     
-    g.draw()
+    # g.draw()
 assert(str(g.values()).count("#") == 208, str(g.values()).count("#"))
 
 start1 = {flip(start, e): 1}

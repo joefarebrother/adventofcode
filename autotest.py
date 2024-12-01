@@ -525,7 +525,6 @@ def get_page(part):
         s = get_or_save(dayurl, part_file)
 
     page = PageParts(s)
-    print(s)
     correct_answers = list(page.tags("p").filter(lambda p: p.startswith("Your puzzle answer was")).tags("code"))
     
     completed = len(correct_answers)

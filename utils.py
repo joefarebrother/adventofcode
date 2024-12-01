@@ -25,7 +25,7 @@ def memory_limit(mb):
     avail = (int(get_memory_kb() * 1024 * 0.7))
     lim = mb*1024*1024
     if avail < lim:
-        print(f"==== Limiting to {round(avail/1024/1024, 1)} MB====")
+        print(f"==== Limiting to {round(avail/1024/1024, 1)} MB ====")
         lim = avail
     resource.setrlimit(resource.RLIMIT_AS, (lim, hard))
 

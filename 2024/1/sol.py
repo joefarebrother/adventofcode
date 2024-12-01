@@ -2,13 +2,9 @@ from utils import *
 
 inp = inp_readlines()
 
-rlefts, rights = zip(*[ints_in(l) for l in inp])
-lefts = sorted(rlefts)
+lefts, rights = zip(*[ints_in(l) for l in inp])
+lefts = sorted(lefts)
 rights = sorted(rights)
 
-print(sum(abs(l-r) for l,r in zip(lefts,rights)))
-
-t = 0 
-for l in rlefts:
-    t += l * rights.count(l)
-print(t)
+print("Part 1:", sum(abs(l-r) for l,r in zip(lefts,rights)))
+print("Part 2:", sum(l*rights.count(l) for l in lefts))

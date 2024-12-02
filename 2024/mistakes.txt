@@ -1,2 +1,5 @@
 Day 1:
 - t instead of l
+
+Day 2:
+- Not reversing list [::1] instead of [::-1]

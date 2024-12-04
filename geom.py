@@ -174,6 +174,7 @@ class IVec2:
         x, y = self.x, self.y
         return [p for p in Rectangle((x-1, y-1), (x+1, y+1)) if p != self]
 
+P = IVec2
 
 class Rectangle:
     """

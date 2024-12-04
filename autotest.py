@@ -469,7 +469,7 @@ def submit(part, answer):
     if bad_submit_time != None:
         timeout = (datetime.now() - bad_submit_time).total_seconds()
         if timeout < 60:
-            print(f"Waiting {timeout} seconds")
+            print(f"Waiting {61-timeout} seconds")
             sleep(61-timeout)
             print("Done")
 
@@ -639,7 +639,7 @@ def do_part(part=None):
 
         print("")
         should_prompt = wrong.answers or old_wrong.answers or p1wrong
-        if (good_answers and not should_prompt) or input(f"Do you want to submit {repr(answer)} (y/n)?").lower() == "y":
+        if (good_answers and not should_prompt) or input_yn(f"Do you want to submit {repr(answer)} (y/n)?"):
             print("Submitting answer:", repr(answer))
             content, passed, failed = submit(part=part, answer=answer)
             if passed:
@@ -652,9 +652,19 @@ def do_part(part=None):
                 wrong.add_bad(answer, content)
             else:
                 print("\nDid not recognise success or incorrect, may be timeout or blank input or already completed")
+        else:
+            print("Contnuing monitoring for changes")
 
     return part
 
+def input_yn(prompt=""):
+    res = input(prompt)
+    while True:
+        if res.lower().startswith("y"):
+            return True 
+        if res.lower().startswith("n"):
+            return False 
+        res = input("(y/n)")
 
 touch(real_inputfile)
 touch(solution_file)

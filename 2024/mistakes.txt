@@ -2,4 +2,9 @@ Day 1:
 - t instead of l
 
 Day 2:
+- Not returning True
 - Not reversing list [::1] instead of [::-1]
+
+Day 3:
+- Examplefinder failed (check for characters in ex not in inp spuriously rejects example (_ not in inp))
+- & instead f * (ws)

@@ -8,3 +8,8 @@ Day 2:
 Day 3:
 - Examplefinder failed (check for characters in ex not in inp spuriously rejects example (_ not in inp))
 - & instead f * (ws)
+
+Day 4:
+- Clicking on discord causing it to open and inturrupe me
+- Considering only 1 direction 
+- returning True instead of count

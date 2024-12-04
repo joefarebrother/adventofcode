@@ -6,6 +6,7 @@ example*
 curl_output
 *.in
 *.out
+*.log
 *tmp*
 *.html
 *.timestamp

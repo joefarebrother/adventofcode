@@ -259,42 +259,82 @@ def find_examples(part, page: PageParts):
     test1_inputfile = f"{workdir}/test1.in"
     test1_outputfile = f"{workdir}/test1-part{part}.out"
 
+    ex_logfile_path = f"{workdir}/test.log"
+
     might_have_inline_ex = len(real_input) <= 2
     looked = False
 
     if not os.path.isfile(test1_inputfile):
-        print("Trying to find sample input to save in ", test1_inputfile)
-        looked = True
+        with open(ex_logfile_path, "a") as ex_logfile:
+            print("Trying to find sample input to save in ", test1_inputfile)
+            looked = True
 
-        egs = page.possible_examples()
-        if not egs:
-            print("Could not find example (No <pre><code> tags)")
-            write_to(test1_inputfile, "[NONE]")
-        else:
-            summarized_real = summarize(real_input)
-            for i, eg in enumerate(egs):
-                if summarize(eg) <= summarized_real:
-                    write_to(test1_inputfile, eg)
-                    print("Assumed input:")
-                    print(eg)
-                    break
-                print(f"Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real})")
-            else:
-                print("Could not find example (No code block matches input)")
+            egs = page.possible_examples()
+            if not egs:
+                print("Could not find example (No <pre><code> tags)")
                 write_to(test1_inputfile, "[NONE]")
+            else:
+                summarized_real = summarize(real_input)
+                found = False
+                for i, eg in enumerate(egs):
+                    print(f"=== Code block {i} ===", file=ex_logfile)
+                    print(eg, file=ex_logfile)
+                    if summarize(eg) <= summarized_real:
+                        if not found:
+                            write_to(test1_inputfile, eg)
+                            print("Assumed input:")
+                            print(eg)
+                            found = True
+                            print(f"=== Code block {i} used as example ===", file=ex_logfile)
+                        else:
+                            print(f"=== Code block {i} ignored as example already found ===", file=ex_logfile)
+                    else:
+                        print(f"=== Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real}) ===")
+                        print(f"=== Code block {i} skipped; doesn't match input (contains {summarize(eg)-summarized_real}) ===", file=ex_logfile)
+                        
+                if not found:
+                    print("=== Could not find example (No code block matches input) ===")
+                    print("=== Could not find example (No code block matches input) ===", file=ex_logfile)
+                    write_to(test1_inputfile, "[NONE]")
+
+    if str(part) == "2":
+        p1ex = list(page.for_part(1).possible_examples())
+        p2ex = list(page.for_part(2).possible_examples())
+        # TODO: when should these be considered new examples?
+        if set(p2ex)-set(p1ex):
+            considered = "Potential part 2 examples" in read_string(ex_logfile_path)
+            if not considered:
+                with open(ex_logfile_path, "a") as ex_logfile:
+                    print("=== Potential part 2 examples ===", file=ex_logfile)
+                    for (i,eg) in enumerate(p2ex):
+                        if eg in p1ex:
+                            print(f"=== Code block {i} for part 2 is present in part 1 ===", file=ex_logfile)
+                            continue 
+
+                        print(f"=== Code block {i} for part 2 ===", file=ex_logfile)
+                        print(eg, file=ex_logfile)
+                        if summarize(eg) <= summarized_real:
+                            print(f"=== Code block {i} could be a new example ===", file=ex_logfile)
+                        else:
+                            print(f"=== Code block {i} would be skipped; doesn't match input (contains {summarize(eg)-summarized_real}) ===", file=ex_logfile)
+
+
 
     if not os.path.isfile(test1_outputfile):
         print("Trying to find sample output to save in", test1_outputfile)
         looked = True
 
-        o = page.possible_outputs(part, no_li=True)
-        if o:
-            sample_out = o.last()
-            write_to(test1_outputfile, sample_out)
-        else:
-            print("Could not find example output (no <code><em> tag)")
-            sample_out = "[NONE]"
-            write_to(test1_outputfile, "[NONE]")
+        with open(ex_logfile_path, "a") as ex_logfile:
+            o = page.possible_outputs(part, no_li=True)
+            print(f"=== Possible outputs for part {i} ===", file=ex_logfile)
+            print(list(o), file=ex_logfile)
+            if o:
+                sample_out = o.last()
+                write_to(test1_outputfile, sample_out)
+            else:
+                print("Could not find example output (no <code><em> tag)")
+                sample_out = "[NONE]"
+                write_to(test1_outputfile, "[NONE]")
 
     else:
         sample_out = read_string(test1_outputfile).strip()
@@ -305,15 +345,16 @@ def find_examples(part, page: PageParts):
 
     if might_have_inline_ex and looked:
         for inp, out in page.possible_inline_examples(part):
-            add_example(inp, out, part)
+            add_example(inp, out, part, ex_logfile_path)
 
     if looked:
-        add_example("", "", part)
+        add_example("", "", part, ex_logfile_path)
 
 
-def add_example(inp, out, part):
-    if inp and out:
+def add_example(inp, out, part, ex_logfile_path):
+    if inp or out:
         print(f"Adding inline example: `{inp}` -> `{out}`")
+
     files = os.listdir(workdir)
     n = 2
     while f"test{n}.in" in files and read_string(f"{workdir}/test{n}.in") != inp:
@@ -321,6 +362,10 @@ def add_example(inp, out, part):
 
     inpfile = f"{workdir}/test{n}.in"
     outfile = f"{workdir}/test{n}-part{part}.out"
+
+    if inp or out:
+        with open(ex_logfile_path, "a") as ex_logfile:
+            print(f"== Inline example {n} added for part {part}: `{inp}` -> `{out}`", file=ex_logfile)
 
     write_to(inpfile, inp)
     write_to(outfile, out)

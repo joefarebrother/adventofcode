@@ -29,4 +29,6 @@ Day 5:
 Day 6:
 - Several typos of wrong vars (g and p instead of d, 1 instead of d)
 - Overiting walls with dots
+- List instead of set causing doublecounting
+- Autotest bug not having sumarized_real set
 - Searching whole grid rather than path

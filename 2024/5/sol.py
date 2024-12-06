@@ -81,6 +81,7 @@ for a,b in it.combinations(gr.keys(), 2):
 # but the question is whether sorting with custom comparator (that reports incomparible elements as equal) works in general with a non-transitive order
 # in fact, clearly its not. Consider 1|2, 2|3. 
      
+# q: does bubblesort work with non-trans order? not swapping incomparables 
 
 # graphviz-ing the real input crashes it (out of memory)
 

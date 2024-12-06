@@ -264,6 +264,8 @@ def find_examples(part, page: PageParts):
     might_have_inline_ex = len(real_input) <= 2
     looked = False
 
+    summarized_real = summarize(real_input)
+
     if not os.path.isfile(test1_inputfile):
         with open(ex_logfile_path, "a") as ex_logfile:
             print("Trying to find sample input to save in ", test1_inputfile)
@@ -274,7 +276,6 @@ def find_examples(part, page: PageParts):
                 print("Could not find example (No <pre><code> tags)")
                 write_to(test1_inputfile, "[NONE]")
             else:
-                summarized_real = summarize(real_input)
                 found = False
                 for i, eg in enumerate(egs):
                     print(f"=== Code block {i} ===", file=ex_logfile)

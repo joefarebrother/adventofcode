@@ -25,3 +25,8 @@ Day 5:
 - Autotest bug not using variable i
 - Aversion to O(n^2) when n is small 
 - Using `cmp_to_key` wrong (though wouldn't have worked on real anyway)
+
+Day 6:
+- Several typos of wrong vars (g and p instead of d, 1 instead of d)
+- Overiting walls with dots
+- Searching whole grid rather than path

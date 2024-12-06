@@ -225,6 +225,17 @@ class Grid(MutableMapping):
         Returns a `Counter` counting the number of occurrences of each element of the grid.
         """
         return Counter(self.data.values())
+    
+    def indices(self, elem):
+        """
+        Returns the indicies that `elem` appears.
+        If `elem` is not callable, checks it for equality
+        Else, calls it with index and value.
+        """
+        if callable(elem):
+            return [p for p,v in self.items() if elem(p,v)]
+        else:
+            return [p for p,v in self.items() if elem == v]
 
     def draw(self, symbols=None, flipx=False, flipy=False, maxrows=None) -> None:
         """

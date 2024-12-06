@@ -326,7 +326,7 @@ def find_examples(part, page: PageParts):
 
         with open(ex_logfile_path, "a") as ex_logfile:
             o = page.possible_outputs(part, no_li=True)
-            print(f"=== Possible outputs for part {i} ===", file=ex_logfile)
+            print(f"=== Possible outputs for part {part} ===", file=ex_logfile)
             print(list(o), file=ex_logfile)
             if o:
                 sample_out = o.last()

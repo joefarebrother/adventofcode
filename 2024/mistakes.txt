@@ -1,4 +1,5 @@
 Day 1:
+- being rusty and taking a while to get started from looking at problem 
 - t instead of l
 
 Day 2:
@@ -8,8 +9,19 @@ Day 2:
 Day 3:
 - Examplefinder failed (check for characters in ex not in inp spuriously rejects example (_ not in inp))
 - & instead f * (ws)
+- Autotest bug prints wrong remaining time for ws penalty
 
 Day 4:
 - Clicking on discord causing it to open and inturrupe me
 - Considering only 1 direction 
+- when considering more directions putting the loop in the wrong place causing it to track an extra long word
 - returning True instead of count
+
+Day 5:
+- Attempting to use topsort (real input is cyclic)
+- Attempting to use rechability (real input is cyclic)
+- Not restarting pc since memory was fine and for some reason = key is unreliable except after restart 
+- Wrong indexing for middle
+- Autotest bug not using variable i
+- Aversion to O(n^2) when n is small 
+- Using `cmp_to_key` wrong (though wouldn't have worked on real anyway)

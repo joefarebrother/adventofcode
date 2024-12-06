@@ -2,6 +2,7 @@ import math
 import re
 from typing import Tuple, Callable, Iterable, Optional
 from collections import deque
+from functools import cmp_to_key
 
 
 block_char = '█'
@@ -329,3 +330,9 @@ def suffixes(xs: Iterable) -> Iterable[list|str]:
         else:
             r.insert(0, x)
             yield r.copy()
+
+def lt_to_key(lt_func):
+    """
+    Converts a comparator that acts as < to a key= function.
+    """
+    return cmp_to_key(lambda a,b: 0 if a == b else 1-2*lt_func(a,b))

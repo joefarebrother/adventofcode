@@ -32,3 +32,6 @@ Day 6:
 - List instead of set causing doublecounting
 - Autotest bug not having sumarized_real set
 - Searching whole grid rather than path
+
+Day 7:
+- mixed up variables eq and inp a few times

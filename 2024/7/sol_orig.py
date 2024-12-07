@@ -19,6 +19,6 @@ def possible(eq, part):
                 return True 
     return False 
 
-print("Part 1:", sum(eq[0] for eq in eqs if possible(eq))) 
-print("Part 2:", sum(eq[0] for eq in eqs if possible(eq))) 
+print("Part 1:", sum(eq[0] for eq in eqs if possible(eq, 1))) 
+print("Part 2:", sum(eq[0] for eq in eqs if possible(eq, 2))) 
 

@@ -75,6 +75,21 @@ print("Part 2:", sum(go(p)[1] for p in path if p != guard))
 # user    2m17.360s
 # sys     0m0.421s
 
+# time sol_orig.py: with grid fastpath via exception # this seems slightly faster
+# real    1m49.247s
+# user    1m48.125s
+# sys     0m0.322s
+
+# time sol_orig.py: with grid fastpath via double lookup
+# real    1m54.352s
+# user    1m53.107s
+# sys     0m0.330s
+
+# time sol_orig.py: with grid fastpath via sentinel
+# real    1m52.815s
+# user    1m51.549s
+# sys     0m0.316s
+
 # time sol_improved_using_ivec.py
 # real    0m15.405s
 # user    0m15.276s

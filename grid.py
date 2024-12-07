@@ -147,8 +147,11 @@ class Grid(MutableMapping):
         self.bounding_box = bounding_box(self.data.keys())
 
     def __getitem__(self, key):
-        key = self._convert_pos1(key)
-        return self.data[key] if key in self.data else self.default
+        try:
+            return self.data[key]
+        except KeyError:
+            key = self._convert_pos1(key)
+            return self.data[key] if key in self.data else self.default
 
     def __setitem__(self, key, value):
         key = self._convert_pos1(key)

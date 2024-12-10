@@ -45,3 +45,7 @@ Day 9:
 - way overcomplcating p1, making many mistakes in the process
 - handling an unneeded case in p2 where a file could be moved into a smaller space immedietely to its left but this is not what the problem asks for (bc i handled that with the way i did p1)
 - adding unnecassary 0-size free blocks making p2 a lot slower
+
+Day 10:
+- mixing up the variables g and gr 
+- writing 0 instead of 9

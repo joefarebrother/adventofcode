@@ -71,7 +71,7 @@ class IVec2:
         raise ValueError("Bad index for point:", self, idx)
 
     def __repr__(self):
-        return f"IVec2({self.x}, {self.y})"
+        return f"P({self.x}, {self.y})"
 
     def __complex__(self):
         return self.x + 1j*self.y

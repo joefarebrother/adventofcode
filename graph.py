@@ -33,8 +33,8 @@ class AbGraph():
         """
         return node
 
-    def __getitem__(self, node):
-        return self.adj(node)
+    # def __getitem__(self, node):
+    #     return self.adj(node)
 
     def dist1(self):
         """
@@ -106,7 +106,7 @@ class AbGraph():
             if k not in self.prev:
                 self.prev[k] = prev
                 yield node, d
-                for nxt in self[node]:
+                for nxt in self.adj(node):
                     yield from trav(nxt, d+1, node)
 
         return GraphSearchResult(self, trav(start, 0, None))
@@ -146,7 +146,7 @@ class AbGraph():
                     self.dists[self.key(node)] = d
                     yield (node, d)
 
-                    for nxt in self[node]:
+                    for nxt in self.adj(node):
                         k = self.key(nxt)
                         if k not in self.prev:
                             queue.append((nxt, d+1, node))
@@ -185,7 +185,7 @@ class AbGraph():
                 self.prev[self.key(node)] = prev
                 yield (node, d)
 
-                for nxt, nd in self[node].items():
+                for nxt, nd in self.adj(node).items():
                     k = self.key(nxt)
                     if k in dists and dists[k] <= d+nd:
                         continue
@@ -228,7 +228,7 @@ class AbGraph():
             cache[k] = sent
             mind = math.inf
             minp = None
-            for nxt, d in self[s].items():
+            for nxt, d in self.adj(s).items():
                 nd, np = go(nxt)
                 nd += d
                 if nd < mind:

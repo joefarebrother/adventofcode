@@ -40,3 +40,8 @@ Day 8:
 - Allowing antinodes outside the grid 
 - Thinking there were exactly 2 of each freq
 - Missing that in p2 the nodes themselves get included
+
+Day 9:
+- way overcomplcating p1, making many mistakes in the process
+- handling an unneeded case in p2 where a file could be moved into a smaller space immedietely to its left but this is not what the problem asks for (bc i handled that with the way i did p1)
+- adding unnecassary 0-size free blocks making p2 a lot slower

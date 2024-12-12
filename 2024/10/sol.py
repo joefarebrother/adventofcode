@@ -3,7 +3,7 @@ from utils import *
 g = Grid(0, ints=True)
 
 starts = g.indices(0)
-print(starts)
+#print(starts)
 
 def adj(p):
     return [np for np in neighbours(p) if g[np]==g[p]+1]

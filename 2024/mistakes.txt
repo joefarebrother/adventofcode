@@ -47,5 +47,9 @@ Day 9:
 - adding unnecassary 0-size free blocks making p2 a lot slower
 
 Day 10:
-- mixing up the variables g and gr 
+- mixing up the variables g and gr. now fixed by removing the ability to subscript graphs.
 - writing 0 instead of 9
+
+Day 11:
+- parentheses in the wrong place 
+- wrong example

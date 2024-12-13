@@ -53,3 +53,8 @@ Day 10:
 Day 11:
 - parentheses in the wrong place 
 - wrong example
+
+Day 12:
+- Getting perim wrong a few times not realising the problem gives a good definition for it 
+- Not considering literal corner cases (inside corners)
+- Not considering disconnected edges (ws)

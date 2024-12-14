@@ -4,6 +4,7 @@ import cmath
 import math
 import itertools
 from misc_utils import irange, bounds, DotDict, modify_idx
+from functools import lru_cache
 
 
 class IVec2:
@@ -15,15 +16,10 @@ class IVec2:
     """
 
     __slots__ = "x", "y"
-    _cache = {}
-
-    def __new__(cls, x, y=None, strict=False):
-        if isinstance(x, cls):
-            return x
-        if y is None and isinstance(x, list):
-            x, y = x
-        if (x, y) in cls._cache:
-            return cls._cache[x, y]
+    
+    @classmethod
+    @lru_cache(maxsize=1024)
+    def __new(cls, x, y, strict):
         if y is None:
             if type(x) in (int, float, complex):
                 x = complex(x)
@@ -38,8 +34,14 @@ class IVec2:
         assert ix == int(ix) and iy == int(iy), (ix, iy)
         s.x = int(ix)
         s.y = int(iy)
-        cls._cache[x, y] = s
         return s
+
+    def __new__(cls, x, y=None, strict=False):
+        if isinstance(x, cls):
+            return x
+        if y is None and isinstance(x, list):
+            x, y = x
+        return cls.__new(x, y, strict)
 
     @property
     def real(self) -> int:

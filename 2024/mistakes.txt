@@ -64,3 +64,9 @@ Day 13:
 - Not using sympy immediately (thrown off by "minimum" tokens into thinking it was integer linear programming rather than simple linear equations)
 - map instead of mapl exhausting iterator prematurely
 - Performance of point class causing memoryerror. consider switching to lru cache?
+
+Day 14:
+- Calculating quadrants wrong (< w//2 and then >w//2+1 instead of >w//2)
+- Transposing w and h
+- Not capping total search space 
+- Mistake that worked in my favour: doing the heuristic i intended wrong and ending up with the right answer wheras the intended one wouldn't have worked

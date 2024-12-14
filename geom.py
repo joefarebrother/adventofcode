@@ -141,6 +141,11 @@ class IVec2:
         except (TypeError, ValueError):
             return NotImplemented
         return IVec2(complex(other)/complex(self))
+    
+    def __mod__(self, other):
+        if isinstance(other, tuple):
+            return IVec2(self.x % other[0], self.y%other[1])
+        return NotImplemented
 
     def conjugate(self):
         return IVec2(self.x, -self.y)

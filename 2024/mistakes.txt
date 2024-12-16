@@ -69,4 +69,9 @@ Day 14:
 - Calculating quadrants wrong (< w//2 and then >w//2+1 instead of >w//2)
 - Transposing w and h
 - Not capping total search space 
-- Mistake that worked in my favour: doing the heuristic i intended wrong and ending up with the right answer wheras the intended one wouldn't have worked
+- Mistake that worked in my favour: doing the heuristic i intended wrong and ending up with the right answer wheras the intended one wouldn't have worked            
+
+Day 15:
+- Spending a while debugging the wrong function 
+- Infinite recursion by trying to push box partner while already pushing 
+- Returning early and not actually doing the push

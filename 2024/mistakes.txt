@@ -75,3 +75,9 @@ Day 15:
 - Spending a while debugging the wrong function 
 - Infinite recursion by trying to push box partner while already pushing 
 - Returning early and not actually doing the push
+
+Day 16:
+- Not having a pre-written proper all-source-all-target shortest paths algo
+- Being too slow without it and calling astar on every point
+- Altering example output manually instead of input
+- Not counting S and E 

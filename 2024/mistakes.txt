@@ -81,3 +81,11 @@ Day 16:
 - Being too slow without it and calling astar on every point
 - Altering example output manually instead of input
 - Not counting S and E 
+
+Day 17:
+- 1 instead of 2 and == instead of = for div operations
+- Missing output is %8
+- Not resetting output between runs
+- Missing that output depends on previous a 
+- Only considering 1 sol per digit 
+- Flipping ra,a in loop vars

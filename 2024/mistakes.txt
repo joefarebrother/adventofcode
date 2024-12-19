@@ -89,3 +89,7 @@ Day 17:
 - Missing that output depends on previous a 
 - Only considering 1 sol per digit 
 - Flipping ra,a in loop vars
+
+Day 18:
+- typing 2014 instead of 1024 (ws)
+- util issue: get_path returns iterator instead of list

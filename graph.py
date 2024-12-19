@@ -92,7 +92,7 @@ class AbGraph():
         After a graph search has completed, generates the path it saved from start to the end.
         If keys_only is True, key is called on the each node of the path.
         """
-        return reversed(list(self.get_rev_path(end, keys_only)))
+        return list(self.get_rev_path(end, keys_only))[::-1]
 
     def DFS(self, start):
         """
@@ -245,7 +245,7 @@ class AbGraph():
 
 
 class GraphSearchResult:
-    def __init__(self, graph, it):
+    def __init__(self, graph: AbGraph, it):
         self.graph = graph
         self.it = it
         self.max_dist = 0
@@ -270,6 +270,21 @@ class GraphSearchResult:
             if _is_end(end_cond, n):
                 return (n, d)
         return (None, math.inf)
+
+    def path_dist(self, end_cond, keys_only=False):
+        """
+        Finds the given end point. Returns (p,d) where p is a path to the end point and d is the distance; or (None, math.inf) if no end was reached.
+        """
+        (e,d) = self.find(end_cond)
+        if e is None:
+            return (e,d)
+        return self.graph.get_path(e, keys_only=keys_only), d
+    
+    def path(self, end_cond, keys_only=False):
+        """
+        Finds the given end point. Returns a path to the endpoint, or None if no end was reached.
+        """
+        return self.path_dist(end_cond, keys_only=keys_only)[0]
 
     def dist(self, end_cond):
         """

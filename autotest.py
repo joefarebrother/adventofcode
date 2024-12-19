@@ -678,14 +678,14 @@ def do_part(part=None):
                 exit(1)
 
         if part == "2" and answer in old_wrong.answers:
-            print(f"{answer} was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
+            print(f"\x07{answer} was previously incorrectly submitted for part 1. Did you accidentally solve part 2 first?")
 
         if not answer_checks(answer, example_answers, correct_answers, wrong, part):
             continue
 
         print("")
         should_prompt = wrong.answers or old_wrong.answers or p1wrong
-        if (good_answers and not should_prompt) or input_yn(f"Do you want to submit {repr(answer)} (y/n)?"):
+        if (good_answers and not should_prompt) or input_yn(f"\x07Do you want to submit {repr(answer)} (y/n)?"):
             print("Submitting answer:", repr(answer))
             content, passed, failed = submit(part=part, answer=answer)
             if passed:
@@ -697,7 +697,7 @@ def do_part(part=None):
             elif failed:
                 wrong.add_bad(answer, content)
             else:
-                print("\nDid not recognise success or incorrect, may be timeout or blank input or already completed")
+                print("\n\x07Did not recognise success or incorrect, may be timeout or blank input or already completed")
         else:
             print("Contnuing monitoring for changes")
 

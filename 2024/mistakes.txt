@@ -93,3 +93,6 @@ Day 17:
 Day 18:
 - typing 2014 instead of 1024 (ws)
 - util issue: get_path returns iterator instead of list
+
+Day 19:
+- parsing wrong - splitting on "," rather than ","

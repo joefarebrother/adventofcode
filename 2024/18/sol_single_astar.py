@@ -45,3 +45,5 @@ print("Part 2:", f"{pt.x},{pt.y}")
 # 1) `path` is such a path - all obstructions it passes through are placed after pt by definition of pt being the min index pt along `path`
 # 2) suppose p2 did. it passes through no obstructions placed before or equal pt by definition. any obstructions it would pass through are thus placed after pt.
 #    however then its cost as a path through the adj2 graph is the sum of unique powers of 2 less than the cost of `pt`, and thus is less than the cost of `path`, contradicting its minimality 
+
+# A* with max instead of + would have the same property

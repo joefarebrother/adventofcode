@@ -96,3 +96,9 @@ Day 18:
 
 Day 19:
 - parsing wrong - splitting on "," rather than ","
+
+Day 20:
+- completely wrong approach; first trying to run bfs multiple times (ran in background then somehow gave ws)
+- spending a long time debugging an idea with bfs that tracks whether one cheat has happened, which doesn't work bc it ignores slower paths
+- still wrong approach, bfs on single graph that tracks where cheat point was. was causing memory errors
+- apparently haven't learned from day 16 that tracking dists from start and end is good

@@ -2,8 +2,8 @@ from utils import *
 
 gr = Grid(0, default="#")
 
-start = only(gr.indices("S"))
-end = only(gr.indices("E"))
+start = gr.index("S")
+end = gr.index("E")
 
 dots = mapl(complex, gr.indices(".")) + [start,end]
 

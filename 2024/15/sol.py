@@ -3,7 +3,7 @@ from utils import *
 gr, instrs = inp_groups()
 gr = Grid(gr)
 
-rob = only(gr.indices("@"))
+rob = gr.index("@")
 
 def push(p,d):
     if gr[p+d] == "#":
@@ -49,7 +49,7 @@ for p,c in ogr.items():
 
 gr.draw()
 
-rob = only(gr.indices("@"))
+rob = gr.index("@")
 
 def can_push(p,d):
     #printx(p,d, gr[p+d], depth)

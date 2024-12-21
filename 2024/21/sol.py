@@ -11,8 +11,8 @@ keypad1 = """ ^A
 def ways_pair(a,b, keypad):
     """Return the (up to) 2 sensible ways to get from a to b, then press A"""
     g = Grid(keypad.split("\n"))
-    pa = only(g.indices(a))
-    pb = only(g.indices(b))
+    pa = g.index(a)
+    pb = g.index(b)
 
     
     diff = pa - pb 

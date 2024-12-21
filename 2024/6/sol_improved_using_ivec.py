@@ -2,7 +2,7 @@ from utils import *
 
 g = Grid(0)
 
-guard = only(g.indices("^")) # finds the position of ^ and verifies its unique
+guard = g.index("^") # finds the position of ^ and verifies its unique
 
 # This is functools.cache, which caches the results of the function so it is not recomputed next time its called on the same inputs
 # As the function is recursive, this results in every point along the path to the next wall being cached

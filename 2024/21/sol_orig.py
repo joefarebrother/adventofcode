@@ -22,8 +22,8 @@ def ways(seq, keypad):
 def ways_pair(a,b, keypad):
     g = Grid(keypad.split("\n"))
     #print(sorted())
-    pa = only(g.indices(a))
-    pb = only(g.indices(b))
+    pa = g.index(a)
+    pb = g.index(b)
 
     # need the arrangements of num x changes and num y changes
     def go(pa,pb):
@@ -176,8 +176,8 @@ def overall_ways2(seq, pads=24):
 # def ways_pair_2(a,b, keypad):
 #     """Return the (up to) 2 sensible ways to get from a to b, then press A"""
 #     g = Grid(keypad.split("\n"))
-#     pa = only(g.indices(a))
-#     pb = only(g.indices(b))
+#     pa = g.index(a)
+#     pb = g.index(b)
 
     
 #     diff = pa - pb 
@@ -211,7 +211,7 @@ for seq in inp:
 def play(way, keypad=keypad1):
     g = Grid(keypad.split("\n"))
     res = ""
-    p = only(g.indices("A"))
+    p = g.index("A")
     for x in way:
         if x == "A":
             res += g[p]

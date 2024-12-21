@@ -1,6 +1,7 @@
 from collections import Counter
 from typing import Callable
 from geom import bounding_box, IVec2
+from misc_utils import only
 from input_utils import inp_readlines
 from collections.abc import MutableMapping
 
@@ -239,6 +240,12 @@ class Grid(MutableMapping):
             return [p for p,v in self.items() if elem(p,v)]
         else:
             return [p for p,v in self.items() if elem == v]
+
+    def index(self, elem):
+        """
+        Returns the only index of `elem`, or throws otherwise. `elem` can be an element or a callable.
+        """
+        return only(self.indices(elem))
 
     def draw(self, symbols=None, flipx=False, flipy=False, maxrows=None) -> None:
         """

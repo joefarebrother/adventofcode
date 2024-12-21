@@ -2,7 +2,7 @@ from utils import *
 
 g = Grid(0)
 
-guard = only(g.indices("^")) # finds the position of ^ and verifies its unique
+guard = g.index("^") # finds the position of ^ and verifies its unique
 
 points = {complex(p) for p in g}
 walls = {complex(p) for p in g.indices("#")}

@@ -11,8 +11,8 @@ def adj(pd):
     res[p,d*Dirs.tR] = 1000 
     return res 
 
-start = only(g.indices("S"))
-end = only(g.indices("E"))
+start = g.index("S")
+end = g.index("E")
 
 gr = FGraph(adj)
 best = gr.astar((start,Dirs.E)).find(lambda pd: pd[0]==end)[1]

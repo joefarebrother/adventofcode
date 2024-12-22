@@ -109,3 +109,18 @@ print("Part 2:", sum(go(p)[1] for p in path if p != guard))
 # real    0m1.118s
 # user    0m1.072s
 # sys     0m0.039s
+
+# time sol_linear
+# real    0m1.941s
+# user    0m1.861s
+# sys     0m0.073s
+
+# time sol_linear after removing pointclass and asserts
+# real    0m1.395s
+# user    0m1.342s
+# sys     0m0.047s
+
+# time sol_linear_lazy
+# real    0m1.268s
+# user    0m1.200s
+# sys     0m0.053s

@@ -104,4 +104,14 @@ Day 20:
 - apparently haven't learned from day 16 that tracking dists from start and end is good
 
 Day 21:
-- lots of things that didn't work. todo: figure out exactly what false assumptions i was making and why they were false.
+- lots of things that didn't work. 
+-- several instances of messing with generators rather than converting to lists
+-- getting unexpected empty strings at some points 
+-- at some point pruning step wasn't working for p1 and wasn't fully sure why. perhaps based on a false assumption or perhaps just implementation mistakes
+- general p1 approach not viable for p2, but spent a while trying to get it to work 
+- returning length of next step rather than length after all layers, and thinking using it to reconstruct the full seq was still viable
+- final sol had a fix for consistent ob1e that i only figured out the cause of later (considering extra emptystring when split on 'A' and ends on A)
+- when cleaning up after, allowed gaps in one case when vertical movement first, which made p1 work but not p2
+
+Day 22:
+- not tracking the first time a seq is seen

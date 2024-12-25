@@ -118,3 +118,13 @@ Day 22:
 
 Day 23:
 - none!
+
+Day 24
+- 99 problems so i used regex and have 100 problems ([A-Z+] instead of [A-Z]+)
+- misinterpreting part 1 by skimreading and applying the operations in sequence 
+- typos causing output bits to be 1 somehow
+- misinterpreting by skimreading how to form the output (first zs in order of appearence, then reversed)
+- typo in graphviz connecting the wrong nodes (a->g twice instead of a->g, b->g)
+- and instead of or in check for correct outputs causing some to be missed
+- spending a while trying to check that the inputs go to the right place despite this not being needed (and not knowing fstring 0-padding)
+- wrong swap for the and/xor swap (ws)

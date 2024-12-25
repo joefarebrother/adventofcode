@@ -128,3 +128,6 @@ Day 24
 - and instead of or in check for correct outputs causing some to be missed
 - spending a while trying to check that the inputs go to the right place despite this not being needed (and not knowing fstring 0-padding)
 - wrong swap for the and/xor swap (ws)
+
+Day 25
+- misinterpreting requirement (thought heights had to match exactly)

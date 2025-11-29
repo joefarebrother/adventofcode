@@ -699,7 +699,7 @@ def do_part(part=None):
             else:
                 print("\n\x07Did not recognise success or incorrect, may be timeout or blank input or already completed")
         else:
-            print("Contnuing monitoring for changes")
+            print("Continuing monitoring for changes")
 
     return part
 

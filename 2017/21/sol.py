@@ -51,10 +51,7 @@ d8 = [D8(rot, flip)
 r2 = r*r
 r3 = r.inv()
 
-rules = {}
-for r in inp_readlines():
-    r,v = r.split(" => ")
-    rules[r]=v
+
 
 def step(g: Grid):
     if g.height % 2 == 0:
@@ -62,9 +59,7 @@ def step(g: Grid):
         res = Grid()
         for x in range(0,g.width,2):
             for y in range(0,g.width,2):
-                sub = Grid()
-                for dp in Rectangle((0,0),(1,1)) :
-                    sub[dp] = g[(x,y)+dp]
+                sub = g.get_rect((x,y), Rectangle((0,0),(1,1)))
                 assert len(sub) == 4
                 enhance(res,sub, ((x//2*3),(y//2*3))) 
     else:
@@ -73,11 +68,7 @@ def step(g: Grid):
         for x in range(0,g.width,3):
             for y in range(0,g.width,3):
                 sub = Grid()
-                for dp in Rectangle((0,0),(2,2)) :
-                    sub[dp] = g[(x,y)+dp]
-                    assert sub[dp] != None, (x,y, g.width, ((x,y)+dp), sorted(g.items()))
-                    # print(dp, (x,y)+dp, g[(x,y)+dp])
-                    # sub.draw()
+                sub = g.get_rect((x,y), Rectangle((0,0), (2,2)))
                 assert len(sub) == 9, sub
                 enhance(res,sub, ((x//3*4),(y//3*4))) 
 
@@ -92,7 +83,7 @@ def get_in_ori(tile, ori, pos, size):
     return tile[(complex(pos)-cent)*ori.inv()+cent]
 
 def flip(sub, ori):
-    #sub.draw()
+    # sub.draw()
     # print(ori)
     res = ""
     for dp in sub.bounding_box:
@@ -103,25 +94,22 @@ def flip(sub, ori):
     #print(res)
     return res[1:]
 
+rules = {}
+for r in inp_readlines():
+    r,v = r.split(" => ")
+    r = Grid(r.split("/"))
+    for ori in d8:
+        rules[flip(r,ori)] = v
+
 test = False
 def enhance(res, sub, p):
     global test
     # sub.draw()
     #print(p, res.width, sub.width)
     #print(sorted(sub.items()))
-    for ori in d8:
-        if (r:=flip(sub, ori)) in rules:
-            if test:
-                print(r, rules[r], p)
-                test = False
-            #print("found ori", ori)
-            new = rules[r]
-            newg = Grid(new.split("/"))
-            for dp in newg.bounding_box:
-                res[p+dp] = newg[dp]
-            #print("enhanced", ori)
-            return
-    assert False
+    new = rules[flip(sub,e)]
+    newg = Grid(new.split("/"))
+    res.set_rect(p,newg, no_overwrite=True)
 
 g = start
 for i in range(5):
@@ -143,10 +131,7 @@ def step_smart(g):
         else:
             assert ngr.width == 9
             for p in Rectangle((0,0),(2,2)):
-                sub = Grid()
-                p = 3*p
-                for dp in Rectangle((0,0),(2,2)):
-                    sub[dp]=ngr[p+dp]
+                sub = ngr.get_rect(p*3, Rectangle((0,0),(2,2)))
                 #print(sorted(sub.items()))
                 res[flip(sub,e)] += amt
     return res

@@ -542,6 +542,7 @@ class IntervalSet:
         return res
 
     def __or__(self, other):
+        # TODO: this appears to be quadratic, whereas and appears linear so demorgans would be better..
         if isinstance(other, IntervalSet):
             ops = other._parts
         elif isinstance(other, Interval):
@@ -786,7 +787,7 @@ def hyperplane(axis, ndims, val, symbol):
 
 
 class CuboidSet:
-    """A set of points in n-dimensional space represented, as a collection of disjoint cuboids"""
+    """A set of points in n-dimensional space, represented as a collection of disjoint cuboids"""
 
     def __init__(self, cubs=None):
         if cubs == None:

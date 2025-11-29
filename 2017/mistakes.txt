@@ -1,3 +1,9 @@
+day 20
+- setup: ./autotest instead of ./autotest.py 
+- session key env var set before refreshing terminal
+- indexing errors [4:6] instead of [3:6] etc
+- p2: quadratic sol too slow (pairwise checking for collisions)
+
 day 21
 - many
 - attempting to rotate the outputs

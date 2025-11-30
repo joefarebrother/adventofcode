@@ -741,6 +741,9 @@ class Cuboid:
         assert all(c.volume() > 0 for c in res), res
         return res
 
+    def __contains__(self, pt):
+        return all(x in ax for x,ax in zip(pt,self.dims,strict=True))
+
     def __eq__(self, other):
         if not isinstance(other, Cuboid):
             return NotImplemented

@@ -19,26 +19,13 @@ zer = 0
 tot = 50 
 was_z = False
 for num in nums:
-    tot += num 
-
-    while tot < 0:
-        tot += 100
-        if not was_z:
-            zer += 1 
-        was_z = False
-
-    while tot > 100:
-        tot -= 100 
-        zer += 1 
-
-    if tot == 0 or tot == 100:
-        zer += 1
-        was_z = True 
-        tot = 0
-    else:
-        was_z = False
-
-    print(num, tot, zer)
+    zer += abs(num)//100 
+    
+    for _ in range(abs(num)%100):
+        tot += sign(num)
+        tot %= 100
+        if tot == 0:
+            zer += 1
     
 
 print("Part 2:", zer)

@@ -64,6 +64,7 @@ def chunks(xs: Iterable, n: int, exact=True) -> Iterable[list]:
     if exact is true, asserts that the length of xs divides n. Otherwise, the last chunk is the remainder.
     """
     ys = []
+    is_str = type(xs) == str
     xs = iter(xs)
     while True:
         for i in range(n):
@@ -75,9 +76,9 @@ def chunks(xs: Iterable, n: int, exact=True) -> Iterable[list]:
                 if exact:
                     raise Exception(f"Non exact chunks (remainder chunk of size {len(ys)})") from None
                 else:
-                    yield ys
+                    yield "".join(ys) if is_str else tuple(ys)
                     return
-        yield ys
+        yield "".join(ys) if is_str else tuple(ys)
         ys = []
 
 

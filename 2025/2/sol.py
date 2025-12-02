@@ -20,15 +20,13 @@ print("Part 1:", tot)
 
 def invalid2(n):
     n = str(n)
-    for i in range(1,len(n)):
-        if i == len(n):
-            continue 
+    for i in range(1,len(n)-1):
         if len(n)%i != 0:
             continue
-        spl = mapl(str,chunks(n,i))
+        spl = chunks(n,i)
         if len(set(spl)) == 1:
-            printx(n)
             return True
+    return False
 
 tot = 0
 for a,b in ranges:

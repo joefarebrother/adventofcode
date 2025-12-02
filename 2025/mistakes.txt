@@ -1,2 +1,6 @@
 Day 1
 - missing a few fiddly details on p2 (ws), not debugging example sooner in cases it fails. slower simpler approach (inc 1 at a time) is very likely fine 
+
+Day 2
+- missing input format at first (thought it was individual ids rather than ranges)
+- example finder messed up and added a bunch of inline examples

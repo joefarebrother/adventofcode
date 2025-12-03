@@ -77,13 +77,15 @@ def invalid2(a,b):
         #   k = 2: mults of 01010101. already included
         #   k = 1: mults of 11111111. already included in k=2, but those that are in k=4 have already been removed from that group. thus we track removed multiples.
 
-        
+
+        # toby fixed this        
+        cf=1
         for j,dat in excl_counts.items():
-            if j%k == 0 and not any(j%r == 0 for r in dat[1]):
-                dat[0] -= count 
-                assert dat[0] >= 0, (dat, k, j, n, a, b)
-                dat[1].add(k)
-        excl_counts[k] = [count, set()] 
+            #print(k,j,dat)
+            if j%k == 0:
+                #print("*")
+                cf-=dat[1]
+        excl_counts[k] = [count*cf,cf]
 
     #print(excl_counts)
     

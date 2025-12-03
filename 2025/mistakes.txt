@@ -4,3 +4,7 @@ Day 1
 Day 2
 - missing input format at first (thought it was individual ids rather than ranges)
 - example finder messed up and added a bunch of inline examples
+
+Day 3
+- wrong start on the enumerate a few times 
+- row[:0] doesn't work

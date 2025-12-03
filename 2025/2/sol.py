@@ -1,6 +1,6 @@
 from utils import *
 
-ranges = mapl(ints_in, inp_readall().replace("\n", "").split(","))
+ranges = mapl(ints_in, inp_readall().replace("\n", "").split(","))   
 
 
 print(ranges)
@@ -20,7 +20,7 @@ print("Part 1:", tot)
 
 def invalid2(n):
     n = str(n)
-    for i in range(1,len(n)-1):
+    for i in range(1,len(n)):
         if len(n)%i != 0:
             continue
         spl = chunks(n,i)
@@ -33,4 +33,5 @@ for a,b in ranges:
     for x in irange(a,b):
         if invalid2(x):
             tot += x 
+ 
 print("Part 2:", tot)

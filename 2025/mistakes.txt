@@ -8,3 +8,6 @@ Day 2
 Day 3
 - wrong start on the enumerate a few times 
 - row[:0] doesn't work
+
+Day 4
+- == instead of = (inf loop)

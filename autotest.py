@@ -534,6 +534,8 @@ def submit(part, answer):
         if "That's the right answer!" in content:
             passed = True
             bad_submit_time = None
+            if year >= 2025:
+                get_or_save(f"https://adventofcode.com/{year}/stats", f"{workdir}/stats-{part}.html")
         if "That's not the right answer" in content:
             failed = True
             bad_submit_time = submit_time

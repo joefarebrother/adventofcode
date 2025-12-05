@@ -11,3 +11,7 @@ Day 3
 
 Day 4
 - == instead of = (inf loop)
+
+Day 5
+- mostly solved by prewritten util (IntervalSet) but missing len method. in implementing it, forgetting whether they're represented as inclusive or exclusive.
+- missing that there already was a len method, but it wasn't __len__

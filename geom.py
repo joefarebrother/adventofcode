@@ -540,7 +540,7 @@ class IntervalSet:
         res = cls.__new__(cls)
         res._parts = parts  # pylint:disable=protected-access # TODO: is there a way to do a sort of private constructor that doesn't require disabling this lint?
         return res
-
+    
     def __or__(self, other):
         # TODO: this appears to be quadratic, whereas and appears linear so demorgans would be better..
         if isinstance(other, IntervalSet):
@@ -635,6 +635,8 @@ class IntervalSet:
     def len(self):
         """Returns the length of this set"""
         return sum(hi-lo+1 for hi, lo in self._parts)
+
+    __len__ = len
 
     def __bool__(self):
         return bool(self.len())

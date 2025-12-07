@@ -6,14 +6,13 @@ ops = rows[-1].split()
 
 nums = zip(*nums)
 
-tot = 0 
-for op, xs in zip(ops, nums):
+def do_op(op, xs):
     if op == "+":
-        tot += sum(xs)
+        return sum(xs)
     else:
-        tot += math.prod(xs)
+        return math.prod(xs)
 
-print("Part 1:", tot)
+print("Part 1:", sum(do_op(op,xs) for op,xs in zip(ops,nums)))
 
 cols = list(zip(*rows[:-1]))[::-1]
 
@@ -21,16 +20,12 @@ tot = 0
 ops = iter(ops[::-1])
 xs = []
 for c in cols + [[]]:
-    n = "".join(c)
-    i = ints_in(n)
-    if not i:
+    ns = ints_in("".join(c))
+    if not ns:
         op = next(ops)
-        if op == "+":
-            tot += sum(xs)
-        else:
-            tot += math.prod(xs)
+        tot += do_op(op,xs)
         xs = []
     else:
-        xs.append(i[0])
+        xs.append(ns[0])
 
 print("Part 2:", tot)

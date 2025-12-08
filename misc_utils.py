@@ -337,3 +337,31 @@ def lt_to_key(lt_func):
     Converts a comparator that acts as < to a key= function.
     """
     return cmp_to_key(lambda a,b: 0 if a == b else 1-2*lt_func(a,b))
+
+class DisjointSets:
+    """Union Find"""
+
+    def __init__(self, dom):
+        dom = set(dom)
+        self.dom = dom 
+        self.par = {p:p for p in dom}
+        self.sets = {p:{p} for p in dom}
+
+    def find_rep(self, p):
+        if self.par[p] == p:
+            return p
+        p1 = self.find_rep(self.par[p])
+        self.par[p] = p1 
+        return p1 
+    
+    def union(self, p1, p2):
+        p1r = self.find_rep(p1)
+        p2r = self.find_rep(p2)
+        self.par[p2r] = p1r 
+        self.sets[p1r] |= self.sets[p2r]
+
+    def get_set(self,p):
+        return self.sets[self.find_rep(p)]
+    
+    def uniq_sets(self):
+        return [self.sets[p] for p in self.par if self.par[p] == p]

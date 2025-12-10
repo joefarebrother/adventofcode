@@ -21,3 +21,11 @@ Day 8
 - implementing connect wrong a few times (not fully updating all elements in new set to point to it)
 - not having prewritten union find 
 - missing `return` in all_con func 
+
+Day 9
+- overcomplicating it (went for general approach that turns out to be slow and handles unneeded edge cases)
+
+Day 10 
+- 99 problems so used regex and have 100 problems 
+- splitting on '(' gives empty button polluting search space 
+- not using dict=True on sympy.solve; then when using it getting list instead of dict

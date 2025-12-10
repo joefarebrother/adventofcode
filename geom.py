@@ -910,6 +910,9 @@ class CuboidSet:
     def __repr__(self):
         return f"CuboidSet({list(self.cubs)})"
 
+    def __contains__(self, point):
+        return any(point in c for c in self.cubs)
+
     def complement(self):
         """Returns the complement of this set"""
         if not self.cubs:
